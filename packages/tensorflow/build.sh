@@ -54,9 +54,9 @@ termux_step_configure() {
 
 termux_step_make() {
 	# host build
-	echo 'exports_files(["workspace.bzl"])' >> third_party/flatbuffers/BUILD
-	env --ignore-environment PATH="$BAZEL_FOLDIR:/usr/bin" bazel build --local_ram_resources=6144 --verbose_failures --subcommands //third_party/flatbuffers:workspace.bzl
-	file bazel-out/k8-opt/bin/external/flatbuffers/flatc
+	#echo 'exports_files(["workspace.bzl"])' >> third_party/flatbuffers/BUILD
+	#env --ignore-environment PATH="$BAZEL_FOLDIR:/usr/bin" bazel build --local_ram_resources=6144 --verbose_failures --subcommands //third_party/flatbuffers:workspace.bzl
+	#file bazel-out/k8-opt/bin/external/flatbuffers/flatc
 	# cross build
 	bazel build --local_ram_resources=6144 --verbose_failures --subcommands //tensorflow/tools/pip_package:build_pip_package || (file bazel-out/k8-opt/bin/external/flatbuffers/flatc ; exit 1)
 }
