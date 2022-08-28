@@ -235,6 +235,12 @@ termux_step_pre_configure() {
 				;;
 			scipy )
 				_termux_setup_fortran
+				(
+				for f in $( find -name setup.py -type f )
+				do
+					perl -i -pe "s|\Qf2py_options = None\E|f2py_options = ['--fcompiler', '$FC']|" $f
+				done
+				)
 				;;
 		esac
 	}
