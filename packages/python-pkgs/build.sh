@@ -260,6 +260,8 @@ termux_step_pre_configure() {
 					perl -i -pe "s|\Qf2py_options = None\E|f2py_options = ['--fcompiler', '$FC']|" $f
 				done
 				)
+				# aarch64-linux-android-gfortran: error: unrecognized command line option '-static-openmp'
+				LDFLAGS="${LDFLAGS/-static-openmp/}"
 				;;
 		esac
 	}
