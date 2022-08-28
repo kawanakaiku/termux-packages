@@ -368,103 +368,106 @@ termux_step_pre_configure() {
 	}
 	
 	cross_build() {
-		local PYTHON_PKG=$1
-		local PYTHON_JSON PYTHON_PKG_REQUIRES
+		local PYTHON_PKG PYTHON_JSON PYTHON_PKG_REQUIRES
 		local TERMUX_SUBPKG_DESCRIPTION TERMUX_SUBPKG_DEPENDS TERMUX_SUBPKG_INCLUDE TERMUX_SUBPKG_PLATFORM_INDEPENDENT TERMUX_SUBPKG_VERSION 
 
-		[[ " ${PYTHON_PKGS_OK[*]} " =~ " $PYTHON_PKG " ]] && return
-		
-		echo "Processing $PYTHON_PKG ..."
-		
-		PYTHON_JSON="$( curl --silent https://pypi.org/pypi/$PYTHON_PKG/json )"
-		echo "$PYTHON_JSON" > /tmp/tmp_python_json
-		
-		PYTHON_PKG_REQUIRES=( $( get_requires ) )
-		echo "PYTHON_PKG_REQUIRES='${PYTHON_PKG_REQUIRES[@]}'"
-		PYTHON_PKGS+=( "${PYTHON_PKG_REQUIRES[@]}" )
-		TERMUX_SUBPKG_DESCRIPTION="$( echo "$PYTHON_JSON" | jq -r '.info.summary' | sed -e 's|"|\\"|g' )"
-		if [ "$TERMUX_SUBPKG_DESCRIPTION" == "" ]; then
-			# this may be empty  ex) traitlets==5.3.0
-			TERMUX_SUBPKG_DESCRIPTION="Python package $PYTHON_PKG"
-		fi
-		TERMUX_SUBPKG_VERSION="$( echo "$PYTHON_JSON" | jq -r '.info.version' )"
-		TERMUX_SUBPKG_DEPENDS=( python $( to_pkgname "${PYTHON_PKG_REQUIRES[@]}" ) $( manage_depends ) )
-		TERMUX_SUBPKG_DEPENDS=( $( printf '%s\n' "${TERMUX_SUBPKG_DEPENDS[*]}" | sort | uniq ) )
-		TERMUX_SUBPKG_DEPENDS="$( echo "${TERMUX_SUBPKG_DEPENDS[*]}" | sed -e 's| |, |g' )"
-		
-		get_pip_src $PYTHON_PKG
-		
-		( cd $TERMUX_PREFIX && find . -type f,l | sort ) > TERMUX_FILES_LIST_BEFORE
-		
-		(
-		cd $PYTHON_PKG
-		if [ -f pyproject.toml ]; then
-			python <<-PYTHON
-			import toml
-			t = toml.load(open("pyproject.toml"))
-			if "build-system" in t:
-			 if "requires" in t["build-system"] and t["build-system"]["requires"] != []:
-			  import subprocess
-			  subprocess.run("build-pip install -U".split() + t["build-system"]["requires"])
-			  subprocess.run("cross-pip install -U".split() + t["build-system"]["requires"])
-			  t["build-system"]["requires"] = []
-			 #if "build-backend" in t["build-system"] and t["build-system"]["build-backend"] != []:
-			 # t["build-system"]["build-backend"] = []
-			 open("pyproject.toml", "w").write(toml.dumps(t))
-			PYTHON
-		fi
-		if [ -f setup.cfg ]; then
-			sed -i -E 's|^install_requires|_disabled_install_requires|' setup.cfg
-		fi
-		if [ -f setup.py ]; then
-			sed -i -z -E 's|setup_requires=|setup_requires=[] and |' setup.py
-			sed -i -z -E 's|install_requires=|install_requires=[] and |' setup.py
-		fi
-		patch_src
-		export $( manage_exports ) > /dev/null
-		cross-pip -vv install --upgrade --force-reinstall --no-deps --no-binary :all: --prefix $TERMUX_PREFIX --no-build-isolation --no-cache-dir $(for opt in $( manage-opts ); do echo "--install-option=$opt"; done ) .
-		#python setup.py install --prefix $TERMUX_PREFIX  # creates egg
-		)
-		( cd $TERMUX_PREFIX && find . -type f,l | sort ) > TERMUX_FILES_LIST_AFTER
-		TERMUX_SUBPKG_INCLUDE="$( comm -13 TERMUX_FILES_LIST_BEFORE TERMUX_FILES_LIST_AFTER )"
-		rm TERMUX_FILES_LIST_BEFORE TERMUX_FILES_LIST_AFTER
-		
-		if [ "$TERMUX_SUBPKG_INCLUDE" == "" ]; then
-			echo "no file added while installing $PYTHON_PKG"
-			return
-		else
-			TERMUX_SUBPKG_PLATFORM_INDEPENDENT=true
-			if ( echo "$TERMUX_SUBPKG_INCLUDE" | grep -q -e '\.so$' -e '\.o$' ); then
-				TERMUX_SUBPKG_PLATFORM_INDEPENDENT=false
-			elif [ -n "$( echo "$TERMUX_SUBPKG_INCLUDE" | grep -q "^$TERMUX_PREFIX/bin/" | xargs -I@ sh -c 'grep -qI . @ || echo @' )" ]; then
-				TERMUX_SUBPKG_PLATFORM_INDEPENDENT=false
+		for PYTHON_PKG in $@; do
+
+			[[ " ${PYTHON_PKGS_OK[*]} " =~ " $PYTHON_PKG " ]] && continue
+
+			echo "Processing $PYTHON_PKG ..."
+
+			PYTHON_JSON="$( curl --silent https://pypi.org/pypi/$PYTHON_PKG/json )"
+			echo "$PYTHON_JSON" > /tmp/tmp_python_json
+
+			PYTHON_PKG_REQUIRES=( $( get_requires ) )
+			echo "PYTHON_PKG_REQUIRES='${PYTHON_PKG_REQUIRES[@]}'"
+			PYTHON_PKGS+=( "${PYTHON_PKG_REQUIRES[@]}" )
+			TERMUX_SUBPKG_DESCRIPTION="$( echo "$PYTHON_JSON" | jq -r '.info.summary' | sed -e 's|"|\\"|g' )"
+			if [ "$TERMUX_SUBPKG_DESCRIPTION" == "" ]; then
+				# this may be empty  ex) traitlets==5.3.0
+				TERMUX_SUBPKG_DESCRIPTION="Python package $PYTHON_PKG"
 			fi
-			
-			TERMUX_SUBPKG_INCLUDE="$(
-			# orjson.cpython-310-aarch64-linux-gnu.so -> orjson.cpython-310.so
-			cd $TERMUX_PREFIX
-			for f in $TERMUX_SUBPKG_INCLUDE
-			do
-				_f=$( echo $f | sed -E "s|cpython-${_PYTHON_VERSION//.}-.*\.so$|cpython-${_PYTHON_VERSION//.}.so|" )
-				if [ $f != $_f ]; then
-					echo "moving '$f' to '$_f'" 1>&2
-					mv $f $_f
+			TERMUX_SUBPKG_VERSION="$( echo "$PYTHON_JSON" | jq -r '.info.version' )"
+			TERMUX_SUBPKG_DEPENDS=( python $( to_pkgname "${PYTHON_PKG_REQUIRES[@]}" ) $( manage_depends ) )
+			TERMUX_SUBPKG_DEPENDS=( $( printf '%s\n' "${TERMUX_SUBPKG_DEPENDS[*]}" | sort | uniq ) )
+			TERMUX_SUBPKG_DEPENDS="$( echo "${TERMUX_SUBPKG_DEPENDS[*]}" | sed -e 's| |, |g' )"
+
+			get_pip_src $PYTHON_PKG
+
+			( cd $TERMUX_PREFIX && find . -type f,l | sort ) > TERMUX_FILES_LIST_BEFORE
+
+			(
+			cd $PYTHON_PKG
+			if [ -f pyproject.toml ]; then
+				python <<-PYTHON
+				import toml
+				t = toml.load(open("pyproject.toml"))
+				if "build-system" in t:
+				 if "requires" in t["build-system"] and t["build-system"]["requires"] != []:
+				  import subprocess
+				  subprocess.run("build-pip install -U".split() + t["build-system"]["requires"])
+				  subprocess.run("cross-pip install -U".split() + t["build-system"]["requires"])
+				  t["build-system"]["requires"] = []
+				 #if "build-backend" in t["build-system"] and t["build-system"]["build-backend"] != []:
+				 # t["build-system"]["build-backend"] = []
+				 open("pyproject.toml", "w").write(toml.dumps(t))
+				PYTHON
+			fi
+			if [ -f setup.cfg ]; then
+				sed -i -E 's|^install_requires|_disabled_install_requires|' setup.cfg
+			fi
+			if [ -f setup.py ]; then
+				sed -i -z -E 's|setup_requires=|setup_requires=[] and |' setup.py
+				sed -i -z -E 's|install_requires=|install_requires=[] and |' setup.py
+			fi
+			patch_src
+			export $( manage_exports ) > /dev/null
+			cross-pip -vv install --upgrade --force-reinstall --no-deps --no-binary :all: --prefix $TERMUX_PREFIX --no-build-isolation --no-cache-dir $(for opt in $( manage-opts ); do echo "--install-option=$opt"; done ) .
+			#python setup.py install --prefix $TERMUX_PREFIX  # creates egg
+			)
+			( cd $TERMUX_PREFIX && find . -type f,l | sort ) > TERMUX_FILES_LIST_AFTER
+			TERMUX_SUBPKG_INCLUDE="$( comm -13 TERMUX_FILES_LIST_BEFORE TERMUX_FILES_LIST_AFTER )"
+			rm TERMUX_FILES_LIST_BEFORE TERMUX_FILES_LIST_AFTER
+
+			if [ "$TERMUX_SUBPKG_INCLUDE" == "" ]; then
+				echo "no file added while installing $PYTHON_PKG"
+				continue
+			else
+				TERMUX_SUBPKG_PLATFORM_INDEPENDENT=true
+				if ( echo "$TERMUX_SUBPKG_INCLUDE" | grep -q -e '\.so$' -e '\.o$' ); then
+					TERMUX_SUBPKG_PLATFORM_INDEPENDENT=false
+				elif [ -n "$( echo "$TERMUX_SUBPKG_INCLUDE" | grep -q "^$TERMUX_PREFIX/bin/" | xargs -I@ sh -c 'grep -qI . @ || echo @' )" ]; then
+					TERMUX_SUBPKG_PLATFORM_INDEPENDENT=false
 				fi
-				echo $_f
-			done
-			)"
 
-			cat <<- EOF > ${TERMUX_PKG_TMPDIR}/$( to_pkgname ${PYTHON_PKG} ).subpackage.sh
-			TERMUX_SUBPKG_DESCRIPTION="$TERMUX_SUBPKG_DESCRIPTION"
-			TERMUX_SUBPKG_DEPENDS="$TERMUX_SUBPKG_DEPENDS"
-			TERMUX_SUBPKG_INCLUDE="$TERMUX_SUBPKG_INCLUDE"
-			TERMUX_SUBPKG_PLATFORM_INDEPENDENT=$TERMUX_SUBPKG_PLATFORM_INDEPENDENT
-			TERMUX_SUBPKG_DEPEND_ON_PARENT=no
-			TERMUX_SUBPKG_VERSION=$TERMUX_SUBPKG_VERSION
-			EOF
-		fi
+				TERMUX_SUBPKG_INCLUDE="$(
+				# orjson.cpython-310-aarch64-linux-gnu.so -> orjson.cpython-310.so
+				cd $TERMUX_PREFIX
+				for f in $TERMUX_SUBPKG_INCLUDE
+				do
+					_f=$( echo $f | sed -E "s|cpython-${_PYTHON_VERSION//.}-.*\.so$|cpython-${_PYTHON_VERSION//.}.so|" )
+					if [ $f != $_f ]; then
+						echo "moving '$f' to '$_f'" 1>&2
+						mv $f $_f
+					fi
+					echo $_f
+				done
+				)"
 
-        PYTHON_PKGS_OK+=( $PYTHON_PKG )
+				cat <<- EOF > ${TERMUX_PKG_TMPDIR}/$( to_pkgname ${PYTHON_PKG} ).subpackage.sh
+				TERMUX_SUBPKG_DESCRIPTION="$TERMUX_SUBPKG_DESCRIPTION"
+				TERMUX_SUBPKG_DEPENDS="$TERMUX_SUBPKG_DEPENDS"
+				TERMUX_SUBPKG_INCLUDE="$TERMUX_SUBPKG_INCLUDE"
+				TERMUX_SUBPKG_PLATFORM_INDEPENDENT=$TERMUX_SUBPKG_PLATFORM_INDEPENDENT
+				TERMUX_SUBPKG_DEPEND_ON_PARENT=no
+				TERMUX_SUBPKG_VERSION=$TERMUX_SUBPKG_VERSION
+				EOF
+			fi
+
+			PYTHON_PKGS_OK+=( $PYTHON_PKG )
+		
+		done
 	}
 	
 	(
