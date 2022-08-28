@@ -35,14 +35,16 @@ termux_step_pre_configure() {
 	# ld.lld: error: unable to find library -lpthread
 	# force pass flags
 	(
-		LD=$( which $LD )
-		LD_TO=${LD}_$( date '+%Y%m%d%H%M%S' )
+		LD_ABS=$( which $LD )
+		LD_TO_DIR=$( dirname $LD_ABS )/$( date '+%Y%m%d%H%M%S' )
+		LD_TO=${LD_TO_DIR}/${LD}
+		mkdir $LD_TO_DIR
 		mv ${LD} ${LD_TO}
-		cat <<-SH > ${LD}
+		cat <<-SH > ${LD_TO}
 		#!/usr/bin/sh
-		exec ${LD_TO} -L${TERMUX_PREFIX}/lib "\$@"
+		exec ${LD_ABS} -L${TERMUX_PREFIX}/lib "\$@"
 		SH
-		chmod +x ${LD}
+		chmod +x ${LD_TO}
 	)
 }
 
