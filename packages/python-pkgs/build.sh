@@ -393,8 +393,8 @@ termux_step_pre_configure() {
 			  subprocess.run("build-pip install -U".split() + t["build-system"]["requires"])
 			  subprocess.run("cross-pip install -U".split() + t["build-system"]["requires"])
 			  t["build-system"]["requires"] = []
-			 if "build-backend" in t["build-system"] and t["build-system"]["build-backend"] != []:
-			  t["build-system"]["build-backend"] = []
+			 #if "build-backend" in t["build-system"] and t["build-system"]["build-backend"] != []:
+			 # t["build-system"]["build-backend"] = []
 			 open("pyproject.toml", "w").write(toml.dumps(t))
 			PYTHON
 		fi
