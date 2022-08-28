@@ -88,6 +88,14 @@ termux_step_pre_configure() {
 		
 		export PATH="$PATH:$TERMUX_FORTRAN_FOLDER/bin"
 		export FC=$TERMUX_HOST_PLATFORM-gfortran
+		
+		cat <<FORTRAN > hello.f90
+		program hello
+		 print *, 'Hello World!'
+		end program hello
+		FORTRAN
+		$FC -o hello hello.f90
+		rm hello.f90 hello
 
 		_termux_setup_fortran() {
 			echo termux_setup_fortran already setup
@@ -417,7 +425,7 @@ termux_step_pre_configure() {
 		fi
 		patch_src
 		export $( manage_exports ) > /dev/null
-		cross-pip -vv install --upgrade --force-reinstall --no-deps --no-binary :all: --prefix $TERMUX_PREFIX --no-build-isolation --no-cache-dir $(for opt in $( manage-opts ); do echo "--install-option=$opt"; done ) . || ( find -name meson-log.txt -type f | xargs -I@ sh -c 'echo "log of: @" ; cat @' ; exit 1 )
+		cross-pip -vv install --upgrade --force-reinstall --no-deps --no-binary :all: --prefix $TERMUX_PREFIX --no-build-isolation --no-cache-dir $(for opt in $( manage-opts ); do echo "--install-option=$opt"; done ) .
 		#python setup.py install --prefix $TERMUX_PREFIX  # creates egg
 		)
 		( cd $TERMUX_PREFIX && find . -type f,l | sort ) > TERMUX_FILES_LIST_AFTER
