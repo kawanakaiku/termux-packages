@@ -428,6 +428,7 @@ termux_step_pre_configure() {
 	cross_build() {
 		local PYTHON_PKG PYTHON_JSON PYTHON_PKG_REQUIRES
 		local TERMUX_SUBPKG_DESCRIPTION TERMUX_SUBPKG_DEPENDS TERMUX_SUBPKG_INCLUDE TERMUX_SUBPKG_PLATFORM_INDEPENDENT TERMUX_SUBPKG_VERSION 
+		local TERMUX_FILES_LIST_BEFORE TERMUX_FILES_LIST_AFTER
 
 		for PYTHON_PKG in $@; do
 
@@ -457,26 +458,28 @@ termux_step_pre_configure() {
 			patch_src
 			popd
 			
-			( cd $TERMUX_PREFIX && find . -type f,l | sort ) > TERMUX_FILES_LIST_BEFORE
+			TERMUX_FILES_LIST_BEFORE="$( cd $TERMUX_PREFIX && find . -type f,l | sort )"
 			(
 				cd $PYTHON_PKG
 				export $( manage_exports ) > /dev/null
 				cross-pip -vv install --upgrade --force-reinstall --no-deps --no-binary :all: --prefix $TERMUX_PREFIX --no-build-isolation --no-cache-dir $(for opt in $( manage-opts ); do echo "--install-option=$opt"; done ) .
 				#python setup.py install --prefix $TERMUX_PREFIX  # creates egg
 			)
-			( cd $TERMUX_PREFIX && find . -type f,l | sort ) > TERMUX_FILES_LIST_AFTER
+			TERMUX_FILES_LIST_AFTER="$( cd $TERMUX_PREFIX && find . -type f,l | sort )"
 			
-			TERMUX_SUBPKG_INCLUDE="$( comm -13 TERMUX_FILES_LIST_BEFORE TERMUX_FILES_LIST_AFTER )"
-			rm TERMUX_FILES_LIST_BEFORE TERMUX_FILES_LIST_AFTER
+			TERMUX_SUBPKG_INCLUDE="$( comm -13 <( echo "$TERMUX_FILES_LIST_BEFORE" ) <( echo "$TERMUX_FILES_LIST_AFTER" ) )"
 
 			if [ "$TERMUX_SUBPKG_INCLUDE" == "" ]; then
 				echo "no file added while installing $PYTHON_PKG"
 				continue
 			else
 				TERMUX_SUBPKG_PLATFORM_INDEPENDENT=true
-				if ( echo "$TERMUX_SUBPKG_INCLUDE" | grep -q -e '\.so$' -e '\.o$' ); then
+				echo "setting TERMUX_SUBPKG_PLATFORM_INDEPENDENT"
+				if ( echo "$TERMUX_SUBPKG_INCLUDE" | grep -q -e '\.so$' -e '\.a$' ); then
+					echo ".so or .a file found"
 					TERMUX_SUBPKG_PLATFORM_INDEPENDENT=false
 				elif [ -n "$( echo "$TERMUX_SUBPKG_INCLUDE" | grep -q "^$TERMUX_PREFIX/bin/" | xargs -I@ sh -c 'grep -qI . @ || echo @' )" ]; then
+					echo "binary file found"
 					TERMUX_SUBPKG_PLATFORM_INDEPENDENT=false
 				fi
 
