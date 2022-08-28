@@ -39,27 +39,12 @@ termux_step_pre_configure() {
 		LD_TO_DIR=$( dirname $LD_ABS )/$( date '+%Y%m%d%H%M%S' )
 		LD_TO=${LD_TO_DIR}/${LD}
 		mkdir $LD_TO_DIR
-		mv ${LD_ABS} ${LD_TO}
 		cat <<-SH > ${LD_TO}
 		#!/usr/bin/sh
 		exec ${LD_ABS} -L${TERMUX_PREFIX}/lib "\$@"
 		SH
 		chmod +x ${LD_TO}
 		echo "${LD_TO_DIR}:${PATH}"
-	)
-	
-	# /usr/bin/ld: unrecognised emulation mode: aarch64linux
-	# forgets LD variable
-	(
-		CC=$( which $CC )
-		CC_TO=${CC}_$( date '+%Y%m%d%H%M%S' )
-		mv ${CC} ${CC_TO}
-		cat <<-SH > ${CC}
-		#!/usr/bin/sh
-		CFLAGS="${CFLAGS}" LD="${LD}" LDFLAGS="${LDFLAGS}" \
-			exec ${CC_TO} "\$@"
-		SH
-		chmod +x ${CC}
 	)
 }
 
