@@ -422,7 +422,7 @@ termux_step_pre_configure() {
 		
 		if [ "$TERMUX_SUBPKG_INCLUDE" == "" ]; then
 			echo "no file added while installing $PYTHON_PKG"
-			continue
+			return
 		else
 			TERMUX_SUBPKG_PLATFORM_INDEPENDENT=true
 			if ( echo "$TERMUX_SUBPKG_INCLUDE" | grep -q -e '\.so$' -e '\.o$' ); then
