@@ -19,6 +19,24 @@ termux_step_pre_configure() {
 	# for building onnx
 	# termux_setup_cmake
 	# termux_setup_ninja
+	
+	# clang-14: error: the clang compiler does not support '-march=native'
+	# by numpy distutils  ex) scikit-learn
+	# force remove it
+	(
+		CC_TO=${CC}_$( date '+%Y%m%d%H%M%S' )
+		mv ${CC} ${CC_TO}
+		cat <<-SH > ${CC}
+		#!/usr/bin/sh
+		for arg do
+			shift
+			[ "\$arg" = "-march=native" ] && continue
+			set -- "\$@" "\$arg"
+		done
+		exec ${CC_TO} "\$@"
+		SH
+		chmod +x ${CC}
+	)
 
 	termux_setup_python_crossenv
 	pushd $TERMUX_PYTHON_CROSSENV_SRCDIR
