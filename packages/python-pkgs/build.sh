@@ -159,7 +159,7 @@ termux_step_pre_configure() {
 	PYTHON_PKGS=( pynacl zfec )
 	PYTHON_PKGS=( bcrypt homeassistant orjson sqlalchemy )
 	PYTHON_PKGS=( scipy )
-	PYTHON_PKGS=( scikit-learn )
+	PYTHON_PKGS=( scikit-learn scikit-image )
 	
 	
 	PYTHON_PKGS_OK=( )
