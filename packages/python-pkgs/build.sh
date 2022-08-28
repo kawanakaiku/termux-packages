@@ -266,7 +266,9 @@ termux_step_pre_configure() {
 		if [ -f ${_CROSSENV_PREFIX}/build/lib/python${_PYTHON_VERSION}/site-packages/Cython/Compiler/Main.py ]; then
 			# force cython refer to cross python
 			#sed -i -e "s|import sys|import sys; sys.argv = sys.argv[0:1] + ['--include-dir', '${TERMUX_PREFIX}/lib/python${_PYTHON_VERSION}/site-packages'] + sys.argv[1:]|" ${_CROSSENV_PREFIX}/build/bin/cython
-			perl -i -pe "s|\Qself.include_path = []\E|self.include_path = ['${TERMUX_PREFIX}/lib/python${_PYTHON_VERSION}/site-packages']|" ${_CROSSENV_PREFIX}/build/lib/python${_PYTHON_VERSION}/site-packages/Cython/Compiler/Main.py
+			#perl -i -pe "s|\Qself.include_path = []\E|self.include_path = ['${TERMUX_PREFIX}/lib/python${_PYTHON_VERSION}/site-packages']|" ${_CROSSENV_PREFIX}/build/lib/python${_PYTHON_VERSION}/site-packages/Cython/Compiler/Main.py
+			# force
+			perl -i -pe "s|\Qself.__dict__.update(options)\E|self.__dict__.update(options); self.include_path = ['${TERMUX_PREFIX}/lib/python${_PYTHON_VERSION}/site-packages'] + self.include_path|" ${_CROSSENV_PREFIX}/build/lib/python${_PYTHON_VERSION}/site-packages/Cython/Compiler/Main.py
 		fi
 		
 		case $PYTHON_PKG in
@@ -451,19 +453,19 @@ termux_step_pre_configure() {
 
 			get_pip_src $PYTHON_PKG
 
-			( cd $TERMUX_PREFIX && find . -type f,l | sort ) > TERMUX_FILES_LIST_BEFORE
-
 			pushd $PYTHON_PKG
 			patch_src
 			popd
 			
 			(
+				( cd $TERMUX_PREFIX && find . -type f,l | sort ) > TERMUX_FILES_LIST_BEFORE
 				cd $PYTHON_PKG
 				export $( manage_exports ) > /dev/null
 				cross-pip -vv install --upgrade --force-reinstall --no-deps --no-binary :all: --prefix $TERMUX_PREFIX --no-build-isolation --no-cache-dir $(for opt in $( manage-opts ); do echo "--install-option=$opt"; done ) .
 				#python setup.py install --prefix $TERMUX_PREFIX  # creates egg
+				( cd $TERMUX_PREFIX && find . -type f,l | sort ) > TERMUX_FILES_LIST_AFTER
 			)
-			( cd $TERMUX_PREFIX && find . -type f,l | sort ) > TERMUX_FILES_LIST_AFTER
+			
 			TERMUX_SUBPKG_INCLUDE="$( comm -13 TERMUX_FILES_LIST_BEFORE TERMUX_FILES_LIST_AFTER )"
 			rm TERMUX_FILES_LIST_BEFORE TERMUX_FILES_LIST_AFTER
 
