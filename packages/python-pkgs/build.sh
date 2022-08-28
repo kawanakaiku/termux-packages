@@ -274,6 +274,8 @@ termux_step_pre_configure() {
 				#ln -s ${TERMUX_PREFIX}/lib/python${_PYTHON_VERSION}/site-packages/numpy/core ${_CROSSENV_PREFIX}/build/lib/python${_PYTHON_VERSION}/site-packages/numpy/core
 				perl -i -pe "s|\Qimport os; os.chdir(\"..\"); import numpy; print(numpy.get_include())\E|print(\"${TERMUX_PREFIX}/lib/python${_PYTHON_VERSION}/site-packages/numpy/core/include\")|" scipy/meson.build
 				perl -i -pe "s|\Qimport os; print(os.environ.get(\"SCIPY_USE_PYTHRAN\", 1))\E|print(\"${TERMUX_PREFIX}/lib/python${_PYTHON_VERSION}/site-packages/pybind11/include\")|" scipy/meson.build
+				# scipy/stats/_biasedurn.pyx:13:4: 'numpy/random.pxd' not found
+				perl -i -pe "s|\Q'--include-dir', os.getcwd()]\E|'--include-dir', '${TERMUX_PREFIX}/lib/python${_PYTHON_VERSION}/site-packages', '--include-dir', os.getcwd()]|" scipy/_build_utils/cythoner.py
 				;;
 		esac
 	}
