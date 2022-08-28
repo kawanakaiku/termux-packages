@@ -51,8 +51,8 @@ termux_step_pre_configure() {
 		
 		# error: attempted to link to Python shared library but config does not contain lib_name ex) bcrypt
 		cat <<-EOF > $HOME/.cargo/pyo3-termux.conf
-		version=3.10
-		lib_name=python3.10
+		version=${_PYTHON_VERSION}
+		lib_name=python${_PYTHON_VERSION}
 		lib_dir=$TERMUX_PREFIX/lib
 		EOF
 		export PYO3_CONFIG_FILE=$HOME/.cargo/pyo3-termux.conf
@@ -268,10 +268,12 @@ termux_step_pre_configure() {
 				# aarch64-linux-android-gfortran: error: unrecognized command line option '-static-openmp'
 				LDFLAGS="${LDFLAGS/-static-openmp/}"
                 # ld: error: /home/builder/.termux-build/python-pkgs/src/python-crossenv-prefix/build/lib/python3.10/site-packages/numpy/core/include/../lib/libnpymath.a(npy_math.o) is incompatible with aarch64linux
-                build-pip install -U numpy
-                cross_build numpy
-                rm -rf ${_CROSSENV_PREFIX}/build/lib/python${_PYTHON_VERSION}/site-packages/numpy/core
-                ln -s ${TERMUX_PREFIX}/lib/python${_PYTHON_VERSION}/site-packages/numpy/core ${_CROSSENV_PREFIX}/build/lib/python${_PYTHON_VERSION}/site-packages/numpy/core
+                build-pip install -U numpy pybind11
+                cross_build numpy pybind11
+                #rm -rf ${_CROSSENV_PREFIX}/build/lib/python${_PYTHON_VERSION}/site-packages/numpy/core
+                #ln -s ${TERMUX_PREFIX}/lib/python${_PYTHON_VERSION}/site-packages/numpy/core ${_CROSSENV_PREFIX}/build/lib/python${_PYTHON_VERSION}/site-packages/numpy/core
+                perl -i -pe "s|\Qimport os; os.chdir(\"..\"); import numpy; print(numpy.get_include())\E|print('${TERMUX_PREFIX}/lib/python${_PYTHON_VERSION}/site-packages/numpy/core/include')|" scipy/meson.build
+                perl -i -pe "s|\Qimport os; print(os.environ.get(\"SCIPY_USE_PYTHRAN\", 1))\E|print('${TERMUX_PREFIX}/lib/python${_PYTHON_VERSION}/site-packages/pybind11/include')|" scipy/meson.build
 				;;
 		esac
 	}
