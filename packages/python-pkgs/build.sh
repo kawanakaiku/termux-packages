@@ -39,7 +39,7 @@ termux_step_pre_configure() {
 	
 	# cannot locate "__aarch64_ldadd4_acq_rel"
 	# only in arm: error: /home/builder/.termux-build/_cache/fortran/bin/../lib/gcc/arm-linux-androideabi/4.9.x/libgcc.a(linux-atomic.o): multiple definition of '__sync_fetch_and_add_4'
-	if [ $TERMUX_ARCH = arm ]; then
+	if [ $TERMUX_ARCH != arm ]; then
 		export LDFLAGS+=" $($CC -print-libgcc-file-name)"
 	fi
 
@@ -205,6 +205,7 @@ termux_step_pre_configure() {
 			matplotlib ) printf "NPY_DISABLE_SVML=1" ;;
 			pygame ) printf "LOCALBASE=$(dirname $TERMUX_PREFIX)" ;;
 			uvloop ) printf "LIBUV_CONFIGURE_HOST=x86_64-pc-linux-gnu" ;;
+			scipy ) printf "SCIPY_USE_PYTHRAN=1" ;;
 		esac
 	}
 	
@@ -275,12 +276,13 @@ termux_step_pre_configure() {
 				# aarch64-linux-android-gfortran: error: unrecognized command line option '-static-openmp'
 				LDFLAGS="${LDFLAGS/-static-openmp/}"
 				# ld: error: /home/builder/.termux-build/python-pkgs/src/python-crossenv-prefix/build/lib/python3.10/site-packages/numpy/core/include/../lib/libnpymath.a(npy_math.o) is incompatible with aarch64linux
-				build-pip install -U numpy pybind11
-				cross_build numpy pybind11
+				build-pip install -U numpy pybind11 pythran
+				cross_build numpy pybind11 pythran
 				#rm -rf ${_CROSSENV_PREFIX}/build/lib/python${_PYTHON_VERSION}/site-packages/numpy/core
 				#ln -s ${TERMUX_PREFIX}/lib/python${_PYTHON_VERSION}/site-packages/numpy/core ${_CROSSENV_PREFIX}/build/lib/python${_PYTHON_VERSION}/site-packages/numpy/core
 				perl -i -pe "s|\Qimport os; os.chdir(\"..\"); import numpy; print(numpy.get_include())\E|print(\"${TERMUX_PREFIX}/lib/python${_PYTHON_VERSION}/site-packages/numpy/core/include\")|" scipy/meson.build
-				perl -i -pe "s|\Qimport os; print(os.environ.get(\"SCIPY_USE_PYTHRAN\", 1))\E|print(\"${TERMUX_PREFIX}/lib/python${_PYTHON_VERSION}/site-packages/pybind11/include\")|" scipy/meson.build
+				perl -i -pe "s|\Qimport pybind11; print(pybind11.get_include())\E|print(\"${TERMUX_PREFIX}/lib/python${_PYTHON_VERSION}/site-packages/pybind11/include\")|" scipy/meson.build
+				perl -i -pe "s|\Qimport os; os.chdir(\"..\"); import pythran; print(os.path.dirname(pythran.__file__));\E|print(\"${TERMUX_PREFIX}/lib/python${_PYTHON_VERSION}/site-packages/pythran\")|" scipy/meson.build
 				# scipy/stats/_biasedurn.pyx:13:4: 'numpy/random.pxd' not found
 				perl -i -pe "s|\Q'--include-dir', os.getcwd()]\E|'--include-dir', '${TERMUX_PREFIX}/lib/python${_PYTHON_VERSION}/site-packages', '--include-dir', os.getcwd()]|" scipy/_build_utils/cythoner.py
 				# No such file or directory: 'patchelf'
