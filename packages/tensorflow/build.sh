@@ -19,6 +19,10 @@ termux_step_pre_configure() {
 	popd
 	. ${_CROSSENV_PREFIX}/bin/activate
 	
+	LDFLAGS+=" -lpython${_PYTHON_VERSION}"
+	
+	echo 'INPUT(-lc)' > $TERMUX_PREFIX/lib/libpthread.so
+	
 	build-pip install -U numpy
 	
 	local BAZEL_VERSION=5.3.0
@@ -43,4 +47,8 @@ termux_step_make() {
 
 termux_step_make_install() {
 	pip install --prefix=$TERMUX_PREFIX tensorflow-*.whl
+}
+
+termux_step_post_make_install() {
+	rm $TERMUX_PREFIX/lib/libpthread.so
 }
