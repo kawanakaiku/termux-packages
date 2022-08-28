@@ -388,7 +388,6 @@ termux_step_pre_configure() {
 		
 		(
 		cd $PYTHON_PKG
-		patch_src
 		if [ -f pyproject.toml ]; then
 			python <<-PYTHON
 			import toml
@@ -411,6 +410,7 @@ termux_step_pre_configure() {
 			sed -i -z -E 's|setup_requires=|setup_requires=[] and |' setup.py
 			sed -i -z -E 's|install_requires=|install_requires=[] and |' setup.py
 		fi
+		patch_src
 		export $( manage_exports ) > /dev/null
 		cross-pip -vv install --upgrade --force-reinstall --no-deps --no-binary :all: --prefix $TERMUX_PREFIX --no-build-isolation --no-cache-dir $(for opt in $( manage-opts ); do echo "--install-option=$opt"; done ) .
 		#python setup.py install --prefix $TERMUX_PREFIX  # creates egg
