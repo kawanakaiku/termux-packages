@@ -7,7 +7,7 @@ TERMUX_PKG_VERSION=2022.08.25
 # TERMUX_PKG_BUILD_DEPENDS="python, freetype, libjpeg-turbo, libpng, portmidi, sdl2, sdl2-image, sdl2-mixer, sdl2-ttf, ffmpeg"
 # TERMUX_PKG_BUILD_DEPENDS="python, glu, freeglut, mesa"
 # TERMUX_PKG_BUILD_DEPENDS="python, mesa, glib, gstreamer, sdl2, sdl2-image, sdl2-mixer, sdl2-ttf"
-TERMUX_PKG_BUILD_DEPENDS="python, libopenblas"
+TERMUX_PKG_BUILD_DEPENDS="python, libopenblas, libgeos"
 #TERMUX_PKG_BUILD_DEPENDS="python"
 TERMUX_PKG_BUILD_IN_SRC=true
 TERMUX_PKG_SKIP_SRC_EXTRACT=true
@@ -159,7 +159,7 @@ termux_step_pre_configure() {
 	PYTHON_PKGS=( pynacl zfec )
 	PYTHON_PKGS=( bcrypt homeassistant orjson sqlalchemy )
 	PYTHON_PKGS=( scipy )
-	PYTHON_PKGS=( scikit-learn scikit-image )
+	PYTHON_PKGS=( scikit-learn scikit-image shapely )
 	
 	
 	PYTHON_PKGS_OK=( )
@@ -195,6 +195,7 @@ termux_step_pre_configure() {
 			ujson ) printf 'double-conversion' ;;
 			tesserocr ) printf 'tesseract leptonica' ;;
 			homeassistant ) printf 'python-sqlalchemy' ;;
+			shapely ) printf 'libgeos' ;;
 		esac
 	}
 	
