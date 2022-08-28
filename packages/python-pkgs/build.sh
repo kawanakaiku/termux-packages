@@ -76,9 +76,14 @@ termux_step_pre_configure() {
 		local TAR_BZ2=gcc-$ARCH-linux-x86_64.tar.bz2
 		mkdir -p $TERMUX_FORTRAN_FOLDER
 		(
-		cd $TERMUX_PKG_TMPDIR
-		wget -nv -O $TAR_BZ2 https://github.com/mzakharo/android-gfortran/releases/download/r21e/$TAR_BZ2
-		tar -xf $TAR_BZ2 -C $TERMUX_FORTRAN_FOLDER --strip-components=1
+			cd $TERMUX_PKG_TMPDIR
+			wget -nv -O $TAR_BZ2 https://github.com/mzakharo/android-gfortran/releases/download/r21e/$TAR_BZ2
+			tar -xf $TAR_BZ2 -C $TERMUX_FORTRAN_FOLDER --strip-components=1
+
+			cd $TERMUX_FORTRAN_FOLDER/lib/gcc/$TERMUX_HOST_PLATFORM/*
+			for i in $TERMUX_STANDALONE_TOOLCHAIN/sysroot/usr/lib/$TERMUX_HOST_PLATFORM/$TERMUX_PKG_API_LEVEL/*; do
+				ln -sf $i
+			done
 		)
 		
 		export PATH="$PATH:$TERMUX_FORTRAN_FOLDER/bin"
