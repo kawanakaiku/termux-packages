@@ -187,6 +187,12 @@ termux_step_pre_configure() {
 		esac
 	}
 	patch_src() {
+		if [ -f ${_CROSSENV_PREFIX}/build/lib/python${_PYTHON_VERSION}/site-packages/mesonbuild/compilers/mixins/clike.py ]; then
+			# disable sanitycheck.exe
+			perl -i -pe "s|\Qraise mesonlib.EnvironmentException(f'Could not invoke sanity test executable: {e!s}.')\E|return|g" \
+				${_CROSSENV_PREFIX}/build/lib/python${_PYTHON_VERSION}/site-packages/mesonbuild/compilers/mixins/clike.py
+		fi
+		
 		case $PYTHON_PKG in
 			matplotlib )
 				echo '[libs]' > mplsetup.cfg
