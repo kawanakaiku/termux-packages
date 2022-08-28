@@ -39,7 +39,7 @@ termux_step_pre_configure() {
 		LD_TO_DIR=$( dirname $LD_ABS )/$( date '+%Y%m%d%H%M%S' )
 		LD_TO=${LD_TO_DIR}/${LD}
 		mkdir $LD_TO_DIR
-		mv ${LD} ${LD_TO}
+		mv ${LD_ABS} ${LD_TO}
 		cat <<-SH > ${LD_TO}
 		#!/usr/bin/sh
 		exec ${LD_ABS} -L${TERMUX_PREFIX}/lib "\$@"
