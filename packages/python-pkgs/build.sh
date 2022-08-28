@@ -64,11 +64,7 @@ termux_step_pre_configure() {
 
 	cross-pip install -U pip wheel
 	build-pip install -U pip setuptools wheel Cython toml
-	
-	# force cython refer to cross python
-	#sed -i -e "s|import sys|import sys; sys.argv = sys.argv[0:1] + ['--include-dir', '${TERMUX_PREFIX}/lib/python${_PYTHON_VERSION}/site-packages'] + sys.argv[1:]|" ${_CROSSENV_PREFIX}/build/bin/cython
-	perl -i -pe "s|\Qself.include_path = []\E|self.include_path = ['${TERMUX_PREFIX}/lib/python${_PYTHON_VERSION}/site-packages']|" ${_CROSSENV_PREFIX}/build/lib/python${_PYTHON_VERSION}/site-packages/Cython/Compiler/Main.py
-	
+		
 	local PYTHON_PKGS PYTHON_PKGS_OK PYTHON_PKG
 	local manage_depends to_pkgname get_pip_src get_requires cross_build
 	local _termux_setup_rust _termux_setup_fortran
@@ -265,6 +261,12 @@ termux_step_pre_configure() {
 			# ERROR: Executables created by Fortran compiler aarch64-linux-android-gfortran are not runnable. ex) scipy
 			perl -i -pe "s|\Qraise EnvironmentException\E|print|g" \
 				${_CROSSENV_PREFIX}/build/lib/python${_PYTHON_VERSION}/site-packages/mesonbuild/compilers/fortran.py
+		fi
+		
+		if [ -f ${_CROSSENV_PREFIX}/build/lib/python${_PYTHON_VERSION}/site-packages/Cython/Compiler/Main.py ]; then
+			# force cython refer to cross python
+			#sed -i -e "s|import sys|import sys; sys.argv = sys.argv[0:1] + ['--include-dir', '${TERMUX_PREFIX}/lib/python${_PYTHON_VERSION}/site-packages'] + sys.argv[1:]|" ${_CROSSENV_PREFIX}/build/bin/cython
+			perl -i -pe "s|\Qself.include_path = []\E|self.include_path = ['${TERMUX_PREFIX}/lib/python${_PYTHON_VERSION}/site-packages']|" ${_CROSSENV_PREFIX}/build/lib/python${_PYTHON_VERSION}/site-packages/Cython/Compiler/Main.py
 		fi
 		
 		case $PYTHON_PKG in
