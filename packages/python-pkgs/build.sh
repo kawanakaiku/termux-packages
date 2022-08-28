@@ -35,7 +35,7 @@ termux_step_pre_configure() {
 	echo 'INPUT(-lc)' > $TERMUX_PREFIX/lib/libpthread.so
 	
 	export PIP_DISABLE_PIP_VERSION_CHECK=on
-	export PATH="$PATH:${_CROSSENV_PREFIX}/build/bin"  # for maturin command
+	export PATH="$PATH:${_CROSSENV_PREFIX}/build/bin"  # for maturin, cython command
 	
 	# cannot locate "__aarch64_ldadd4_acq_rel"
 	# only in arm: error: /home/builder/.termux-build/_cache/fortran/bin/../lib/gcc/arm-linux-androideabi/4.9.x/libgcc.a(linux-atomic.o): multiple definition of '__sync_fetch_and_add_4'
@@ -45,6 +45,9 @@ termux_step_pre_configure() {
 
 	cross-pip install -U pip wheel
 	build-pip install -U pip setuptools wheel Cython toml
+	
+	# force cython refer to cross python
+	sed -i -e "s|import sys|import sys; sys.argv = sys.argv[0:1] + ['--include-dir', '${TERMUX_PREFIX}/lib/python${_PYTHON_VERSION}/site-packages'] + sys.argv[1:]|" ${_CROSSENV_PREFIX}/build/bin/cython
 	
 	local PYTHON_PKGS PYTHON_PKGS_OK PYTHON_PKG
 	local manage_depends to_pkgname get_pip_src get_requires cross_build
@@ -309,9 +312,15 @@ termux_step_pre_configure() {
 				perl -i -pe "s|\Qimport pybind11; print(pybind11.get_include())\E|print(\"${TERMUX_PREFIX}/lib/python${_PYTHON_VERSION}/site-packages/pybind11/include\")|" scipy/meson.build
 				perl -i -pe "s|\Qimport os; os.chdir(\"..\"); import pythran; print(os.path.dirname(pythran.__file__));\E|print(\"${TERMUX_PREFIX}/lib/python${_PYTHON_VERSION}/site-packages/pythran\")|" scipy/meson.build
 				# scipy/stats/_biasedurn.pyx:13:4: 'numpy/random.pxd' not found
-				perl -i -pe "s|\Q'--include-dir', os.getcwd()]\E|'--include-dir', '${TERMUX_PREFIX}/lib/python${_PYTHON_VERSION}/site-packages', '--include-dir', os.getcwd()]|" scipy/_build_utils/cythoner.py
+				#perl -i -pe "s|\Q'--include-dir', os.getcwd()]\E|'--include-dir', '${TERMUX_PREFIX}/lib/python${_PYTHON_VERSION}/site-packages', '--include-dir', os.getcwd()]|" scipy/_build_utils/cythoner.py
 				# No such file or directory: 'patchelf'
 				perl -i -pe "s|\Qlibdir_path not in elf.rpath\E|False|" ${_CROSSENV_PREFIX}/build/lib/python${_PYTHON_VERSION}/site-packages/mesonpy/__init__.py
+				;;
+			scikit-learn )
+				# Error compiling Cython file
+				# sklearn/tree/_criterion.pyx:24:0: 'scipy/special/cython_special.pxd' not found
+				# needs scipy
+				cross_build scipy
 				;;
 		esac
 	}
