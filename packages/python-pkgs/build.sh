@@ -155,6 +155,7 @@ termux_step_pre_configure() {
 	PYTHON_PKGS=( pynacl zfec )
 	PYTHON_PKGS=( bcrypt homeassistant orjson sqlalchemy )
 	PYTHON_PKGS=( scipy )
+	PYTHON_PKGS=( numpy )
 	
 	PYTHON_PKGS_OK=( )
 	manage_depends() {
