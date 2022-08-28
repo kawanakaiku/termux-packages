@@ -36,6 +36,8 @@ termux_step_pre_configure() {
 	
 	export PIP_DISABLE_PIP_VERSION_CHECK=on
 	export PATH="$PATH:${_CROSSENV_PREFIX}/build/bin"  # for maturin command
+	# cannot locate "__aarch64_ldadd4_acq_rel"
+	export LDFLAGS+=" $($CC -print-libgcc-file-name)"
 
 	cross-pip install -U pip wheel
 	build-pip install -U pip setuptools wheel Cython toml
