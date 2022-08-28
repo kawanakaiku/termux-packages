@@ -89,7 +89,7 @@ termux_step_pre_configure() {
 		export PATH="$PATH:$TERMUX_FORTRAN_FOLDER/bin"
 		export FC=$TERMUX_HOST_PLATFORM-gfortran
 		
-		cat <<FORTRAN > hello.f90
+		cat <<-FORTRAN > hello.f90
 		program hello
 		 print *, 'Hello World!'
 		end program hello
