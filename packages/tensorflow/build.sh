@@ -47,6 +47,20 @@ termux_step_pre_configure() {
 		chmod +x ${LD_TO}
 		echo "${LD_TO_DIR}:${PATH}"
 	)
+	
+	# /usr/bin/ld: unrecognised emulation mode: aarch64linux
+	# forgets LD variable
+	(
+		CC=$( which $CC )
+		CC_TO=${CC}_$( date '+%Y%m%d%H%M%S' )
+		mv ${CC} ${CC_TO}
+		cat <<-SH > ${CC}
+		#!/usr/bin/sh
+		CFLAGS="${CFLAGS}" LD="${LD}" LDFLAGS="${LDFLAGS}" \
+			exec ${CC_TO} "\$@"
+		SH
+		chmod +x ${CC}
+	)
 }
 
 termux_step_configure() {
