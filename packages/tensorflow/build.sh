@@ -31,6 +31,20 @@ termux_step_pre_configure() {
 	wget -nv https://github.com/bazelbuild/bazel/releases/download/${BAZEL_VERSION}/bazel-${BAZEL_VERSION}-linux-x86_64 -O ${BAZEL_FOLDIR}/bazel
 	chmod +x ${BAZEL_FOLDIR}/bazel
 	export PATH="${BAZEL_FOLDIR}:$PATH"
+	
+	# ld.lld: error: unable to find library -lpthread
+	# force pass flags
+	(
+		CC=$( which $CC )
+		CC_TO=${CC}_$( date '+%Y%m%d%H%M%S' )
+		mv ${CC} ${CC_TO}
+		cat <<-SH > ${CC}
+		#!/usr/bin/sh
+		CFLAGS="${CFLAGS}" LDFLAGS="${LDFLAGS}" \
+			exec ${CC_TO} "\$@"
+		SH
+		chmod +x ${CC}
+	)
 }
 
 termux_step_configure() {
