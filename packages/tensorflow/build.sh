@@ -34,7 +34,7 @@ termux_step_pre_configure() {
 	
 	# ld.lld: error: unable to find library -lpthread
 	# force pass flags
-	(
+	PATH=$(
 		LD_ABS=$( which $LD )
 		LD_TO_DIR=$( dirname $LD_ABS )/$( date '+%Y%m%d%H%M%S' )
 		LD_TO=${LD_TO_DIR}/${LD}
@@ -45,6 +45,7 @@ termux_step_pre_configure() {
 		exec ${LD_ABS} -L${TERMUX_PREFIX}/lib "\$@"
 		SH
 		chmod +x ${LD_TO}
+		echo "${LD_TO_DIR}:${PATH}"
 	)
 }
 
