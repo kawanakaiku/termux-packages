@@ -24,6 +24,7 @@ termux_step_pre_configure() {
 	# by numpy distutils  ex) scikit-learn
 	# force remove it
 	(
+		CC=$( which $CC )
 		CC_TO=${CC}_$( date '+%Y%m%d%H%M%S' )
 		mv ${CC} ${CC_TO}
 		cat <<-SH > ${CC}
