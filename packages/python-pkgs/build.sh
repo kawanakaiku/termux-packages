@@ -7,8 +7,8 @@ TERMUX_PKG_VERSION=2022.08.25
 # TERMUX_PKG_BUILD_DEPENDS="python, freetype, libjpeg-turbo, libpng, portmidi, sdl2, sdl2-image, sdl2-mixer, sdl2-ttf, ffmpeg"
 # TERMUX_PKG_BUILD_DEPENDS="python, glu, freeglut, mesa"
 # TERMUX_PKG_BUILD_DEPENDS="python, mesa, glib, gstreamer, sdl2, sdl2-image, sdl2-mixer, sdl2-ttf"
-TERMUX_PKG_BUILD_DEPENDS="python, libopenblas"
-#TERMUX_PKG_BUILD_DEPENDS="python"
+# TERMUX_PKG_BUILD_DEPENDS="python, libopenblas"
+TERMUX_PKG_BUILD_DEPENDS="python"
 TERMUX_PKG_BUILD_IN_SRC=true
 TERMUX_PKG_SKIP_SRC_EXTRACT=true
 
@@ -155,6 +155,7 @@ termux_step_pre_configure() {
 	PYTHON_PKGS=( pynacl zfec )
 	PYTHON_PKGS=( bcrypt homeassistant orjson sqlalchemy )
 	PYTHON_PKGS=( scipy )
+	PYTHON_PKGS=( scikit-image )
 	
 	PYTHON_PKGS_OK=( )
 	
@@ -484,7 +485,7 @@ termux_step_pre_configure() {
 
 		[[ " pip " =~ " $PYTHON_PKG " ]] && [ ${#PYTHON_PKGS[@]} -ne 0 ] && PYTHON_PKGS+=( $PYTHON_PKG ) && continue
 		[[ " setuptools wheel " =~ " $PYTHON_PKG " ]] && ( for pkg in ${PYTHON_PKGS[*]}; do [[ " pip setuptools wheel "  =~ " $pkg " ]] || exit 0; done; exit 1 ) && PYTHON_PKGS+=( $PYTHON_PKG ) && continue
-		[[ " pandas cryptography pillow pyzmq lxml freetype  cv2 matplotlib " =~ " $PYTHON_PKG " ]] && continue
+		[[ " numpy scipy  pandas cryptography pillow pyzmq lxml freetype  cv2 matplotlib " =~ " $PYTHON_PKG " ]] && continue
 		
 		cross_build $PYTHON_PKG
 	done
