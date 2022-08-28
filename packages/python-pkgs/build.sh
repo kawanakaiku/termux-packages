@@ -210,6 +210,29 @@ termux_step_pre_configure() {
 	}
 	
 	patch_src() {
+		if [ -f pyproject.toml ]; then
+			python <<-PYTHON
+			import toml
+			t = toml.load(open("pyproject.toml"))
+			if "build-system" in t:
+			 if "requires" in t["build-system"] and t["build-system"]["requires"] != []:
+			  import subprocess
+			  subprocess.run("build-pip install -U".split() + t["build-system"]["requires"])
+			  subprocess.run("cross-pip install -U".split() + t["build-system"]["requires"])
+			  t["build-system"]["requires"] = []
+			 #if "build-backend" in t["build-system"] and t["build-system"]["build-backend"] != []:
+			 # t["build-system"]["build-backend"] = []
+			 open("pyproject.toml", "w").write(toml.dumps(t))
+			PYTHON
+		fi
+		if [ -f setup.cfg ]; then
+			sed -i -E 's|^install_requires|_disabled_install_requires|' setup.cfg
+		fi
+		if [ -f setup.py ]; then
+			sed -i -z -E 's|setup_requires=|setup_requires=[] and |' setup.py
+			sed -i -z -E 's|install_requires=|install_requires=[] and |' setup.py
+		fi
+			
 		if [ -d ${_CROSSENV_PREFIX}/build/lib/python${_PYTHON_VERSION}/site-packages/mesonbuild/compilers ]; then
 			# disable sanitycheck.exe
 			perl -i -pe "s|\Qraise mesonlib.EnvironmentException(f'Could not invoke sanity test executable: {e!s}.')\E|return|g" \
@@ -397,34 +420,15 @@ termux_step_pre_configure() {
 
 			( cd $TERMUX_PREFIX && find . -type f,l | sort ) > TERMUX_FILES_LIST_BEFORE
 
-			(
-			cd $PYTHON_PKG
-			if [ -f pyproject.toml ]; then
-				python <<-PYTHON
-				import toml
-				t = toml.load(open("pyproject.toml"))
-				if "build-system" in t:
-				 if "requires" in t["build-system"] and t["build-system"]["requires"] != []:
-				  import subprocess
-				  subprocess.run("build-pip install -U".split() + t["build-system"]["requires"])
-				  subprocess.run("cross-pip install -U".split() + t["build-system"]["requires"])
-				  t["build-system"]["requires"] = []
-				 #if "build-backend" in t["build-system"] and t["build-system"]["build-backend"] != []:
-				 # t["build-system"]["build-backend"] = []
-				 open("pyproject.toml", "w").write(toml.dumps(t))
-				PYTHON
-			fi
-			if [ -f setup.cfg ]; then
-				sed -i -E 's|^install_requires|_disabled_install_requires|' setup.cfg
-			fi
-			if [ -f setup.py ]; then
-				sed -i -z -E 's|setup_requires=|setup_requires=[] and |' setup.py
-				sed -i -z -E 's|install_requires=|install_requires=[] and |' setup.py
-			fi
+			pushd $PYTHON_PKG
 			patch_src
-			export $( manage_exports ) > /dev/null
-			cross-pip -vv install --upgrade --force-reinstall --no-deps --no-binary :all: --prefix $TERMUX_PREFIX --no-build-isolation --no-cache-dir $(for opt in $( manage-opts ); do echo "--install-option=$opt"; done ) .
-			#python setup.py install --prefix $TERMUX_PREFIX  # creates egg
+			popd
+			
+			(
+				cd $PYTHON_PKG
+				export $( manage_exports ) > /dev/null
+				cross-pip -vv install --upgrade --force-reinstall --no-deps --no-binary :all: --prefix $TERMUX_PREFIX --no-build-isolation --no-cache-dir $(for opt in $( manage-opts ); do echo "--install-option=$opt"; done ) .
+				#python setup.py install --prefix $TERMUX_PREFIX  # creates egg
 			)
 			( cd $TERMUX_PREFIX && find . -type f,l | sort ) > TERMUX_FILES_LIST_AFTER
 			TERMUX_SUBPKG_INCLUDE="$( comm -13 TERMUX_FILES_LIST_BEFORE TERMUX_FILES_LIST_AFTER )"
