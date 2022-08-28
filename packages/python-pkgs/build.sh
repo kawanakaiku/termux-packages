@@ -40,11 +40,9 @@ termux_step_pre_configure() {
 	cross-pip install -U pip wheel
 	build-pip install -U pip setuptools wheel Cython toml
 	
-	local PYTHON_PKGS PYTHON_PKGS_OK PYTHON_PKG PYTHON_PKG_REQUIRES PYTHON_JSON
-	local TERMUX_SUBPKG_DESCRIPTION TERMUX_SUBPKG_DEPENDS TERMUX_SUBPKG_INCLUDE TERMUX_SUBPKG_PLATFORM_INDEPENDENT TERMUX_SUBPKG_VERSION
-	local manage_depends to_pkgname get_pip_src get_requires
+	local PYTHON_PKGS PYTHON_PKGS_OK PYTHON_PKG
+	local manage_depends to_pkgname get_pip_src get_requires cross_build
 	local _termux_setup_rust _termux_setup_fortran
-	local opt
 	
 	_termux_setup_rust() {
 		termux_setup_rust
@@ -158,6 +156,7 @@ termux_step_pre_configure() {
 	PYTHON_PKGS=( numpy )
 	
 	PYTHON_PKGS_OK=( )
+	
 	manage_depends() {
 		case $PYTHON_PKG in
 			lxml ) printf 'libxml2 libxslt' ;;
@@ -191,6 +190,7 @@ termux_step_pre_configure() {
 			homeassistant ) printf 'python-sqlalchemy' ;;
 		esac
 	}
+	
 	manage_exports() {
 		case $PYTHON_PKG in
 			numpy ) printf "MATHLIB=m" ;;
@@ -201,6 +201,7 @@ termux_step_pre_configure() {
 			uvloop ) printf "LIBUV_CONFIGURE_HOST=x86_64-pc-linux-gnu" ;;
 		esac
 	}
+	
 	patch_src() {
 		if [ -d ${_CROSSENV_PREFIX}/build/lib/python${_PYTHON_VERSION}/site-packages/mesonbuild/compilers ]; then
 			# disable sanitycheck.exe
@@ -267,9 +268,15 @@ termux_step_pre_configure() {
 				)
 				# aarch64-linux-android-gfortran: error: unrecognized command line option '-static-openmp'
 				LDFLAGS="${LDFLAGS/-static-openmp/}"
+                # ld: error: /home/builder/.termux-build/python-pkgs/src/python-crossenv-prefix/build/lib/python3.10/site-packages/numpy/core/include/../lib/libnpymath.a(npy_math.o) is incompatible with aarch64linux
+                build-pip install -U numpy
+                cross_build numpy
+                rm -rf ${_CROSSENV_PREFIX}/build/lib/python${_PYTHON_VERSION}/site-packages/numpy/core
+                ln -s ${TERMUX_PREFIX}/lib/python${_PYTHON_VERSION}/site-packages/numpy/core ${_CROSSENV_PREFIX}/build/lib/python${_PYTHON_VERSION}/site-packages/numpy/core
 				;;
 		esac
 	}
+	
 	manage-opts() {
 		case $PYTHON_PKG in
 			uvloop )
@@ -278,6 +285,7 @@ termux_step_pre_configure() {
 				;;
 		esac
 	}
+	
 	to_pkgname() {
 		# PySocks -> python-pysocks
 		# python-dateutil -> python-dateutil
@@ -288,6 +296,7 @@ termux_step_pre_configure() {
 			echo $pkg
 		done
 	}
+	
 	get_pip_src() {
 		local json url sha256 filename json dir
 		case $PYTHON_PKG in
@@ -307,6 +316,7 @@ termux_step_pre_configure() {
 		esac
 		mv "$dir" $PYTHON_PKG
 	}
+	
 	get_requires() {
 		python <<-PYTHON
 		import re, json
@@ -343,47 +353,12 @@ termux_step_pre_configure() {
 		PYTHON
 	}
 	
-	(
-		exit 0
-		local url file
-		url=https://github.com/kawanakaiku/src/releases/download/termux-python
-		file=python-numpy_1.23.2_$TERMUX_ARCH.deb
-		curl --location --output $file $url/$file
-		ar x $file data.tar.xz
-		if tar -tf data.tar.xz|grep "^./$">/dev/null; then
-			tar -xf data.tar.xz --strip-components=1 --no-overwrite-dir -C /
-		else
-			tar -xf data.tar.xz --no-overwrite-dir -C /
-		fi
-		rm $file data.tar.xz
-	)
-	
-	for PYTHON_PKG in ${PYTHON_PKGS[@]}; do build-pip install --upgrade $PYTHON_PKG || true; done
-	
-	# disable requirements
-	#sed -i -e 's|_get_build_requires(self, config_settings, requirements):|_get_build_requires(self, config_settings, requirements):\n        return []|' ${_CROSSENV_PREFIX}/build/lib/python${_PYTHON_VERSION}/site-packages/setuptools/build_meta.py
-	
-	# avoid Installing build dependencies: finished with status 'error'
-	#sed -i -z -E 's|self\.req\.build_env\.install_requirements\([^\)]*\)||' ${_CROSSENV_PREFIX}/build/lib/python${_PYTHON_VERSION}/site-packages/pip/_internal/distributions/sdist.py
-	#sed -i -z -E 's|call_subprocess\([^\)]*\)|pass|' ${_CROSSENV_PREFIX}/build/lib/python${_PYTHON_VERSION}/site-packages/pip/_internal/build_env.py
-	
-	# avoid Getting requirements to build wheel: finished with status 'error'
-	#sed -i -z -E 's|runner = runner_with_spinner_message\(([^\)]*)\)|print(\1); return []|g' ${_CROSSENV_PREFIX}/build/lib/python${_PYTHON_VERSION}/site-packages/pip/_internal/build_env.py
-	#sed -i -e 's|Getting requirements to build wheel|test build Getting requirements to build wheel|' ${_CROSSENV_PREFIX}/build/lib/python${_PYTHON_VERSION}/site-packages/pip/_internal/build_env.py
-	#sed -i -e 's|Getting requirements to build wheel|test cross Getting requirements to build wheel|' ${_CROSSENV_PREFIX}/cross/lib/python${_PYTHON_VERSION}/site-packages/pip/_internal/build_env.py
-	#sed -i -e 's|super().get_requires_for_build_wheel(config_settings=cs)|[]|' ${_CROSSENV_PREFIX}/build/lib/python${_PYTHON_VERSION}/site-packages/pip/_internal/utils/misc.py
-	
-	# avoid 
-	#sed -i -e 's|backend.prepare_metadata_for_build_wheel(metadata_dir)|"prepare_metadata_for_build_wheel_metadata_dir.dist-info"|' ${_CROSSENV_PREFIX}/build/lib/python${_PYTHON_VERSION}/site-packages/pip/_internal/operations/build/metadata.py
-	
-	while [ ${#PYTHON_PKGS[@]} -ne 0 ]
-	do
-		PYTHON_PKG=${PYTHON_PKGS[0],,}
-		PYTHON_PKGS=( "${PYTHON_PKGS[@]:1}" )
-		[[ " ${PYTHON_PKGS_OK[*]} " =~ " $PYTHON_PKG " ]] && continue
-		[[ " pip " =~ " $PYTHON_PKG " ]] && [ ${#PYTHON_PKGS[@]} -ne 0 ] && PYTHON_PKGS+=( $PYTHON_PKG ) && continue
-		[[ " setuptools wheel " =~ " $PYTHON_PKG " ]] && ( for pkg in ${PYTHON_PKGS[*]}; do [[ " pip setuptools wheel "  =~ " $pkg " ]] || exit 0; done; exit 1 ) && PYTHON_PKGS+=( $PYTHON_PKG ) && continue
-		[[ " pandas cryptography pillow pyzmq lxml freetype  cv2 matplotlib " =~ " $PYTHON_PKG " ]] && continue
+	cross_build() {
+		local PYTHON_PKG=$1
+		local PYTHON_JSON PYTHON_PKG_REQUIRES
+        local TERMUX_SUBPKG_DESCRIPTION TERMUX_SUBPKG_DEPENDS TERMUX_SUBPKG_INCLUDE TERMUX_SUBPKG_PLATFORM_INDEPENDENT TERMUX_SUBPKG_VERSION 
+
+        [[ " ${PYTHON_PKGS_OK[*]} " =~ " $PYTHON_PKG " ]] && return
 		
 		echo "Processing $PYTHON_PKG ..."
 		
@@ -474,8 +449,37 @@ termux_step_pre_configure() {
 			TERMUX_SUBPKG_VERSION=$TERMUX_SUBPKG_VERSION
 			EOF
 		fi
+
+        PYTHON_PKGS_OK+=( $PYTHON_PKG )
+	}
+	
+	(
+		exit 0
+		local url file
+		url=https://github.com/kawanakaiku/src/releases/download/termux-python
+		file=python-numpy_1.23.2_$TERMUX_ARCH.deb
+		curl --location --output $file $url/$file
+		ar x $file data.tar.xz
+		if tar -tf data.tar.xz|grep "^./$">/dev/null; then
+			tar -xf data.tar.xz --strip-components=1 --no-overwrite-dir -C /
+		else
+			tar -xf data.tar.xz --no-overwrite-dir -C /
+		fi
+		rm $file data.tar.xz
+	)
+	
+	for PYTHON_PKG in ${PYTHON_PKGS[@]}; do build-pip install --upgrade $PYTHON_PKG || true; done
+	
+	while [ ${#PYTHON_PKGS[@]} -ne 0 ]
+	do
+		PYTHON_PKG=${PYTHON_PKGS[0],,}
+		PYTHON_PKGS=( "${PYTHON_PKGS[@]:1}" )
+
+		[[ " pip " =~ " $PYTHON_PKG " ]] && [ ${#PYTHON_PKGS[@]} -ne 0 ] && PYTHON_PKGS+=( $PYTHON_PKG ) && continue
+		[[ " setuptools wheel " =~ " $PYTHON_PKG " ]] && ( for pkg in ${PYTHON_PKGS[*]}; do [[ " pip setuptools wheel "  =~ " $pkg " ]] || exit 0; done; exit 1 ) && PYTHON_PKGS+=( $PYTHON_PKG ) && continue
+		[[ " pandas cryptography pillow pyzmq lxml freetype  cv2 matplotlib " =~ " $PYTHON_PKG " ]] && continue
 		
-		PYTHON_PKGS_OK+=( $PYTHON_PKG )
+		cross_build $PYTHON_PKG
 	done
 }
 
