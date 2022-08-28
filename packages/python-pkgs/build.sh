@@ -344,17 +344,18 @@ termux_step_pre_configure() {
 	}
 	
 	(
-	local url file
-	url=https://github.com/kawanakaiku/src/releases/download/termux-python
-	file=python-numpy_1.23.2_$TERMUX_ARCH.deb
-	curl --location --output $file $url/$file
-	ar x $file data.tar.xz
-	if tar -tf data.tar.xz|grep "^./$">/dev/null; then
-		tar -xf data.tar.xz --strip-components=1 --no-overwrite-dir -C /
-	else
-		tar -xf data.tar.xz --no-overwrite-dir -C /
-	fi
-	rm $file data.tar.xz
+		exit 0
+		local url file
+		url=https://github.com/kawanakaiku/src/releases/download/termux-python
+		file=python-numpy_1.23.2_$TERMUX_ARCH.deb
+		curl --location --output $file $url/$file
+		ar x $file data.tar.xz
+		if tar -tf data.tar.xz|grep "^./$">/dev/null; then
+			tar -xf data.tar.xz --strip-components=1 --no-overwrite-dir -C /
+		else
+			tar -xf data.tar.xz --no-overwrite-dir -C /
+		fi
+		rm $file data.tar.xz
 	)
 	
 	for PYTHON_PKG in ${PYTHON_PKGS[@]}; do build-pip install --upgrade $PYTHON_PKG || true; done
