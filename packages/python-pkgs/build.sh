@@ -417,7 +417,7 @@ termux_step_pre_configure() {
 		fi
 		patch_src
 		export $( manage_exports ) > /dev/null
-		cross-pip -vv install --upgrade --force-reinstall --no-deps --no-binary :all: --prefix $TERMUX_PREFIX --no-build-isolation --no-cache-dir $(for opt in $( manage-opts ); do echo "--install-option=$opt"; done ) .
+		cross-pip -vv install --upgrade --force-reinstall --no-deps --no-binary :all: --prefix $TERMUX_PREFIX --no-build-isolation --no-cache-dir $(for opt in $( manage-opts ); do echo "--install-option=$opt"; done ) . || ( find -name meson-log.txt -type f | xargs -I@ sh -c 'echo "log of: @" ; cat @' ; exit 1 )
 		#python setup.py install --prefix $TERMUX_PREFIX  # creates egg
 		)
 		( cd $TERMUX_PREFIX && find . -type f,l | sort ) > TERMUX_FILES_LIST_AFTER
