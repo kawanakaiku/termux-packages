@@ -260,20 +260,20 @@ termux_step_pre_configure() {
 			scipy )
 				_termux_setup_fortran
 				(
-				for f in $( find -name setup.py -type f )
-				do
-					perl -i -pe "s|\Qf2py_options = None\E|f2py_options = ['--fcompiler', '$FC']|" $f
-				done
+					for f in $( find -name setup.py -type f )
+					do
+						perl -i -pe "s|\Qf2py_options = None\E|f2py_options = ['--fcompiler', '$FC']|" $f
+					done
 				)
 				# aarch64-linux-android-gfortran: error: unrecognized command line option '-static-openmp'
 				LDFLAGS="${LDFLAGS/-static-openmp/}"
-                # ld: error: /home/builder/.termux-build/python-pkgs/src/python-crossenv-prefix/build/lib/python3.10/site-packages/numpy/core/include/../lib/libnpymath.a(npy_math.o) is incompatible with aarch64linux
-                build-pip install -U numpy pybind11
-                cross_build numpy pybind11
-                #rm -rf ${_CROSSENV_PREFIX}/build/lib/python${_PYTHON_VERSION}/site-packages/numpy/core
-                #ln -s ${TERMUX_PREFIX}/lib/python${_PYTHON_VERSION}/site-packages/numpy/core ${_CROSSENV_PREFIX}/build/lib/python${_PYTHON_VERSION}/site-packages/numpy/core
-                perl -i -pe "s|\Qimport os; os.chdir(\"..\"); import numpy; print(numpy.get_include())\E|print('${TERMUX_PREFIX}/lib/python${_PYTHON_VERSION}/site-packages/numpy/core/include')|" scipy/meson.build
-                perl -i -pe "s|\Qimport os; print(os.environ.get(\"SCIPY_USE_PYTHRAN\", 1))\E|print('${TERMUX_PREFIX}/lib/python${_PYTHON_VERSION}/site-packages/pybind11/include')|" scipy/meson.build
+				# ld: error: /home/builder/.termux-build/python-pkgs/src/python-crossenv-prefix/build/lib/python3.10/site-packages/numpy/core/include/../lib/libnpymath.a(npy_math.o) is incompatible with aarch64linux
+				build-pip install -U numpy pybind11
+				cross_build numpy pybind11
+				#rm -rf ${_CROSSENV_PREFIX}/build/lib/python${_PYTHON_VERSION}/site-packages/numpy/core
+				#ln -s ${TERMUX_PREFIX}/lib/python${_PYTHON_VERSION}/site-packages/numpy/core ${_CROSSENV_PREFIX}/build/lib/python${_PYTHON_VERSION}/site-packages/numpy/core
+				perl -i -pe "s|\Qimport os; os.chdir(\"..\"); import numpy; print(numpy.get_include())\E|print(\"${TERMUX_PREFIX}/lib/python${_PYTHON_VERSION}/site-packages/numpy/core/include\")|" scipy/meson.build
+				perl -i -pe "s|\Qimport os; print(os.environ.get(\"SCIPY_USE_PYTHRAN\", 1))\E|print(\"${TERMUX_PREFIX}/lib/python${_PYTHON_VERSION}/site-packages/pybind11/include\")|" scipy/meson.build
 				;;
 		esac
 	}
