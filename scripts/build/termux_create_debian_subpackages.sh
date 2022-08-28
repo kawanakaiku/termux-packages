@@ -23,6 +23,7 @@ termux_create_debian_subpackages() {
 		local TERMUX_SUBPKG_REPLACES=""
 		local TERMUX_SUBPKG_CONFFILES=""
 		local TERMUX_SUBPKG_DEPEND_ON_PARENT=""
+		local TERMUX_SUBPKG_VERSION="$TERMUX_PKG_FULLVERSION"
 		local SUB_PKG_MASSAGE_DIR=$SUB_PKG_DIR/massage/$TERMUX_PREFIX
 		local SUB_PKG_PACKAGE_DIR=$SUB_PKG_DIR/package
 		mkdir -p "$SUB_PKG_MASSAGE_DIR" "$SUB_PKG_PACKAGE_DIR"
@@ -67,7 +68,7 @@ termux_create_debian_subpackages() {
 			Architecture: ${SUB_PKG_ARCH}
 			Installed-Size: ${SUB_PKG_INSTALLSIZE}
 			Maintainer: $TERMUX_PKG_MAINTAINER
-			Version: $TERMUX_PKG_FULLVERSION
+			Version: $TERMUX_SUBPKG_VERSION
 			Homepage: $TERMUX_PKG_HOMEPAGE
 		HERE
 
@@ -97,7 +98,7 @@ termux_create_debian_subpackages() {
 		tar -cJf "$SUB_PKG_PACKAGE_DIR/control.tar.xz" -H gnu .
 
 		# Create the actual .deb file:
-		TERMUX_SUBPKG_DEBFILE=$TERMUX_OUTPUT_DIR/${SUB_PKG_NAME}${DEBUG}_${TERMUX_PKG_FULLVERSION}_${SUB_PKG_ARCH}.deb
+		TERMUX_SUBPKG_DEBFILE=$TERMUX_OUTPUT_DIR/${SUB_PKG_NAME}${DEBUG}_${TERMUX_SUBPKG_VERSION}_${SUB_PKG_ARCH}.deb
 		test ! -f "$TERMUX_COMMON_CACHEDIR/debian-binary" && echo "2.0" > "$TERMUX_COMMON_CACHEDIR/debian-binary"
 		${AR-ar} cr "$TERMUX_SUBPKG_DEBFILE" \
 				   "$TERMUX_COMMON_CACHEDIR/debian-binary" \
