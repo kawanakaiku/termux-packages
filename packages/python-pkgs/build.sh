@@ -276,6 +276,8 @@ termux_step_pre_configure() {
 				perl -i -pe "s|\Qimport os; print(os.environ.get(\"SCIPY_USE_PYTHRAN\", 1))\E|print(\"${TERMUX_PREFIX}/lib/python${_PYTHON_VERSION}/site-packages/pybind11/include\")|" scipy/meson.build
 				# scipy/stats/_biasedurn.pyx:13:4: 'numpy/random.pxd' not found
 				perl -i -pe "s|\Q'--include-dir', os.getcwd()]\E|'--include-dir', '${TERMUX_PREFIX}/lib/python${_PYTHON_VERSION}/site-packages', '--include-dir', os.getcwd()]|" scipy/_build_utils/cythoner.py
+				# No such file or directory: 'patchelf'
+				perl -i -pe "s|\Qlibdir_path not in elf.rpath\E|False|" ${_CROSSENV_PREFIX}/build/lib/python${_PYTHON_VERSION}/site-packages/mesonpy/__init__.py
 				;;
 		esac
 	}
@@ -423,7 +425,7 @@ termux_step_pre_configure() {
 			continue
 		else
 			TERMUX_SUBPKG_PLATFORM_INDEPENDENT=true
-			if ( echo "$TERMUX_SUBPKG_INCLUDE" | grep -q '.so$' ); then
+			if ( echo "$TERMUX_SUBPKG_INCLUDE" | grep -q -e '\.so$' -e '\.o$' ); then
 				TERMUX_SUBPKG_PLATFORM_INDEPENDENT=false
 			elif [ -n "$( echo "$TERMUX_SUBPKG_INCLUDE" | grep -q "^$TERMUX_PREFIX/bin/" | xargs -I@ sh -c 'grep -qI . @ || echo @' )" ]; then
 				TERMUX_SUBPKG_PLATFORM_INDEPENDENT=false
