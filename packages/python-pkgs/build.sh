@@ -117,7 +117,7 @@ termux_step_pre_configure() {
 			FC=$( which $FC )
 			FC_TO=${FC}_$( date '+%Y%m%d%H%M%S' )
 			mv ${FC} ${FC_TO}
-			cat <<-SH > ${CC}
+			cat <<-SH > ${FC}
 			#!/usr/bin/sh
 			for arg do
 				shift
