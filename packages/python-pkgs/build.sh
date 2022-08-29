@@ -279,7 +279,7 @@ termux_step_pre_configure() {
 			sed -i -z -E 's|install_requires=|install_requires=[] and |' setup.py
 		fi
 		if [ -f *.egg-info/requires.txt ]; then
-			ex ) pandas
+			# ex) pandas
 			rm *.egg-info/requires.txt
 		fi
 			
