@@ -557,8 +557,6 @@ termux_step_pre_configure() {
 						fi
 					done <<< "$TERMUX_SUBPKG_INCLUDE"
 					
-					echo "TERMUX_SUBPKG_INCLUDE=${TERMUX_SUBPKG_INCLUDE}"
-					
 					for f in $INFO_DIR/RECORD $INFO_DIR/installed-files.txt
 					do
 						if [ -f "$f" ]; then
@@ -566,6 +564,8 @@ termux_step_pre_configure() {
 						fi
 					done
 				)"
+				
+				echo "TERMUX_SUBPKG_INCLUDE=${TERMUX_SUBPKG_INCLUDE}"
 
 				cat <<- EOF > ${TERMUX_PKG_TMPDIR}/$( to_pkgname ${PYTHON_PKG} ).subpackage.sh
 				TERMUX_SUBPKG_DESCRIPTION="$TERMUX_SUBPKG_DESCRIPTION"
