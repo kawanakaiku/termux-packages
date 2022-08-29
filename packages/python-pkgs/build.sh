@@ -553,7 +553,7 @@ termux_step_pre_configure() {
 						fi
 					done
 					
-					for f in $INFO_DIR/RECORD $DIST_INFO_DIR/installed-files.txt
+					for f in $INFO_DIR/RECORD $INFO_DIR/installed-files.txt
 					do
 						if [ -f "$f" ]; then
 							gawk -F, -v OFS=, -i inplace "{ ${awk_cmd}; print }" $f
