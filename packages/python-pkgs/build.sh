@@ -7,7 +7,7 @@ TERMUX_PKG_VERSION=2022.08.25
 # TERMUX_PKG_BUILD_DEPENDS="python, freetype, libjpeg-turbo, libpng, portmidi, sdl2, sdl2-image, sdl2-mixer, sdl2-ttf, ffmpeg"
 # TERMUX_PKG_BUILD_DEPENDS="python, glu, freeglut, mesa"
 # TERMUX_PKG_BUILD_DEPENDS="python, mesa, glib, gstreamer, sdl2, sdl2-image, sdl2-mixer, sdl2-ttf"
-TERMUX_PKG_BUILD_DEPENDS="python, libopenblas, libgeos"
+TERMUX_PKG_BUILD_DEPENDS="python, libopenblas, libgeos, ffmpeg"
 #TERMUX_PKG_BUILD_DEPENDS="python"
 TERMUX_PKG_BUILD_IN_SRC=true
 TERMUX_PKG_SKIP_SRC_EXTRACT=true
@@ -195,7 +195,7 @@ termux_step_pre_configure() {
 	PYTHON_PKGS=( pynacl zfec )
 	PYTHON_PKGS=( bcrypt homeassistant orjson sqlalchemy )
 	PYTHON_PKGS=( scipy )
-	PYTHON_PKGS=( scikit-learn scikit-image shapely )
+	PYTHON_PKGS=( scikit-learn scikit-image shapely yt-dlp )
 	
 	
 	PYTHON_PKGS_OK=( )
@@ -497,7 +497,7 @@ termux_step_pre_configure() {
 							echo "file '$f' found" 1>&2
 							echo false
 							exit
-						elif [[ $f = */bin/* ]] && grep -qI . $f; then
+						elif [[ $f = */bin/* ]] && ! grep -qI . $f; then
 							echo "file '$f' is binary" 1>&2
 							echo false
 							exit
@@ -508,17 +508,41 @@ termux_step_pre_configure() {
 				)
 
 				TERMUX_SUBPKG_INCLUDE="$(
-				# orjson.cpython-310-aarch64-linux-gnu.so -> orjson.cpython-310.so
-				cd $TERMUX_PREFIX
-				for f in $TERMUX_SUBPKG_INCLUDE
-				do
-					_f=$( echo $f | sed -E "s|cpython-${_PYTHON_VERSION//.}-.*\.so$|cpython-${_PYTHON_VERSION//.}.so|" )
-					if [ $f != $_f ]; then
-						echo "moving '$f' to '$_f'" 1>&2
-						mv $f $_f
+					sed_cmd=""
+					cd ${TERMUX_PREFIX}/lib/python${_PYTHON_VERSION}/site-packages
+					
+					DIST_INFO_DIR=${PYTHON_PKG}-${TERMUX_SUBPKG_VERSION}.dist-info
+					
+					f=$DIST_INFO_DIR/direct_url.json
+					if [ -f $f ]; then
+						# avoid pip freeze from showing build dir
+						rm $f
+						sed_cmd+="/^${f////\\/},/d ; "
 					fi
-					echo $_f
-				done
+					
+					for f in $TERMUX_SUBPKG_INCLUDE
+					do
+						if [[ $f != ./lib/python${_PYTHON_VERSION}/site-packages/* ]]; then
+							# no process needed
+							echo $f
+							continue
+						fi
+						f=${f#./lib/python${_PYTHON_VERSION}/site-packages/}
+						# orjson.cpython-310-aarch64-linux-gnu.so -> orjson.cpython-310.so
+						_f=$( echo $f | sed -E "s|cpython-${_PYTHON_VERSION//.}-.*\.so$|cpython-${_PYTHON_VERSION//.}.so|" )
+						if [ $f != $_f ]; then
+							echo "moving '$f' to '$_f'" 1>&2
+							mv $f $_f
+							# also replace content of RECORD
+							sed_cmd+="s|^${f},|${_f},| ; "
+						fi
+						echo ./lib/python${_PYTHON_VERSION}/site-packages/${_f}
+					done
+					
+					f=$DIST_INFO_DIR/RECORD
+					if [ -f $f ]; then
+						sed -i -e "${sed_cmd}" $f
+					fi
 				)"
 
 				cat <<- EOF > ${TERMUX_PKG_TMPDIR}/$( to_pkgname ${PYTHON_PKG} ).subpackage.sh
