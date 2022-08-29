@@ -559,7 +559,7 @@ termux_step_pre_configure() {
 					while read f; do
 						if [[ "$f" = ./lib/python${_PYTHON_VERSION}/site-packages/* ]]; then
 							# orjson.cpython-310-aarch64-linux-gnu.so -> orjson.cpython-310.so
-							_f="$( echo $f | gawk "{ ${awk_cmd_so} }" )"
+							_f="$( echo $f | gawk "{ ${awk_cmd_so}; print }" )"
 							if [ "$f" != "$_f" ]; then
 								echo "mv '$f' '$_f'" 1>&2
 								mv "$f" "$_f"
