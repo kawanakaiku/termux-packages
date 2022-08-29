@@ -251,7 +251,6 @@ termux_step_pre_configure() {
 			uvloop ) printf "LIBUV_CONFIGURE_HOST=x86_64-pc-linux-gnu" ;;
 			scipy ) printf "SCIPY_USE_PYTHRAN=1" ;;
 			pyzmq ) printf "ZMQ_PREFIX=${TERMUX_PREFIX}" ;;
-			cryptography ) printf "" ;;
 		esac
 	}
 	
@@ -387,11 +386,13 @@ termux_step_pre_configure() {
 				# fix library_dirs
 				sed -i -e "s|sys.prefix|'$TERMUX_PREFIX'|" setup.py
 				sed -i -e 's|for dirname in _find_library_dirs_ldconfig():|for dirname in []:|' setup.py
+				;;
 			pyzmq )
 				# Failed to run ['build/temp.linux-aarch64-cpython-310/scratch/vers']: OSError(8, 'Exec format error')
 				# sed -i -e "s|self.compiler.has_function('timer_create')|False|" buildutils/detect.py
 				# echo 'INPUT(-lc)' > $TERMUX_PREFIX/lib/librt.so
 				sed -i -e 's|detected = self.test_build(zmq_prefix, self.compiler_settings)|detected = {"vers": (4, 3, 4)}|' setup.py
+				;;
 		esac
 	}
 	
