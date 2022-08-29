@@ -39,7 +39,7 @@ termux_create_debian_subpackages() {
 		shopt -s globstar
 		# Allow negation patterns.
 		shopt -s extglob
-		for includeset in $TERMUX_SUBPKG_INCLUDE; do
+		while read includeset; do
 			local _INCLUDE_DIRSET
 			_INCLUDE_DIRSET=$(dirname "$includeset")
 			test "$_INCLUDE_DIRSET" = "." && _INCLUDE_DIRSET=""
@@ -49,7 +49,7 @@ termux_create_debian_subpackages() {
 				mkdir -p "$SUB_PKG_MASSAGE_DIR/$_INCLUDE_DIRSET"
 				mv "$includeset" "$SUB_PKG_MASSAGE_DIR/$_INCLUDE_DIRSET"
 			fi
-		done
+		done <<< "$TERMUX_SUBPKG_INCLUDE"
 		shopt -u globstar extglob
 
 		local SUB_PKG_ARCH=$TERMUX_ARCH
