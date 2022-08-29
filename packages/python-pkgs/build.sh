@@ -262,8 +262,9 @@ termux_step_pre_configure() {
 			if "build-system" in t:
 			 if "requires" in t["build-system"] and t["build-system"]["requires"] != []:
 			  import subprocess
-			  subprocess.run("build-pip install -U".split() + t["build-system"]["requires"])
-			  #subprocess.run("cross-pip install -U".split() + t["build-system"]["requires"])
+			  for i in t["build-system"]["requires"]:
+			   subprocess.run("build-pip install --only-binary :all: -U".split() + i)
+			   subprocess.run("cross-pip install --only-binary :all: -U".split() + i)
 			  t["build-system"]["requires"] = []
 			 #if "build-backend" in t["build-system"] and t["build-system"]["build-backend"] != []:
 			 # t["build-system"]["build-backend"] = []
