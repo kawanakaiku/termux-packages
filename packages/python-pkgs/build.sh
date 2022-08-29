@@ -69,7 +69,7 @@ termux_step_pre_configure() {
 		
 	local PYTHON_PKGS PYTHON_PKGS_OK PYTHON_PKG
 	local manage_depends to_pkgname get_pip_src get_requires cross_build
-	local _termux_setup_rust _termux_setup_fortran
+	local _termux_setup_rust _termux_setup_fortran _termux_setup_protobuf
 	
 	_termux_setup_rust() {
 		termux_setup_rust
@@ -144,6 +144,14 @@ termux_step_pre_configure() {
 
 		_termux_setup_fortran() {
 			echo termux_setup_fortran already setup
+		}
+	}
+	
+	_termux_setup_protobuf() {
+		termux_setup_protobuf
+		
+		_termux_setup_protobuf() {
+			echo termux_setup_protobuf already setup
 		}
 	}
 	
@@ -252,7 +260,20 @@ termux_step_pre_configure() {
 			uvloop ) printf "LIBUV_CONFIGURE_HOST=x86_64-pc-linux-gnu" ;;
 			scipy ) printf "SCIPY_USE_PYTHRAN=1" ;;
 			pyzmq ) printf "ZMQ_PREFIX=${TERMUX_PREFIX}" ;;
-			opencv-python ) printf "PYTHON3_INCLUDE_PATH=${TERMUX_PREFIX}/lib/python${_PYTHON_VERSION} PYTHON3_NUMPY_INCLUDE_DIRS=${TERMUX_PREFIX}/lib/python${_PYTHON_VERSION}/site-packages/numpy/core/include" ;;
+			opencv-python )
+				printf "
+				LDFLAGS+=' -llog'
+				CMAKE_ARGS='
+				-DANDROID_NO_TERMUX=OFF
+				-DWITH_OPENEXR=OFF
+				-DBUILD_PROTOBUF=OFF
+				-DPROTOBUF_UPDATE_FILES=ON
+				-DOPENCV_GENERATE_PKGCONFIG=ON
+				-DPYTHON_DEFAULT_EXECUTABLE=python
+				-DPYTHON3_INCLUDE_PATH=$TERMUX_PREFIX/include/python${_PYTHON_VERSION}
+				-DPYTHON3_NUMPY_INCLUDE_DIRS=${_CROSSENV_PREFIX}/cross/lib/python${_PYTHON_VERSION}/site-packages/numpy/core/include
+				'"
+				;;
 		esac
 	}
 	
@@ -398,6 +419,14 @@ termux_step_pre_configure() {
 				;;
 			opencv-python )
 				cross_build numpy
+				_termux_setup_protobuf
+				# OpenCVConfig.cmake.in.patch
+				perl -i -pe "s|\Q@OpenCV_INCLUDE_DIRS_CONFIGCMAKE@\E|@TERMUX_PREFIX@/include|" cmake/templates/OpenCVConfig.cmake.in
+				# build.sh
+				find . -name CMakeLists.txt -o -name '*.cmake' | \
+					xargs -n 1 sed -i \
+					-e 's/\([^A-Za-z0-9_]ANDROID\)\([^A-Za-z0-9_]\)/\1_NO_TERMUX\2/g' \
+					-e 's/\([^A-Za-z0-9_]ANDROID\)$/\1_NO_TERMUX/g'
 				;;
 		esac
 	}
