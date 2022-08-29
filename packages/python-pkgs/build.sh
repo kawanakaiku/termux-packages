@@ -208,7 +208,7 @@ termux_step_pre_configure() {
 	PYTHON_PKGS=( pynacl zfec )
 	PYTHON_PKGS=( bcrypt homeassistant orjson sqlalchemy )
 	PYTHON_PKGS=( scipy )
-	PYTHON_PKGS=( numpy opencv-python scipy tqdm colorama scikit-learn scikit-image shapely yt-dlp pip beautifulsoup4 certifi demjson3 mechanize colorama cloudscraper lxml pandas cryptography pillow pyzmq pygame pynacl matplotlib jupyter )
+	PYTHON_PKGS=( numpy opencv-python scipy tqdm colorama scikit-learn scikit-image shapely yt-dlp pip beautifulsoup4 certifi demjson3 mechanize colorama cloudscraper lxml pandas cryptography pillow pyzmq pygame pynacl matplotlib jupyter uvloop )
 	
 	
 	PYTHON_PKGS_OK=( )
@@ -252,27 +252,26 @@ termux_step_pre_configure() {
 	
 	manage_exports() {
 		case $PYTHON_PKG in
-			numpy ) printf "MATHLIB=m" ;;
-			pynacl ) printf "build_alias=$CCTERMUX_HOST_PLATFORM host_alias=x86_64-pc-linux-gnu" ;;
-			h5py ) printf "HDF5_DIR=$TERMUX_PREFIX HDF5_VERSION=1.12.0 H5PY_ROS3=-1 H5PY_DIRECT_VFD=-1" ;;
-			_matplotlib ) printf "NPY_DISABLE_SVML=1" ;;
-			pygame ) printf "LOCALBASE=$(dirname $TERMUX_PREFIX)" ;;
-			uvloop ) printf "LIBUV_CONFIGURE_HOST=x86_64-pc-linux-gnu" ;;
-			scipy ) printf "SCIPY_USE_PYTHRAN=1" ;;
-			pyzmq ) printf "ZMQ_PREFIX=${TERMUX_PREFIX}" ;;
+			numpy ) export MATHLIB=m ;;
+			pynacl ) export build_alias=$CCTERMUX_HOST_PLATFORM host_alias=x86_64-pc-linux-gnu ;;
+			h5py ) export HDF5_DIR=$TERMUX_PREFIX HDF5_VERSION=1.12.0 H5PY_ROS3=-1 H5PY_DIRECT_VFD=-1 ;;
+			_matplotlib ) export NPY_DISABLE_SVML=1 ;;
+			pygame ) export LOCALBASE=$(dirname $TERMUX_PREFIX) ;;
+			uvloop ) export LIBUV_CONFIGURE_HOST=x86_64-pc-linux-gnu ;;
+			scipy ) export SCIPY_USE_PYTHRAN=1 ;;
+			pyzmq ) export ZMQ_PREFIX=${TERMUX_PREFIX} ;;
 			opencv-python )
-				printf "
-				LDFLAGS+=' -llog'
-				CMAKE_ARGS='
-				-DANDROID_NO_TERMUX=OFF
-				-DWITH_OPENEXR=OFF
-				-DBUILD_PROTOBUF=OFF
-				-DPROTOBUF_UPDATE_FILES=ON
-				-DOPENCV_GENERATE_PKGCONFIG=ON
-				-DPYTHON_DEFAULT_EXECUTABLE=python
-				-DPYTHON3_INCLUDE_PATH=$TERMUX_PREFIX/include/python${_PYTHON_VERSION}
-				-DPYTHON3_NUMPY_INCLUDE_DIRS=${_CROSSENV_PREFIX}/cross/lib/python${_PYTHON_VERSION}/site-packages/numpy/core/include
-				'"
+				export LDFLAGS+=" -llog"
+				export CMAKE_ARGS="
+					-DANDROID_NO_TERMUX=OFF
+					-DWITH_OPENEXR=OFF
+					-DBUILD_PROTOBUF=OFF
+					-DPROTOBUF_UPDATE_FILES=ON
+					-DOPENCV_GENERATE_PKGCONFIG=ON
+					-DPYTHON_DEFAULT_EXECUTABLE=python
+					-DPYTHON3_INCLUDE_PATH=$TERMUX_PREFIX/include/python${_PYTHON_VERSION}
+					-DPYTHON3_NUMPY_INCLUDE_DIRS=${_CROSSENV_PREFIX}/cross/lib/python${_PYTHON_VERSION}/site-packages/numpy/core/include
+				"
 				;;
 		esac
 	}
@@ -550,7 +549,7 @@ termux_step_pre_configure() {
 			TERMUX_FILES_LIST_BEFORE="$( cd $TERMUX_PREFIX && find . -type f,l | sort )"
 			(
 				cd $PYTHON_PKG
-				export $( manage_exports ) > /dev/null
+				manage_exports
 				cross-pip -v install --upgrade --force-reinstall --no-deps --no-binary :all: --prefix $TERMUX_PREFIX --no-build-isolation --no-cache-dir --compile $(for opt in $( manage-opts ); do echo "--install-option=$opt"; done ) .
 				#python setup.py install --prefix $TERMUX_PREFIX  # creates egg
 			)
