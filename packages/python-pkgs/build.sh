@@ -113,6 +113,7 @@ termux_step_pre_configure() {
 		export FC=$TERMUX_HOST_PLATFORM-gfortran
 		
 		# aarch64-linux-android-gfortran: error: unrecognized command line option '-static-openmp'
+		# make link gfortran for numpy
 		(
 			FC=$( which $FC )
 			FC_TO=${FC}_$( date '+%Y%m%d%H%M%S' )
@@ -127,6 +128,8 @@ termux_step_pre_configure() {
 			exec ${FC_TO} "\$@"
 			SH
 			chmod +x ${FC}
+			
+			ln -sf ${FC} $( dirname $FC_TO )/gfortran
 		)
 		
 		cat <<-FORTRAN > hello.f90
@@ -337,7 +340,7 @@ termux_step_pre_configure() {
 			numpy )
 				_termux_setup_fortran
 				# libraries openblas not found in ['/home/builder/.termux-build/python-pkgs/src/python-crossenv-prefix/cross/lib', '/usr/local/lib', '/usr/lib64', '/usr/lib', '/usr/lib/x86_64-linux-gnu']
-				perl -i -pe "s|/usr|$TERMUX_PREFIX|" numpy/distutils/system_info.py
+				perl -i -pe "s|/usr|$TERMUX_PREFIX|g" numpy/distutils/system_info.py
 				;;
 			scipy )
 				_termux_setup_fortran
@@ -518,29 +521,29 @@ termux_step_pre_configure() {
 					DIST_INFO_DIR=./lib/python${_PYTHON_VERSION}/site-packages/${PYTHON_PKG}-${TERMUX_SUBPKG_VERSION}.dist-info
 					
 					awk_cmd_so="if ( \$1 ~ /.*\.so$/ ) { gsub( /cpython-${_PYTHON_VERSION//.}-.*\.so$/, \"cpython-${_PYTHON_VERSION//.}.so\", \$1 ); print; next }; "
-					awk_cmd_man="if ( \$1 ~ /.*/share/man/.*/ ) { if ( \$1 ~ /.*/share/man/man.*/ ) { \$1 = \$1 \".gz\"; print }; next }"
+					awk_cmd_man="if ( \$1 ~ /.*\/share\/man\/.*/ ) { if ( \$1 ~ \/.*\/share\/man\/man.*/ ) { \$1 = \$1 \".gz\"; print }; next }"
 					awk_cmd_url="if ( \$1 ~ /\/direct_url\.json$/ ) { next }; "
 					awk_cmd+=" ${awk_cmd_so}; ${awk_cmd_man}; ${awk_cmd_url}"
 					
 					for f in $TERMUX_SUBPKG_INCLUDE
 					do
-						if [[ $f = ./lib/python${_PYTHON_VERSION}/site-packages/* ]]; then
+						if [[ "$f" = "./lib/python${_PYTHON_VERSION}/site-packages/*" ]]; then
 							# orjson.cpython-310-aarch64-linux-gnu.so -> orjson.cpython-310.so
 							_f=$( echo $f | gawk "{ ${awk_cmd_so} }" )
-							if [ $f != $_f ]; then
+							if [ "$f" != "$_f" ]; then
 								echo "mv $f $_f" 1>&2
 								mv $f $_f
 							fi
 							echo $_f
-						elif [[ $f = ./share/man/* ]]; then
-							if [[ $f = share/man/man* ]]; then
+						elif [[ "$f" = "./share/man/*" ]]; then
+							if [[ "$f" = "share/man/man*" ]]; then
 								# termux_step_massage: pages will be gzipped
 								echo "${f}.gz"
 							else
 								# termux_step_massage: folders will be removed
 								rm $f
 							fi
-						elif [[ $f = $DIST_INFO_DIR/direct_url.json ]]; then
+						elif [[ "$f" = "$DIST_INFO_DIR/direct_url.json" ]]; then
 							# avoid pip freeze from showing build dir
 							rm $f
 						else
@@ -551,7 +554,7 @@ termux_step_pre_configure() {
 					
 					for f in $DIST_INFO_DIR/RECORD $DIST_INFO_DIR/installed-files.txt
 					do
-						if [ -f $f ]; then
+						if [ -f "$f" ]; then
 							gawk -F, -v OFS=, -i inplace "{ ${awk_cmd}; print }" $f
 						fi
 					done
