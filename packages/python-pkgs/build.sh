@@ -200,7 +200,7 @@ termux_step_pre_configure() {
 	PYTHON_PKGS=( pynacl zfec )
 	PYTHON_PKGS=( bcrypt homeassistant orjson sqlalchemy )
 	PYTHON_PKGS=( scipy )
-	PYTHON_PKGS=( numpy opencv-python scipy tqdm colorama scikit-learn scikit-image shapely yt-dlp pip beautifulsoup4 certifi demjson3 mechanize colorama cloudscraper lxml pandas cryptography pillow pyzmq pygame pynacl matplotlib )
+	PYTHON_PKGS=( numpy opencv-python scipy tqdm colorama scikit-learn scikit-image shapely yt-dlp pip beautifulsoup4 certifi demjson3 mechanize colorama cloudscraper lxml pandas cryptography pillow pyzmq pygame pynacl matplotlib jupyter )
 	
 	
 	PYTHON_PKGS_OK=( )
