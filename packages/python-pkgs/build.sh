@@ -512,7 +512,7 @@ termux_step_pre_configure() {
 					cd ${TERMUX_PREFIX}
 					DIST_INFO_DIR=./lib/python${_PYTHON_VERSION}/site-packages/${PYTHON_PKG}-${TERMUX_SUBPKG_VERSION}.dist-info
 					
-					awk_cmd_so="if ( \$1 ~ /.*\.so$/ ) { \$1 = gsub( /cpython-${_PYTHON_VERSION//.}-.*\.so$/, \"cpython-${_PYTHON_VERSION//.}.so\", \$1 ); print; next }; "
+					awk_cmd_so="if ( \$1 ~ /.*\.so$/ ) { gsub( /cpython-${_PYTHON_VERSION//.}-.*\.so$/, \"cpython-${_PYTHON_VERSION//.}.so\", \$1 ); print; next }; "
 					awk_cmd_man="if ( \$1 ~ /.*/share/man/.*/ ) { if ( \$1 ~ /.*/share/man/man.*/ ) { \$1 = \$1 + \".gz\"; print }; next }"
 					awk_cmd_url="if ( \$1 ~ /\/direct_url\.json$/ ) { next }; "
 					awk_cmd+=" ${awk_cmd_so}; ${awk_cmd_man}; ${awk_cmd_url}"
@@ -521,7 +521,7 @@ termux_step_pre_configure() {
 					do
 						if [[ $f = ./lib/python${_PYTHON_VERSION}/site-packages/* ]]; then
 							# orjson.cpython-310-aarch64-linux-gnu.so -> orjson.cpython-310.so
-							_f=$( echo $f | gawk "${awk_cmd_so}" )
+							_f=$( echo $f | gawk "{ ${awk_cmd_so} }" )
 							if [ $f != $_f ]; then
 								echo "mv $f $_f" 1>&2
 								mv $f $_f
