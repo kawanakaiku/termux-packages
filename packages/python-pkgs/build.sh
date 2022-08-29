@@ -478,11 +478,15 @@ termux_step_pre_configure() {
 				if ( echo "$TERMUX_SUBPKG_INCLUDE" | grep -q -e '\.so$' -e '\.a$' ); then
 					echo ".so or .a file found"
 					TERMUX_SUBPKG_PLATFORM_INDEPENDENT=false
-				elif [ -n "$( echo "$TERMUX_SUBPKG_INCLUDE" | grep -q "^$TERMUX_PREFIX/bin/" | xargs -I@ sh -c 'grep -qI . @ || echo @' )" ]; then
+				elif [ -n "$( cd $TERMUX_PREFIX && echo "$TERMUX_SUBPKG_INCLUDE" | grep -e "/bin/" | xargs -I@ sh -c 'grep -qI . @ || echo @' )" ]; then
 					echo "binary file found"
 					TERMUX_SUBPKG_PLATFORM_INDEPENDENT=false
+				else
+					echo "$TERMUX_SUBPKG_INCLUDE"
+					echo
+					echo 'result of grep:'
+					echo "$TERMUX_SUBPKG_INCLUDE" | grep -q -e '\.so$' -e '\.a$'
 				fi
-				echo "$TERMUX_SUBPKG_INCLUDE"
 
 				TERMUX_SUBPKG_INCLUDE="$(
 				# orjson.cpython-310-aarch64-linux-gnu.so -> orjson.cpython-310.so
