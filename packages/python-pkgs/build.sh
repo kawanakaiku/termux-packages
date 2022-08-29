@@ -117,11 +117,15 @@ termux_step_pre_configure() {
 			FC=$( which $FC )
 			FC_TO=${FC}_$( date '+%Y%m%d%H%M%S' )
 			mv ${FC} ${FC_TO}
-			cat <<-BASH > ${FC}
-			#!/usr/bin/bash
-			LDFLAGS="\${LDFLAGS/-static-openmp/}" \
-				exec ${FC_TO} "\$@"
-			BASH
+			cat <<-SH > ${CC}
+			#!/usr/bin/sh
+			for arg do
+				shift
+				[ "\$arg" = "-static-openmp" ] && continue
+				set -- "\$@" "\$arg"
+			done
+			exec ${FC_TO} "\$@"
+			SH
 			chmod +x ${FC}
 		)
 		
