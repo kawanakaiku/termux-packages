@@ -7,7 +7,8 @@ TERMUX_PKG_VERSION=2022.08.25
 # TERMUX_PKG_BUILD_DEPENDS="python, freetype, libjpeg-turbo, libpng, portmidi, sdl2, sdl2-image, sdl2-mixer, sdl2-ttf, ffmpeg"
 # TERMUX_PKG_BUILD_DEPENDS="python, glu, freeglut, mesa"
 # TERMUX_PKG_BUILD_DEPENDS="python, mesa, glib, gstreamer, sdl2, sdl2-image, sdl2-mixer, sdl2-ttf"
-TERMUX_PKG_BUILD_DEPENDS="python, libopenblas, libgeos, ffmpeg"
+# TERMUX_PKG_BUILD_DEPENDS="python, libopenblas, libgeos, ffmpeg"
+TERMUX_PKG_BUILD_DEPENDS="python, double-conversion, ffmpeg, fontconfig-utils, freeglut, freetype, glib, glu, graphviz, gstreamer, leptonica, libgeos, libgmp, libhdf5, libjpeg-turbo, libmpc, libmpfr, libopenblas, libpng, libprotobuf, libsndfile, libsodium, libuv, libxml2, libxslt, libyaml, libzmq, lz4, mesa, pcre, portaudio, portmidi, python-sqlalchemy, qpdf, sdl2, sdl2-image, sdl2-mixer, sdl2-ttf, tesseract, zbar, zlib, freetype, libimagequant, libjpeg-turbo, littlecms, openjpeg, libraqm, libtiff, libwebp, libxcb, zlib"
 #TERMUX_PKG_BUILD_DEPENDS="python"
 TERMUX_PKG_BUILD_IN_SRC=true
 TERMUX_PKG_SKIP_SRC_EXTRACT=true
@@ -199,7 +200,7 @@ termux_step_pre_configure() {
 	PYTHON_PKGS=( pynacl zfec )
 	PYTHON_PKGS=( bcrypt homeassistant orjson sqlalchemy )
 	PYTHON_PKGS=( scipy )
-	PYTHON_PKGS=( scikit-learn scikit-image shapely yt-dlp pip )
+	PYTHON_PKGS=( numpy scipy tqdm colorama scikit-learn scikit-image shapely yt-dlp pip beautifulsoup4 certifi demjson3 mechanize colorama cloudscraper lxml pandas cryptography pillow pyzmq freetype pygame pynacl matplotlib )
 	
 	
 	PYTHON_PKGS_OK=( )
@@ -236,6 +237,7 @@ termux_step_pre_configure() {
 			tesserocr ) printf 'tesseract leptonica' ;;
 			homeassistant ) printf 'python-sqlalchemy' ;;
 			shapely ) printf 'libgeos' ;;
+			pillow ) printf 'freetype, libimagequant, libjpeg-turbo, littlecms, openjpeg, libraqm, libtiff, libwebp, libxcb, zlib' ;;
 		esac
 	}
 	
@@ -248,6 +250,8 @@ termux_step_pre_configure() {
 			pygame ) printf "LOCALBASE=$(dirname $TERMUX_PREFIX)" ;;
 			uvloop ) printf "LIBUV_CONFIGURE_HOST=x86_64-pc-linux-gnu" ;;
 			scipy ) printf "SCIPY_USE_PYTHRAN=1" ;;
+			pyzmq ) printf "ZMQ_PREFIX=${TERMUX_PREFIX}" ;;
+			cryptography ) printf "" ;;
 		esac
 	}
 	
@@ -273,6 +277,10 @@ termux_step_pre_configure() {
 		if [ -f setup.py ]; then
 			sed -i -z -E 's|setup_requires=|setup_requires=[] and |' setup.py
 			sed -i -z -E 's|install_requires=|install_requires=[] and |' setup.py
+		fi
+		if [ -f *.egg-info/requires.txt ]; then
+			ex ) pandas
+			rm *.egg-info/requires.txt
 		fi
 			
 		if [ -d ${_CROSSENV_PREFIX}/build/lib/python${_PYTHON_VERSION}/site-packages/mesonbuild/compilers ]; then
@@ -338,6 +346,9 @@ termux_step_pre_configure() {
 				# Cargo, the Rust package manager, is not installed or is not on PATH.
 				_termux_setup_rust
 				;;
+			cryptography )
+				_termux_setup_rust
+				;;
 			numpy )
 				_termux_setup_fortran
 				# libraries openblas not found in ['/home/builder/.termux-build/python-pkgs/src/python-crossenv-prefix/cross/lib', '/usr/local/lib', '/usr/lib64', '/usr/lib', '/usr/lib/x86_64-linux-gnu']
@@ -370,6 +381,17 @@ termux_step_pre_configure() {
 				# needs scipy
 				cross_build scipy
 				;;
+			pillow )
+				# /usr/include/pthread.h:710:3: error: 'regparm' is not valid on this platform
+				sed -i -e 's|not self.disable_platform_guessing|False|' setup.py
+				# fix library_dirs
+				sed -i -e "s|sys.prefix|'$TERMUX_PREFIX'|" setup.py
+				sed -i -e 's|for dirname in _find_library_dirs_ldconfig():|for dirname in []:|' setup.py
+			pyzmq )
+				# Failed to run ['build/temp.linux-aarch64-cpython-310/scratch/vers']: OSError(8, 'Exec format error')
+				# sed -i -e "s|self.compiler.has_function('timer_create')|False|" buildutils/detect.py
+				# echo 'INPUT(-lc)' > $TERMUX_PREFIX/lib/librt.so
+				sed -i -e 's|detected = self.test_build(zmq_prefix, self.compiler_settings)|detected = {"vers": (4, 3, 4)}|' setup.py
 		esac
 	}
 	
@@ -378,6 +400,9 @@ termux_step_pre_configure() {
 			uvloop )
 				# cannot locate symbol "uv__pthread_sigmask"
 				echo build_ext --use-system-libuv
+				;;
+			pillow )
+				echo build_ext --enable-zlib --enable-jpeg --enable-tiff --enable-freetype --enable-raqm --enable-lcms --enable-webp --enable-webpmux --enable-jpeg2000 --enable-imagequant --enable-xcb
 				;;
 		esac
 	}
@@ -457,6 +482,10 @@ termux_step_pre_configure() {
 		for PYTHON_PKG in $@; do
 
 			[[ " ${PYTHON_PKGS_OK[*]} " =~ " $PYTHON_PKG " ]] && continue
+
+			[[ " pip " =~ " $PYTHON_PKG " ]] && [ ${#PYTHON_PKGS[@]} -ne 0 ] && PYTHON_PKGS+=( $PYTHON_PKG ) && continue
+			[[ " setuptools wheel " =~ " $PYTHON_PKG " ]] && ( for pkg in ${PYTHON_PKGS[*]}; do [[ " pip setuptools wheel "  =~ " $pkg " ]] || exit 0; done; exit 1 ) && PYTHON_PKGS+=( $PYTHON_PKG ) && continue
+			[[ "   cv2  " =~ " $PYTHON_PKG " ]] && continue
 
 			echo "Processing $PYTHON_PKG ..."
 
@@ -581,31 +610,12 @@ termux_step_pre_configure() {
 		done
 	}
 	
-	(
-		exit 0
-		local url file
-		url=https://github.com/kawanakaiku/src/releases/download/termux-python
-		file=python-numpy_1.23.2_$TERMUX_ARCH.deb
-		curl --location --output $file $url/$file
-		ar x $file data.tar.xz
-		if tar -tf data.tar.xz|grep "^./$">/dev/null; then
-			tar -xf data.tar.xz --strip-components=1 --no-overwrite-dir -C /
-		else
-			tar -xf data.tar.xz --no-overwrite-dir -C /
-		fi
-		rm $file data.tar.xz
-	)
-	
 	for PYTHON_PKG in ${PYTHON_PKGS[@]}; do build-pip install --upgrade $PYTHON_PKG || true; done
 	
 	while [ ${#PYTHON_PKGS[@]} -ne 0 ]
 	do
 		PYTHON_PKG=${PYTHON_PKGS[0],,}
 		PYTHON_PKGS=( "${PYTHON_PKGS[@]:1}" )
-
-		[[ " pip " =~ " $PYTHON_PKG " ]] && [ ${#PYTHON_PKGS[@]} -ne 0 ] && PYTHON_PKGS+=( $PYTHON_PKG ) && continue
-		[[ " setuptools wheel " =~ " $PYTHON_PKG " ]] && ( for pkg in ${PYTHON_PKGS[*]}; do [[ " pip setuptools wheel "  =~ " $pkg " ]] || exit 0; done; exit 1 ) && PYTHON_PKGS+=( $PYTHON_PKG ) && continue
-		[[ " pandas cryptography pillow pyzmq lxml freetype  cv2 matplotlib " =~ " $PYTHON_PKG " ]] && continue
 		
 		cross_build $PYTHON_PKG
 	done
