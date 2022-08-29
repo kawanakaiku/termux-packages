@@ -528,7 +528,7 @@ termux_step_pre_configure() {
 					awk_cmd+=" ${awk_cmd_so}; ${awk_cmd_man}; ${awk_cmd_url}"
 					
 					while read f; do
-						if [[ "$f" = "./lib/python${_PYTHON_VERSION}/site-packages/*" ]]; then
+						if [[ "$f" = ./lib/python${_PYTHON_VERSION}/site-packages/* ]]; then
 							# orjson.cpython-310-aarch64-linux-gnu.so -> orjson.cpython-310.so
 							_f="$( echo $f | gawk "{ ${awk_cmd_so} }" )"
 							if [ "$f" != "$_f" ]; then
@@ -536,10 +536,10 @@ termux_step_pre_configure() {
 								mv "$f" "$_f"
 							fi
 							echo "$_f"
-						elif [[ "$f" = "./share/man/*" ]]; then
-							if [[ "$f" = "share/man/man*" ]]; then
+						elif [[ "$f" = ./share/man/* ]]; then
+							if [[ "$f" = share/man/man* ]]; then
 								# termux_step_massage: pages will be gzipped
-								if [[ "$f" = "*.gz" ]]; then
+								if [[ "$f" = *.gz ]]; then
 									echo "${f}"
 								else
 									echo "${f}.gz"
@@ -548,7 +548,7 @@ termux_step_pre_configure() {
 								# termux_step_massage: folders will be removed
 								rm "$f"
 							fi
-						elif [[ "$f" = "$INFO_DIR/direct_url.json" ]]; then
+						elif [[ "$f" = $INFO_DIR/direct_url.json ]]; then
 							# avoid pip freeze from showing build dir
 							rm "$f"
 						else
