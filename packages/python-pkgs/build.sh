@@ -483,9 +483,9 @@ termux_step_pre_configure() {
 					TERMUX_SUBPKG_PLATFORM_INDEPENDENT=false
 				else
 					echo "$TERMUX_SUBPKG_INCLUDE"
-					echo
+					echo ''
 					echo 'result of grep:'
-					echo "$TERMUX_SUBPKG_INCLUDE" | grep -q -e '\.so$' -e '\.a$'
+					echo "$TERMUX_SUBPKG_INCLUDE" | grep -e '\.so$' -e '\.a$' || true
 				fi
 
 				TERMUX_SUBPKG_INCLUDE="$(
