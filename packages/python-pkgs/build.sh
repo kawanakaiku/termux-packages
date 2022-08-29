@@ -520,9 +520,9 @@ termux_step_pre_configure() {
 					
 					for f in $TERMUX_SUBPKG_INCLUDE
 					do
-						echo "111: $f"
+						echo "111: $f" 1>&2
 						if [[ $f = ./lib/python${_PYTHON_VERSION}/site-packages/* ]]; then
-							echo "112: $f"
+							echo "112: $f" 1>&2
 							# orjson.cpython-310-aarch64-linux-gnu.so -> orjson.cpython-310.so
 							_f=$( echo $f | sed -E "${awk_cmd_so}" )
 							if [ $f != $_f ]; then
@@ -531,7 +531,7 @@ termux_step_pre_configure() {
 							fi
 							echo $_f
 						elif [[ $f = ./share/man/* ]]; then
-							echo "113: $f"
+							echo "113: $f" 1>&2
 							if [[ $f = share/man/man* ]]; then
 								# termux_step_massage: pages will be gzipped
 								echo "${f}.gz"
@@ -540,11 +540,11 @@ termux_step_pre_configure() {
 								rm $f
 							fi
 						elif [[ $f = $DIST_INFO_DIR/direct_url.json ]]; then
-							echo "114: $f"
+							echo "114: $f" 1>&2
 							# avoid pip freeze from showing build dir
 							rm $f
 						else
-							echo "115: $f"
+							echo "115: $f" 1>&2
 							# no process needed
 							echo $f
 						fi
