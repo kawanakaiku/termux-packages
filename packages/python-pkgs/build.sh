@@ -8,8 +8,8 @@ TERMUX_PKG_VERSION=2022.08.25
 # TERMUX_PKG_BUILD_DEPENDS="python, glu, freeglut, mesa"
 # TERMUX_PKG_BUILD_DEPENDS="python, mesa, glib, gstreamer, sdl2, sdl2-image, sdl2-mixer, sdl2-ttf"
 # TERMUX_PKG_BUILD_DEPENDS="python, libopenblas, libgeos, ffmpeg"
-TERMUX_PKG_BUILD_DEPENDS="python, double-conversion, ffmpeg, fontconfig-utils, freeglut, freetype, glib, glu, graphviz, gstreamer, leptonica, libgeos, libgmp, libhdf5, libjpeg-turbo, libmpc, libmpfr, libopenblas, libpng, libprotobuf, libsndfile, libsodium, libuv, libxml2, libxslt, libyaml, libzmq, lz4, mesa, pcre, portaudio, portmidi, qpdf, sdl2, sdl2-image, sdl2-mixer, sdl2-ttf, tesseract, zbar, zlib, freetype, libimagequant, libjpeg-turbo, littlecms, openjpeg, libraqm, libtiff, libwebp, libxcb, zlib"
-#TERMUX_PKG_BUILD_DEPENDS="python, opencv"
+TERMUX_PKG_BUILD_DEPENDS="python, double-conversion, ffmpeg, fontconfig-utils, freeglut, freetype, glib, glu, graphviz, gstreamer, leptonica, libgeos, libgmp, libhdf5, libjpeg-turbo, libmpc, libmpfr, libopenblas, libpng, libprotobuf, libsndfile, libsodium, libuv, libxml2, libxslt, libyaml, libzmq, lz4, mesa, pcre, portaudio, portmidi, qpdf, sdl2, sdl2-image, sdl2-mixer, sdl2-ttf, tesseract, zbar, zlib, freetype, libimagequant, libjpeg-turbo, littlecms, openjpeg, libraqm, libtiff, libwebp, libxcb, zlib, opencv"
+#TERMUX_PKG_BUILD_DEPENDS="python"
 TERMUX_PKG_BUILD_IN_SRC=true
 TERMUX_PKG_SKIP_SRC_EXTRACT=true
 TERMUX_PKG_NO_STATICSPLIT=true
@@ -200,8 +200,7 @@ termux_step_pre_configure() {
 	PYTHON_PKGS=( pynacl zfec )
 	PYTHON_PKGS=( bcrypt homeassistant orjson sqlalchemy )
 	PYTHON_PKGS=( scipy )
-	PYTHON_PKGS=( opencv-python )
-	PYTHON_PKGS=( numpy scipy tqdm colorama scikit-learn scikit-image shapely yt-dlp pip beautifulsoup4 certifi demjson3 mechanize colorama cloudscraper lxml pandas cryptography pillow pyzmq pygame pynacl matplotlib )
+	PYTHON_PKGS=( numpy opencv-python scipy tqdm colorama scikit-learn scikit-image shapely yt-dlp pip beautifulsoup4 certifi demjson3 mechanize colorama cloudscraper lxml pandas cryptography pillow pyzmq pygame pynacl matplotlib )
 	
 	
 	PYTHON_PKGS_OK=( )
@@ -493,7 +492,7 @@ termux_step_pre_configure() {
 
 			[[ " pip " =~ " $PYTHON_PKG " ]] && [ ${#PYTHON_PKGS[@]} -ne 0 ] && PYTHON_PKGS+=( $PYTHON_PKG ) && continue
 			[[ " setuptools wheel " =~ " $PYTHON_PKG " ]] && ( for pkg in ${PYTHON_PKGS[*]}; do [[ " pip setuptools wheel "  =~ " $pkg " ]] || exit 0; done; exit 1 ) && PYTHON_PKGS+=( $PYTHON_PKG ) && continue
-			[[ "   cv2  " =~ " $PYTHON_PKG " ]] && continue
+			[[ "    " =~ " $PYTHON_PKG " ]] && continue
 
 			echo "Processing $PYTHON_PKG ..."
 
