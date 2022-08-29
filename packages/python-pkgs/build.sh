@@ -112,6 +112,19 @@ termux_step_pre_configure() {
 		export PATH="$PATH:$TERMUX_FORTRAN_FOLDER/bin"
 		export FC=$TERMUX_HOST_PLATFORM-gfortran
 		
+		# aarch64-linux-android-gfortran: error: unrecognized command line option '-static-openmp'
+		(
+			FC=$( which $FC )
+			FC_TO=${FC}_$( date '+%Y%m%d%H%M%S' )
+			mv ${FC} ${FC_TO}
+			cat <<-BASH > ${FC}
+			#!/usr/bin/bash
+			LDFLAGS="\${LDFLAGS/-static-openmp/}" \
+				exec ${FC_TO} "\$@"
+			BASH
+			chmod +x ${FC}
+		)
+		
 		cat <<-FORTRAN > hello.f90
 		program hello
 		 print *, 'Hello World!'
@@ -325,8 +338,6 @@ termux_step_pre_configure() {
 						perl -i -pe "s|\Qf2py_options = None\E|f2py_options = ['--fcompiler', '$FC']|" $f
 					done
 				)
-				# aarch64-linux-android-gfortran: error: unrecognized command line option '-static-openmp'
-				LDFLAGS="${LDFLAGS/-static-openmp/}"
 				# ld: error: /home/builder/.termux-build/python-pkgs/src/python-crossenv-prefix/build/lib/python3.10/site-packages/numpy/core/include/../lib/libnpymath.a(npy_math.o) is incompatible with aarch64linux
 				build-pip install -U numpy pybind11 pythran
 				cross_build numpy pybind11 pythran
@@ -475,18 +486,21 @@ termux_step_pre_configure() {
 			else
 				TERMUX_SUBPKG_PLATFORM_INDEPENDENT=true
 				echo "setting TERMUX_SUBPKG_PLATFORM_INDEPENDENT for $PYTHON_PKG"
-				if ( echo "$TERMUX_SUBPKG_INCLUDE" | grep -q -e '\.so$' -e '\.a$' ); then
-					echo ".so or .a file found"
-					TERMUX_SUBPKG_PLATFORM_INDEPENDENT=false
-				elif [ -n "$( cd $TERMUX_PREFIX && echo "$TERMUX_SUBPKG_INCLUDE" | grep -e "/bin/" | xargs -I@ sh -c 'grep -qI . @ || echo @' )" ]; then
-					echo "binary file found"
-					TERMUX_SUBPKG_PLATFORM_INDEPENDENT=false
-				else
-					echo "$TERMUX_SUBPKG_INCLUDE"
-					echo ''
-					echo 'result of grep:'
-					echo "$TERMUX_SUBPKG_INCLUDE" | grep -e '\.so$' -e '\.a$' || true
-				fi
+				TERMUX_SUBPKG_PLATFORM_INDEPENDENT=$(
+					for f in $TERMUX_SUBPKG_INCLUDE; do
+						if [[ $f = *.so ]] || [[ $f = *.a ]]; then
+							echo "file '$f' found" 1>&2
+							echo false
+							exit
+						elif [[ $f = */bin/* ]] && grep -qI . $f; then
+							echo "file '$f' is binary" 1>&2
+							echo false
+							exit
+						fi
+					done
+					echo "seems to be TERMUX_SUBPKG_PLATFORM_INDEPENDENT" 1>&2
+					echo true
+				)
 
 				TERMUX_SUBPKG_INCLUDE="$(
 				# orjson.cpython-310-aarch64-linux-gnu.so -> orjson.cpython-310.so
