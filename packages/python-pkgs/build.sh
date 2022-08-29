@@ -567,7 +567,7 @@ termux_step_pre_configure() {
 							fi
 							echo "$_f"
 						elif [[ "$f" = ./share/man/* ]]; then
-							if [[ "$f" = share/man/man* ]]; then
+							if [[ "$f" = ./share/man/man* ]]; then
 								# termux_step_massage: pages will be gzipped
 								if [[ "$f" = *.gz ]]; then
 									echo "${f}"
