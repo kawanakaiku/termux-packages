@@ -239,7 +239,7 @@ termux_step_pre_configure() {
 			 if "requires" in t["build-system"] and t["build-system"]["requires"] != []:
 			  import subprocess
 			  subprocess.run("build-pip install -U".split() + t["build-system"]["requires"])
-			  subprocess.run("cross-pip install -U".split() + t["build-system"]["requires"])
+			  #subprocess.run("cross-pip install -U".split() + t["build-system"]["requires"])
 			  t["build-system"]["requires"] = []
 			 #if "build-backend" in t["build-system"] and t["build-system"]["build-backend"] != []:
 			 # t["build-system"]["build-backend"] = []
@@ -474,7 +474,7 @@ termux_step_pre_configure() {
 				continue
 			else
 				TERMUX_SUBPKG_PLATFORM_INDEPENDENT=true
-				echo "setting TERMUX_SUBPKG_PLATFORM_INDEPENDENT"
+				echo "setting TERMUX_SUBPKG_PLATFORM_INDEPENDENT for $PYTHON_PKG"
 				if ( echo "$TERMUX_SUBPKG_INCLUDE" | grep -q -e '\.so$' -e '\.a$' ); then
 					echo ".so or .a file found"
 					TERMUX_SUBPKG_PLATFORM_INDEPENDENT=false
@@ -482,6 +482,7 @@ termux_step_pre_configure() {
 					echo "binary file found"
 					TERMUX_SUBPKG_PLATFORM_INDEPENDENT=false
 				fi
+				echo "$TERMUX_SUBPKG_INCLUDE"
 
 				TERMUX_SUBPKG_INCLUDE="$(
 				# orjson.cpython-310-aarch64-linux-gnu.so -> orjson.cpython-310.so
