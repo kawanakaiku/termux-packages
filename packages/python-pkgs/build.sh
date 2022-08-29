@@ -334,6 +334,11 @@ termux_step_pre_configure() {
 				# Cargo, the Rust package manager, is not installed or is not on PATH.
 				_termux_setup_rust
 				;;
+			numpy )
+				_termux_setup_fortran
+				# libraries openblas not found in ['/home/builder/.termux-build/python-pkgs/src/python-crossenv-prefix/cross/lib', '/usr/local/lib', '/usr/lib64', '/usr/lib', '/usr/lib/x86_64-linux-gnu']
+				perl -i -pe "s|/usr|$TERMUX_PREFIX|" numpy/distutils/system_info.py
+				;;
 			scipy )
 				_termux_setup_fortran
 				(
