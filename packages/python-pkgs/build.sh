@@ -524,7 +524,7 @@ termux_step_pre_configure() {
 						if [[ $f = ./lib/python${_PYTHON_VERSION}/site-packages/* ]]; then
 							echo "112: $f" 1>&2
 							# orjson.cpython-310-aarch64-linux-gnu.so -> orjson.cpython-310.so
-							_f=$( echo $f | sed -E "${awk_cmd_so}" )
+							_f=$( echo $f | gawk "${awk_cmd_so}" )
 							if [ $f != $_f ]; then
 								echo "mv $f $_f" 1>&2
 								mv $f $_f
