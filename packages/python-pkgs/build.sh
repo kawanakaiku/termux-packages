@@ -508,41 +508,48 @@ termux_step_pre_configure() {
 				)
 
 				TERMUX_SUBPKG_INCLUDE="$(
-					sed_cmd=""
-					cd ${TERMUX_PREFIX}/lib/python${_PYTHON_VERSION}/site-packages
+					awk_cmd=''
+					cd ${TERMUX_PREFIX}
+					DIST_INFO_DIR=./lib/python${_PYTHON_VERSION}/site-packages/${PYTHON_PKG}-${TERMUX_SUBPKG_VERSION}.dist-info
 					
-					DIST_INFO_DIR=${PYTHON_PKG}-${TERMUX_SUBPKG_VERSION}.dist-info
-					
-					f=$DIST_INFO_DIR/direct_url.json
-					if [ -f $f ]; then
-						# avoid pip freeze from showing build dir
-						rm $f
-						sed_cmd+="/^${f////\\/},/d ; "
-					fi
+					awk_cmd_so="if ( \$1 ~ .*\.so$ ) { \$1 = gsub( /cpython-${_PYTHON_VERSION//.}-.*\.so$/, \"cpython-${_PYTHON_VERSION//.}.so\", \$1 ); print; next }; "
+					awk_cmd_man="if ( \$1 ~ .*/share/man/.* ) { if ( \$1 ~ .*/share/man/man.* ) { \$1 = \$1 + \".gz\"; print }; next }"
+					awk_cmd_url="if ( \$1 ~ /\/direct_url\.json$/ ) { next }; "
+					awk_cmd+=" ${awk_cmd_so}; ${awk_cmd_man}; ${awk_cmd_url}"
 					
 					for f in $TERMUX_SUBPKG_INCLUDE
 					do
-						if [[ $f != ./lib/python${_PYTHON_VERSION}/site-packages/* ]]; then
+						if [[ $f = ./lib/python${_PYTHON_VERSION}/site-packages/* ]]; then
+							# orjson.cpython-310-aarch64-linux-gnu.so -> orjson.cpython-310.so
+							_f=$( echo $f | sed -E "${awk_cmd_so}" )
+							if [ $f != $_f ]; then
+								echo "mv $f $_f" 1>&2
+								mv $f $_f
+							fi
+							echo $_f
+						elif [[ $f = ./share/man/* ]]; then
+							if [[ $f = share/man/man* ]]; then
+								# termux_step_massage: pages will be gzipped
+								echo "${f}.gz"
+							else
+								# termux_step_massage: folders will be removed
+								rm $f
+							fi
+						elif [[ $f = $DIST_INFO_DIR/direct_url.json ]]; then
+							# avoid pip freeze from showing build dir
+							rm $f
+						else
 							# no process needed
 							echo $f
-							continue
 						fi
-						f=${f#./lib/python${_PYTHON_VERSION}/site-packages/}
-						# orjson.cpython-310-aarch64-linux-gnu.so -> orjson.cpython-310.so
-						_f=$( echo $f | sed -E "s|cpython-${_PYTHON_VERSION//.}-.*\.so$|cpython-${_PYTHON_VERSION//.}.so|" )
-						if [ $f != $_f ]; then
-							echo "moving '$f' to '$_f'" 1>&2
-							mv $f $_f
-							# also replace content of RECORD
-							sed_cmd+="s|^${f},|${_f},| ; "
-						fi
-						echo ./lib/python${_PYTHON_VERSION}/site-packages/${_f}
 					done
 					
-					f=$DIST_INFO_DIR/RECORD
-					if [ -f $f ]; then
-						sed -i -e "${sed_cmd}" $f
-					fi
+					for f in $DIST_INFO_DIR/RECORD $DIST_INFO_DIR/installed-files.txt
+					do
+						if [ -f $f ]; then
+							gawk -F, -v OFS=, -i inplace "{ ${awk_cmd}; print }" $f
+						fi
+					done
 				)"
 
 				cat <<- EOF > ${TERMUX_PKG_TMPDIR}/$( to_pkgname ${PYTHON_PKG} ).subpackage.sh
