@@ -8,8 +8,8 @@ TERMUX_PKG_VERSION=2022.08.25
 # TERMUX_PKG_BUILD_DEPENDS="python, glu, freeglut, mesa"
 # TERMUX_PKG_BUILD_DEPENDS="python, mesa, glib, gstreamer, sdl2, sdl2-image, sdl2-mixer, sdl2-ttf"
 # TERMUX_PKG_BUILD_DEPENDS="python, libopenblas, libgeos, ffmpeg"
-TERMUX_PKG_BUILD_DEPENDS="python, double-conversion, ffmpeg, fontconfig-utils, freeglut, freetype, glib, glu, graphviz, gstreamer, leptonica, libgeos, libgmp, libhdf5, libjpeg-turbo, libmpc, libmpfr, libopenblas, libpng, libprotobuf, libsndfile, libsodium, libuv, libxml2, libxslt, libyaml, libzmq, lz4, mesa, pcre, portaudio, portmidi, qpdf, sdl2, sdl2-image, sdl2-mixer, sdl2-ttf, tesseract, zbar, zlib, freetype, libimagequant, libjpeg-turbo, littlecms, openjpeg, libraqm, libtiff, libwebp, libxcb, zlib"
-#TERMUX_PKG_BUILD_DEPENDS="python"
+#TERMUX_PKG_BUILD_DEPENDS="python, double-conversion, ffmpeg, fontconfig-utils, freeglut, freetype, glib, glu, graphviz, gstreamer, leptonica, libgeos, libgmp, libhdf5, libjpeg-turbo, libmpc, libmpfr, libopenblas, libpng, libprotobuf, libsndfile, libsodium, libuv, libxml2, libxslt, libyaml, libzmq, lz4, mesa, pcre, portaudio, portmidi, qpdf, sdl2, sdl2-image, sdl2-mixer, sdl2-ttf, tesseract, zbar, zlib, freetype, libimagequant, libjpeg-turbo, littlecms, openjpeg, libraqm, libtiff, libwebp, libxcb, zlib"
+TERMUX_PKG_BUILD_DEPENDS="python, opencv"
 TERMUX_PKG_BUILD_IN_SRC=true
 TERMUX_PKG_SKIP_SRC_EXTRACT=true
 TERMUX_PKG_NO_STATICSPLIT=true
@@ -201,6 +201,7 @@ termux_step_pre_configure() {
 	PYTHON_PKGS=( bcrypt homeassistant orjson sqlalchemy )
 	PYTHON_PKGS=( scipy )
 	PYTHON_PKGS=( numpy scipy tqdm colorama scikit-learn scikit-image shapely yt-dlp pip beautifulsoup4 certifi demjson3 mechanize colorama cloudscraper lxml pandas cryptography pillow pyzmq pygame pynacl matplotlib )
+	PYTHON_PKGS=( opencv-python )
 	
 	
 	PYTHON_PKGS_OK=( )
@@ -238,6 +239,7 @@ termux_step_pre_configure() {
 			homeassistant ) printf 'python-sqlalchemy' ;;
 			shapely ) printf 'libgeos' ;;
 			pillow ) printf 'freetype, libimagequant, libjpeg-turbo, littlecms, openjpeg, libraqm, libtiff, libwebp, libxcb, zlib' ;;
+			opencv-python ) printf 'opencv' ;;
 		esac
 	}
 	
@@ -246,11 +248,12 @@ termux_step_pre_configure() {
 			numpy ) printf "MATHLIB=m" ;;
 			pynacl ) printf "build_alias=$CCTERMUX_HOST_PLATFORM host_alias=x86_64-pc-linux-gnu" ;;
 			h5py ) printf "HDF5_DIR=$TERMUX_PREFIX HDF5_VERSION=1.12.0 H5PY_ROS3=-1 H5PY_DIRECT_VFD=-1" ;;
-			matplotlib ) printf "NPY_DISABLE_SVML=1" ;;
+			_matplotlib ) printf "NPY_DISABLE_SVML=1" ;;
 			pygame ) printf "LOCALBASE=$(dirname $TERMUX_PREFIX)" ;;
 			uvloop ) printf "LIBUV_CONFIGURE_HOST=x86_64-pc-linux-gnu" ;;
 			scipy ) printf "SCIPY_USE_PYTHRAN=1" ;;
 			pyzmq ) printf "ZMQ_PREFIX=${TERMUX_PREFIX}" ;;
+			opencv-python ) printf "PYTHON3_INCLUDE_PATH=${TERMUX_PREFIX}/lib/python${_PYTHON_VERSION} PYTHON3_NUMPY_INCLUDE_DIRS=${TERMUX_PREFIX}/lib/python${_PYTHON_VERSION}/site-packages/numpy/core/include" ;;
 		esac
 	}
 	
@@ -350,7 +353,7 @@ termux_step_pre_configure() {
 				_termux_setup_rust
 				;;
 			numpy )
-				_termux_setup_fortran
+				# _termux_setup_fortran
 				# libraries openblas not found in ['/home/builder/.termux-build/python-pkgs/src/python-crossenv-prefix/cross/lib', '/usr/local/lib', '/usr/lib64', '/usr/lib', '/usr/lib/x86_64-linux-gnu']
 				perl -i -pe "s|/usr|$TERMUX_PREFIX|g" numpy/distutils/system_info.py
 				;;
@@ -393,6 +396,9 @@ termux_step_pre_configure() {
 				# sed -i -e "s|self.compiler.has_function('timer_create')|False|" buildutils/detect.py
 				# echo 'INPUT(-lc)' > $TERMUX_PREFIX/lib/librt.so
 				sed -i -e 's|detected = self.test_build(zmq_prefix, self.compiler_settings)|detected = {"vers": (4, 3, 4)}|' setup.py
+				;;
+			opencv-python )
+				cross_build numpy
 				;;
 		esac
 	}
