@@ -487,6 +487,7 @@ termux_step_pre_configure() {
 				TERMUX_SUBPKG_PLATFORM_INDEPENDENT=true
 				echo "setting TERMUX_SUBPKG_PLATFORM_INDEPENDENT for $PYTHON_PKG"
 				TERMUX_SUBPKG_PLATFORM_INDEPENDENT=$(
+					cd $TERMUX_PREFIX
 					for f in $TERMUX_SUBPKG_INCLUDE; do
 						if [[ $f = *.so ]] || [[ $f = *.a ]]; then
 							echo "file '$f' found" 1>&2
