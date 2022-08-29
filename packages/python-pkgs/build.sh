@@ -519,7 +519,7 @@ termux_step_pre_configure() {
 				TERMUX_SUBPKG_INCLUDE="$(
 					awk_cmd=''
 					cd ${TERMUX_PREFIX}
-					DIST_INFO_DIR=./lib/python${_PYTHON_VERSION}/site-packages/${PYTHON_PKG}-${TERMUX_SUBPKG_VERSION}.dist-info
+					INFO_DIR=$( echo "$TERMUX_SUBPKG_INCLUDE" | grep -oP '.+\.(dist-info|egg-info)' | head -n1 )
 					
 					awk_cmd_so="if ( \$1 ~ /.*\.so$/ ) { gsub( /cpython-${_PYTHON_VERSION//.}-.*\.so$/, \"cpython-${_PYTHON_VERSION//.}.so\", \$1 ); print; next }; "
 					awk_cmd_man="if ( \$1 ~ /.*\/share\/man\/.*/ ) { if ( \$1 ~ /.*\/share\/man\/man.*/ ) { \$1 = \$1 \".gz\"; print }; next }"
@@ -544,7 +544,7 @@ termux_step_pre_configure() {
 								# termux_step_massage: folders will be removed
 								rm $f
 							fi
-						elif [[ "$f" = "$DIST_INFO_DIR/direct_url.json" ]]; then
+						elif [[ "$f" = "$INFO_DIR/direct_url.json" ]]; then
 							# avoid pip freeze from showing build dir
 							rm $f
 						else
@@ -553,7 +553,7 @@ termux_step_pre_configure() {
 						fi
 					done
 					
-					for f in $DIST_INFO_DIR/RECORD $DIST_INFO_DIR/installed-files.txt
+					for f in $INFO_DIR/RECORD $DIST_INFO_DIR/installed-files.txt
 					do
 						if [ -f "$f" ]; then
 							gawk -F, -v OFS=, -i inplace "{ ${awk_cmd}; print }" $f
