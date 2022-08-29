@@ -11,6 +11,7 @@ TERMUX_PKG_BUILD_DEPENDS="python, libopenblas, libgeos, ffmpeg"
 #TERMUX_PKG_BUILD_DEPENDS="python"
 TERMUX_PKG_BUILD_IN_SRC=true
 TERMUX_PKG_SKIP_SRC_EXTRACT=true
+TERMUX_PKG_NO_STATICSPLIT=true
 
 _PYTHON_VERSION=$(. $TERMUX_SCRIPTDIR/packages/python/build.sh; echo $_MAJOR_VERSION)
 _PYTHON_FULL_VERSION=$(. $TERMUX_SCRIPTDIR/packages/python/build.sh; echo $TERMUX_PKG_VERSION)
@@ -486,7 +487,7 @@ termux_step_pre_configure() {
 			(
 				cd $PYTHON_PKG
 				export $( manage_exports ) > /dev/null
-				cross-pip -vv install --upgrade --force-reinstall --no-deps --no-binary :all: --prefix $TERMUX_PREFIX --no-build-isolation --no-cache-dir --compile $(for opt in $( manage-opts ); do echo "--install-option=$opt"; done ) .
+				cross-pip -v install --upgrade --force-reinstall --no-deps --no-binary :all: --prefix $TERMUX_PREFIX --no-build-isolation --no-cache-dir --compile $(for opt in $( manage-opts ); do echo "--install-option=$opt"; done ) .
 				#python setup.py install --prefix $TERMUX_PREFIX  # creates egg
 			)
 			TERMUX_FILES_LIST_AFTER="$( cd $TERMUX_PREFIX && find . -type f,l | sort )"
@@ -501,7 +502,7 @@ termux_step_pre_configure() {
 				echo "setting TERMUX_SUBPKG_PLATFORM_INDEPENDENT for $PYTHON_PKG"
 				TERMUX_SUBPKG_PLATFORM_INDEPENDENT=$(
 					cd $TERMUX_PREFIX
-					for f in $TERMUX_SUBPKG_INCLUDE; do
+					while read f; do
 						if [[ $f = *.so ]] || [[ $f = *.a ]]; then
 							echo "file '$f' found" 1>&2
 							echo false
@@ -511,7 +512,7 @@ termux_step_pre_configure() {
 							echo false
 							exit
 						fi
-					done
+					done <<< "$TERMUX_SUBPKG_INCLUDE"
 					echo "seems to be TERMUX_SUBPKG_PLATFORM_INDEPENDENT" 1>&2
 					echo true
 				)
@@ -522,36 +523,41 @@ termux_step_pre_configure() {
 					INFO_DIR=$( echo "$TERMUX_SUBPKG_INCLUDE" | grep -oP '.+\.(dist-info|egg-info)' | head -n1 )
 					
 					awk_cmd_so="if ( \$1 ~ /.*\.so$/ ) { gsub( /cpython-${_PYTHON_VERSION//.}-.*\.so$/, \"cpython-${_PYTHON_VERSION//.}.so\", \$1 ); print; next }; "
-					awk_cmd_man="if ( \$1 ~ /.*\/share\/man\/.*/ ) { if ( \$1 ~ /.*\/share\/man\/man.*/ ) { \$1 = \$1 \".gz\"; print }; next }"
+					awk_cmd_man="if ( \$1 ~ /.*\/share\/man\/.*/ ) { if ( \$1 ~ /.*\/share\/man\/man.*/ ) { if ( \$1 ~ /.*\/share\/man\/man.*/ ) {} else { \$1 = \$1 \".gz\" }; print }; next }"
 					awk_cmd_url="if ( \$1 ~ /\/direct_url\.json$/ ) { next }; "
 					awk_cmd+=" ${awk_cmd_so}; ${awk_cmd_man}; ${awk_cmd_url}"
 					
-					for f in $TERMUX_SUBPKG_INCLUDE
-					do
+					while read f; do
 						if [[ "$f" = "./lib/python${_PYTHON_VERSION}/site-packages/*" ]]; then
 							# orjson.cpython-310-aarch64-linux-gnu.so -> orjson.cpython-310.so
-							_f=$( echo $f | gawk "{ ${awk_cmd_so} }" )
+							_f="$( echo $f | gawk "{ ${awk_cmd_so} }" )"
 							if [ "$f" != "$_f" ]; then
-								echo "mv $f $_f" 1>&2
-								mv $f $_f
+								echo "mv '$f' '$_f'" 1>&2
+								mv "$f" "$_f"
 							fi
-							echo $_f
+							echo "$_f"
 						elif [[ "$f" = "./share/man/*" ]]; then
 							if [[ "$f" = "share/man/man*" ]]; then
 								# termux_step_massage: pages will be gzipped
-								echo "${f}.gz"
+								if [[ "$f" = "*.gz" ]]; then
+									echo "${f}"
+								else
+									echo "${f}.gz"
+								fi
 							else
 								# termux_step_massage: folders will be removed
-								rm $f
+								rm "$f"
 							fi
 						elif [[ "$f" = "$INFO_DIR/direct_url.json" ]]; then
 							# avoid pip freeze from showing build dir
-							rm $f
+							rm "$f"
 						else
 							# no process needed
-							echo $f
+							echo "$f"
 						fi
-					done
+					done <<< "$TERMUX_SUBPKG_INCLUDE"
+					
+					echo "TERMUX_SUBPKG_INCLUDE=${TERMUX_SUBPKG_INCLUDE}"
 					
 					for f in $INFO_DIR/RECORD $INFO_DIR/installed-files.txt
 					do
