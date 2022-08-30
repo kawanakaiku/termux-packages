@@ -476,6 +476,8 @@ termux_step_pre_configure() {
 				ARGS
 				# patch to prevent default
 				sed -i -e "s|cmake_args=cmake_args|cmake_args=open('${TERMUX_COMMON_CACHEDIR}/tmp_cmake_args_opencv').read().split(os.linesep)[:-1]|" setup.py
+				# No such file or directory: '_skbuild/linux-aarch64-3.10/cmake-install/python/cv2/config-3.py'
+				sed -z -i -e "s|with open('%spython.*custom_init_data)||" setup.py
 				;;
 		esac
 	}
