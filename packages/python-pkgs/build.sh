@@ -172,16 +172,15 @@ termux_step_pre_configure() {
 	
 	(
 		# get_cmake_args
-			cmake() {
-				local arg
-				for arg do
-					if [[ "$arg" = -D* ]]; then
-						echo -D"'${arg:2}'"
-					fi
-				done
-			}
-			termux_step_configure_cmake
-		) > ${TERMUX_COMMON_CACHEDIR}/tmp_cmake_args
+		cmake() {
+			local arg
+			for arg do
+				if [[ "$arg" = -D* ]]; then
+					echo -D"'${arg:2}'"
+				fi
+			done
+		}
+		termux_step_configure_cmake > ${TERMUX_COMMON_CACHEDIR}/tmp_cmake_args
 	)
 	
 	PYTHON_PKGS=( )
