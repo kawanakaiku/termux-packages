@@ -487,8 +487,8 @@ termux_step_pre_configure() {
 	
 	get_requires() {
 		python <<-PYTHON
-		import re, json
-		j = json.loads('''$( get_pip_src $PYTHON_PKG )''')
+		import re, json, base64
+		j = json.loads(base64.b64decode('''$( get_pip_src $PYTHON_PKG | base64 )'''))
 
 		implementation_name = "cpython"
 		implementation_version = "$_PYTHON_FULL_VERSION"
