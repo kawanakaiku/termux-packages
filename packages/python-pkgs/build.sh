@@ -69,7 +69,7 @@ termux_step_pre_configure() {
 		
 	local PYTHON_PKGS PYTHON_PKGS_OK PYTHON_PKG
 	local manage_depends to_pkgname get_pip_src get_requires cross_build
-	local _termux_setup_rust _termux_setup_fortran _termux_setup_protobuf
+	local _termux_setup_rust _termux_setup_fortran _termux_setup_protobuf get_cmake_args
 	
 	_termux_setup_rust() {
 		termux_setup_rust
@@ -153,6 +153,20 @@ termux_step_pre_configure() {
 		_termux_setup_protobuf() {
 			echo termux_setup_protobuf already setup
 		}
+	}
+	
+	get_cmake_args() {
+		(
+			cmake() {
+				local arg
+				for arg do
+					if [[ "$arg" = -D* ]]; then
+						echo -D"'${arg:2}'"
+					fi
+				done
+			}
+			termux_step_configure_cmake
+		)
 	}
 	
 	PYTHON_PKGS=( )
@@ -276,6 +290,10 @@ termux_step_pre_configure() {
 					-DWITH_FFMPEG=OFF
 					-DOPENCV_EXTRA_MODULES_PATH=$( readlink -f opencv-contrib-python/opencv/modules )
 				"
+				local line
+				while read line; do
+					CMAKE_ARGS+="$line"$'\n'
+				done <<< "$( get_cmake_args )"
 				;;
 		esac
 	}
