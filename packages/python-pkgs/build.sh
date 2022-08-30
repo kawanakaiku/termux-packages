@@ -488,7 +488,7 @@ termux_step_pre_configure() {
 	get_requires() {
 		python <<-PYTHON
 		import re, json
-		j = json.loads(r'''$( get_pip_src $PYTHON_PKG )''')
+		j = json.load(open("$( get_pip_src --file $PYTHON_PKG )"))
 
 		implementation_name = "cpython"
 		implementation_version = "$_PYTHON_FULL_VERSION"
@@ -522,12 +522,24 @@ termux_step_pre_configure() {
 	}
 	
 	get_pypi_json() {
-		local PYTHON_PKG=$1
+		local PYTHON_PKG
 		local file=${TERMUX_COMMON_CACHEDIR}/tmp_pypi_json_${PYTHON_PKG}
+		local print_file=false
+		for arg; do
+			if [ $arg = --file ]; then
+				print_file=true; continue
+			else
+				PYTHON_PKG=$arg
+			fi
+		done
 		if [ ! -f $file ]; then
 			curl --silent https://pypi.org/pypi/$PYTHON_PKG/json > ${TERMUX_COMMON_CACHEDIR}/tmp_pypi_json_${PYTHON_PKG}
 		fi
-		cat $file
+		if $print_file; then
+			echo $file
+		else
+			cat $file
+		fi
 	}
 	
 	cross_build() {
