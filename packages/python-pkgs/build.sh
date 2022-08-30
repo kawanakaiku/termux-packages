@@ -69,7 +69,6 @@ termux_step_pre_configure() {
 		
 	local PYTHON_PKGS PYTHON_PKGS_OK PYTHON_PKG
 	local manage_depends to_pkgname get_pip_src get_requires cross_build
-	local _termux_setup_rust _termux_setup_fortran _termux_setup_protobuf get_cmake_args
 	
 	_termux_setup_rust() {
 		termux_setup_rust
@@ -152,6 +151,22 @@ termux_step_pre_configure() {
 		
 		_termux_setup_protobuf() {
 			echo termux_setup_protobuf already setup
+		}
+	}
+	
+	_termux_setup_cmake() {
+		termux_setup_cmake
+		
+		_termux_setup_cmake() {
+			echo termux_setup_cmake already setup
+		}
+	}
+	
+	_termux_setup_ninja() {
+		termux_setup_ninja
+		
+		_termux_setup_ninja() {
+			echo termux_setup_ninja already setup
 		}
 	}
 	
@@ -440,6 +455,8 @@ termux_step_pre_configure() {
 				;;
 			opencv-contrib-python )
 				cross_build numpy
+				_termux_setup_cmake
+				_termux_setup_ninja
 				_termux_setup_protobuf
 				# OpenCVConfig.cmake.in.patch
 				perl -i -pe "s|\Q@OpenCV_INCLUDE_DIRS_CONFIGCMAKE@\E|@TERMUX_PREFIX@/include|" opencv/cmake/templates/OpenCVConfig.cmake.in
