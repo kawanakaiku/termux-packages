@@ -523,7 +523,6 @@ termux_step_pre_configure() {
 	
 	get_pypi_json() {
 		local PYTHON_PKG
-		local file=${TERMUX_COMMON_CACHEDIR}/tmp_pypi_json_${PYTHON_PKG}
 		local print_file=false
 		for arg; do
 			if [ $arg = --file ]; then
@@ -532,6 +531,7 @@ termux_step_pre_configure() {
 				PYTHON_PKG=$arg
 			fi
 		done
+		local file=${TERMUX_COMMON_CACHEDIR}/tmp_pypi_json_${PYTHON_PKG}
 		if [ ! -f $file ]; then
 			curl --silent https://pypi.org/pypi/$PYTHON_PKG/json > ${TERMUX_COMMON_CACHEDIR}/tmp_pypi_json_${PYTHON_PKG}
 		fi
