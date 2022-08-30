@@ -460,6 +460,7 @@ termux_step_pre_configure() {
 				# error: CMake-installed files must be within the project root.
 				# exclude -DCMAKE_INSTALL_*
 				grep -v -e "^-DCMAKE_INSTALL_" ${TERMUX_COMMON_CACHEDIR}/tmp_cmake_args > ${TERMUX_COMMON_CACHEDIR}/tmp_cmake_args_opencv
+				# WITH_LAPACK=OFF error: no matching function for call to 'dgeev_'
 				cat <<- ARGS >> ${TERMUX_COMMON_CACHEDIR}/tmp_cmake_args_opencv
 					-DANDROID_NO_TERMUX=OFF
 					-DWITH_OPENEXR=OFF
@@ -471,6 +472,7 @@ termux_step_pre_configure() {
 					-DPYTHON3_NUMPY_INCLUDE_DIRS=${TERMUX_PREFIX}/lib/python${_PYTHON_VERSION}/site-packages/numpy/core/include
 					-DWITH_FFMPEG=OFF
 					-DOPENCV_EXTRA_MODULES_PATH=${PWD}/opencv_contrib/modules
+					-DWITH_LAPACK=OFF
 				ARGS
 				# patch to prevent default
 				sed -i -e "s|cmake_args=cmake_args|cmake_args=open('${TERMUX_COMMON_CACHEDIR}/tmp_cmake_args_opencv').read().split(os.linesep)[:-1]|" setup.py
