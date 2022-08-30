@@ -18,6 +18,62 @@ _PYTHON_VERSION=$(. $TERMUX_SCRIPTDIR/packages/python/build.sh; echo $_MAJOR_VER
 _PYTHON_FULL_VERSION=$(. $TERMUX_SCRIPTDIR/packages/python/build.sh; echo $TERMUX_PKG_VERSION)
 
 termux_step_pre_configure() {
+
+	# for accurate dependency
+
+	get_pkg_files() {(
+		local PKG
+		for PKG do
+			local TMP_FILE=${TERMUX_COMMON_CACHEDIR}/get_pkg_files_${PKG}
+			if [ ! -f ${TMP_FILE} ]; then
+				local TMP_DIR=${TERMUX_PKG_TMPDIR}/get_deb_files_${RANDOM}
+				local DEB_FILE=${TERMUX_COMMON_CACHEDIR}-*/${PKG}_*_*.deb
+				mkdir ${TMP_DIR}
+				pushd ${TMP_DIR}
+
+				mkfifo data.tar.xz contents
+				tar Jtf data.tar.xz > contents &
+				ar x scipy_1.6.3_aarch64.deb data.tar.xz &
+				contents="$( cat contents | grep -v '/$' )"
+				echo "${contents}"		
+
+				popd ${OLDPWD}
+				rm -rf ${TMP_DIR}
+			fi
+			cat ${TMP_FILE}
+		done
+	)}
+	
+	get_pkgs_depends() {(
+		local TMP_BUILDER_DIR=paclages/nonexist
+		mkdir $TMP_BUILDER_DIR
+		cat <<-SH > $TMP_BUILDER_DIR/build.sh
+		TERMUX_PKG_DEPENDS="$( echo -n "$1"; shift; for arg; do echo -n ", $arg"; done )"
+		SH
+		
+		pushd "$TERMUX_SCRIPTDIR"
+		./scripts/buildorder.py -i "$TMP_BUILDER_DIR" packages root-packages x11-packages | awk '{print $1}'
+		popd
+		
+		rm -rf $TMP_BUILDER_DIR
+	)}
+	
+	disable_all_files() {
+		# cache files list
+		# disable all installed files
+		echo "$( get_pkg_files $( get_pkgs_depends TERMUX_PKG_NAME ) )" | while read f; do if test -f "$f"; then mv "$f" "$f.disabling"; fi; done
+	}
+	
+	enable_python_pkg_files() {
+		# install just required packages
+		disable_all_files
+		local PYTHON_PKG=$1
+		local PYTHON_PKG_REQUIRES=( python $( manage_depends $PYTHON_PKG ) )
+		local PYTHON_PKG_REQUIRES_RECURSIVE=( $( get_pkgs_depends "${PYTHON_PKG_REQUIRES[@]} ) )
+		echo "$( get_pkg_files $( get_pkgs_depends ${PYTHON_PKG_REQUIRES_RECURSIVE[@]} ) )" | while read f; do if test -f "$f.disabling"; then mv "$f.disabling" "$f"; fi; done
+	}
+	
+	
 	# for building onnx
 	# termux_setup_cmake
 	# termux_setup_ninja
@@ -68,7 +124,6 @@ termux_step_pre_configure() {
 	build-pip install -U pip setuptools wheel Cython toml
 		
 	local PYTHON_PKGS PYTHON_PKGS_OK PYTHON_PKG
-	local manage_depends to_pkgname get_pip_src get_requires cross_build
 	
 	_termux_setup_rust() {
 		termux_setup_rust
@@ -246,6 +301,8 @@ termux_step_pre_configure() {
 	PYTHON_PKGS_OK=( )
 	
 	manage_depends() {
+		local PYTHON_PKG=$1
+		
 		case $PYTHON_PKG in
 			lxml ) printf 'libxml2 libxslt' ;;
 			gmpy2 ) printf 'libgmp libmpc libmpfr' ;;
@@ -531,6 +588,8 @@ termux_step_pre_configure() {
 	}
 	
 	get_requires() {
+		local PYTHON_PKG=$1
+		
 		python <<-PYTHON
 		import re, json
 		j = json.loads(r'''$( get_pypi_json $PYTHON_PKG )''')
@@ -589,8 +648,10 @@ termux_step_pre_configure() {
 			[[ "    " =~ " $PYTHON_PKG " ]] && continue
 
 			echo "Processing $PYTHON_PKG ..."
+			
+			enable_python_pkg_files $PYTHON_PKG
 
-			PYTHON_PKG_REQUIRES=( $( get_requires ) )
+			PYTHON_PKG_REQUIRES=( $( get_requires $PYTHON_PKG ) )
 			echo "PYTHON_PKG_REQUIRES='${PYTHON_PKG_REQUIRES[@]}'"
 			PYTHON_PKGS+=( "${PYTHON_PKG_REQUIRES[@]}" )
 			TERMUX_SUBPKG_DESCRIPTION="$( get_pypi_json $PYTHON_PKG | jq -r '.info.summary' | sed -e 's|"|\\"|g' )"
@@ -599,7 +660,7 @@ termux_step_pre_configure() {
 				TERMUX_SUBPKG_DESCRIPTION="Python package $PYTHON_PKG"
 			fi
 			TERMUX_SUBPKG_VERSION="$( get_pypi_json $PYTHON_PKG | jq -r '.info.version' )"
-			TERMUX_SUBPKG_DEPENDS=( python $( to_pkgname "${PYTHON_PKG_REQUIRES[@]}" ) $( manage_depends ) )
+			TERMUX_SUBPKG_DEPENDS=( python $( to_pkgname "${PYTHON_PKG_REQUIRES[@]}" ) $( manage_depends $PYTHON_PKG ) )
 			TERMUX_SUBPKG_DEPENDS=( $( printf '%s\n' "${TERMUX_SUBPKG_DEPENDS[*]}" | sort | uniq ) )
 			TERMUX_SUBPKG_DEPENDS="$( echo "${TERMUX_SUBPKG_DEPENDS[*]}" | sed -e 's| |, |g' )"
 
@@ -654,7 +715,10 @@ termux_step_pre_configure() {
 					awk_cmd+=" ${awk_cmd_so}; ${awk_cmd_man}; ${awk_cmd_url}"
 					
 					while read f; do
-						if [[ "$f" = ./lib/python${_PYTHON_VERSION}/site-packages/* ]]; then
+						if [[ "$f" = $INFO_DIR/direct_url.json ]]; then
+							# avoid pip freeze from showing build dir
+							rm "$f"
+						elif [[ "$f" = ./lib/python${_PYTHON_VERSION}/site-packages/* ]]; then
 							# orjson.cpython-310-aarch64-linux-gnu.so -> orjson.cpython-310.so
 							_f="$( echo $f | gawk "{ ${awk_cmd_so}; print }" )"
 							if [ "$f" != "$_f" ]; then
@@ -674,9 +738,6 @@ termux_step_pre_configure() {
 								# termux_step_massage: folders will be removed
 								rm "$f"
 							fi
-						elif [[ "$f" = $INFO_DIR/direct_url.json ]]; then
-							# avoid pip freeze from showing build dir
-							rm "$f"
 						else
 							# no process needed
 							echo "$f"
@@ -717,6 +778,10 @@ termux_step_pre_configure() {
 		
 		cross_build $PYTHON_PKG
 	done
+	
+	# rm all installed files
+	disable_all_files
+	echo "$( get_pkg_files $( get_pkgs_depends TERMUX_PKG_NAME ) )" | while read f; do rm -f "$f.disabling"; done
 }
 
 termux_step_configure() { :; }
