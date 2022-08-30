@@ -175,8 +175,8 @@ termux_step_pre_configure() {
 		cmake() {
 			local arg
 			for arg do
-				if [[ "$arg" = -D* ]]; then
-					echo -D"'${arg:2}'"
+				if [[ "${arg}" = -D* ]]; then
+					echo "${arg}"
 				fi
 			done
 		}
