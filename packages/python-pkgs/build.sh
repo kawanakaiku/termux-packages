@@ -29,7 +29,7 @@ termux_step_pre_configure() {
 				local TMP_DIR=${TERMUX_PKG_TMPDIR}/get_deb_files_${RANDOM}
 				local DEB_FILE=${TERMUX_COMMON_CACHEDIR}-*/${PKG}_*_*.deb
 				mkdir ${TMP_DIR}
-				pushd ${TMP_DIR}
+				cd ${TMP_DIR}
 
 				mkfifo data.tar.xz contents
 				tar Jtf data.tar.xz > contents &
@@ -37,7 +37,7 @@ termux_step_pre_configure() {
 				contents="$( cat contents | grep -v '/$' )"
 				echo "${contents}"		
 
-				popd ${OLDPWD}
+				cd ${OLDPWD}
 				rm -rf ${TMP_DIR}
 			fi
 			cat ${TMP_FILE}
@@ -51,9 +51,9 @@ termux_step_pre_configure() {
 		TERMUX_PKG_DEPENDS="$( echo -n "$1"; shift; for arg; do echo -n ", $arg"; done )"
 		SH
 		
-		pushd "$TERMUX_SCRIPTDIR"
+		cd "$TERMUX_SCRIPTDIR"
 		./scripts/buildorder.py -i "$TMP_BUILDER_DIR" packages root-packages x11-packages | awk '{print $1}'
-		popd
+		cd "$OLDPWD"
 		
 		rm -rf $TMP_BUILDER_DIR
 	)}
@@ -802,7 +802,7 @@ termux_step_pre_configure() {
 	
 	# rm all installed files
 	disable_all_files
-	echo "$( get_pkg_files $( get_pkgs_depends TERMUX_PKG_NAME ) )" | while read f; do rm -f "$f.disabling"; done
+	echo "$( get_pkg_files $( get_pkgs_depends $TERMUX_PKG_NAME ) )" | while read f; do rm -f "$f.disabling"; done
 }
 
 termux_step_configure() { :; }
