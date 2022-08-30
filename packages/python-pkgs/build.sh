@@ -488,7 +488,7 @@ termux_step_pre_configure() {
 	get_requires() {
 		python <<-PYTHON
 		import re, json
-		j = json.load(open("${TERMUX_COMMON_CACHEDIR}/tmp_pypi_json_${PYTHON_PKG}"))
+		j = json.loads('''$( get_pip_src $PYTHON_PKG )''')
 
 		implementation_name = "cpython"
 		implementation_version = "$_PYTHON_FULL_VERSION"
