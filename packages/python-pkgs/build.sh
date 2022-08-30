@@ -180,7 +180,9 @@ termux_step_pre_configure() {
 				fi
 			done
 		}
-		termux_step_configure_cmake > ${TERMUX_COMMON_CACHEDIR}/tmp_cmake_args
+		termux_step_configure_cmake > ${TERMUX_COMMON_CACHEDIR}/tmp_cmake_args || true
+		echo "termux_step_configure_cmake args:"
+		cat ${TERMUX_COMMON_CACHEDIR}/tmp_cmake_args
 	)
 	
 	PYTHON_PKGS=( )
