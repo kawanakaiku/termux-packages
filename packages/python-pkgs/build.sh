@@ -170,8 +170,8 @@ termux_step_pre_configure() {
 		}
 	}
 	
-	get_cmake_args() {
-		(
+	(
+		# get_cmake_args
 			cmake() {
 				local arg
 				for arg do
@@ -181,8 +181,8 @@ termux_step_pre_configure() {
 				done
 			}
 			termux_step_configure_cmake
-		)
-	}
+		) > ${TERMUX_COMMON_CACHEDIR}/tmp_cmake_args
+	)
 	
 	PYTHON_PKGS=( )
 	PYTHON_PKGS+=( yt-dlp streamlink gallery-dl )
@@ -293,22 +293,6 @@ termux_step_pre_configure() {
 				export LDFLAGS+=" -llog"
 				# -DWITH_FFMPEG=OFF for error: use of undeclared identifier 'CODEC_ID_H264'; did you mean 'AV_CODEC_ID_H264'?
 				# -DOPENCV_EXTRA_MODULES_PATH=<opencv_contrib>/modules for with extra
-				export CMAKE_ARGS="
-					-DANDROID_NO_TERMUX=OFF
-					-DWITH_OPENEXR=OFF
-					-DBUILD_PROTOBUF=OFF
-					-DPROTOBUF_UPDATE_FILES=ON
-					-DOPENCV_GENERATE_PKGCONFIG=ON
-					-DPYTHON_DEFAULT_EXECUTABLE=python
-					-DPYTHON3_INCLUDE_PATH=${TERMUX_PREFIX}/include/python${_PYTHON_VERSION}
-					-DPYTHON3_NUMPY_INCLUDE_DIRS=${TERMUX_PREFIX}/lib/python${_PYTHON_VERSION}/site-packages/numpy/core/include
-					-DWITH_FFMPEG=OFF
-					-DOPENCV_EXTRA_MODULES_PATH=$( readlink -f opencv-contrib-python/opencv/modules )
-				"
-				local line
-				while read line; do
-					CMAKE_ARGS+="$line"$'\n'
-				done <<< "$( get_cmake_args )"
 				;;
 		esac
 	}
@@ -468,6 +452,23 @@ termux_step_pre_configure() {
 					
 				# with extra modules
 				# get_pip_src opencv-contrib-python  # this package includes opencv-python (cv2)
+				
+				# cmake_args
+				cat ${TERMUX_COMMON_CACHEDIR}/tmp_cmake_args > ${TERMUX_COMMON_CACHEDIR}/tmp_cmake_args_opencv
+				cat <<- ARGS >> ${TERMUX_COMMON_CACHEDIR}/tmp_cmake_args_opencv
+					-DANDROID_NO_TERMUX=OFF
+					-DWITH_OPENEXR=OFF
+					-DBUILD_PROTOBUF=OFF
+					-DPROTOBUF_UPDATE_FILES=ON
+					-DOPENCV_GENERATE_PKGCONFIG=ON
+					-DPYTHON_DEFAULT_EXECUTABLE=python
+					-DPYTHON3_INCLUDE_PATH=${TERMUX_PREFIX}/include/python${_PYTHON_VERSION}
+					-DPYTHON3_NUMPY_INCLUDE_DIRS=${TERMUX_PREFIX}/lib/python${_PYTHON_VERSION}/site-packages/numpy/core/include
+					-DWITH_FFMPEG=OFF
+					-DOPENCV_EXTRA_MODULES_PATH=$( readlink -f opencv-contrib-python/opencv/modules )
+				ARGS
+				# patch to prevent default
+				sed -i -e "s|cmake_args=cmake_args|cmake_args=open('${TERMUX_COMMON_CACHEDIR}/tmp_cmake_args_opencv').read().split('\n')[:-1]|" setup.py
 				;;
 		esac
 	}
