@@ -262,6 +262,7 @@ termux_step_pre_configure() {
 			pyzmq ) export ZMQ_PREFIX=${TERMUX_PREFIX} ;;
 			opencv-python )
 				export LDFLAGS+=" -llog"
+				# -DWITH_FFMPEG=OFF for error: use of undeclared identifier 'CODEC_ID_H264'; did you mean 'AV_CODEC_ID_H264'?
 				export CMAKE_ARGS="
 					-DANDROID_NO_TERMUX=OFF
 					-DWITH_OPENEXR=OFF
@@ -271,6 +272,7 @@ termux_step_pre_configure() {
 					-DPYTHON_DEFAULT_EXECUTABLE=python
 					-DPYTHON3_INCLUDE_PATH=$TERMUX_PREFIX/include/python${_PYTHON_VERSION}
 					-DPYTHON3_NUMPY_INCLUDE_DIRS=${_CROSSENV_PREFIX}/cross/lib/python${_PYTHON_VERSION}/site-packages/numpy/core/include
+					-DWITH_FFMPEG=OFF
 				"
 				;;
 		esac
