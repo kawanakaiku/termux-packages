@@ -545,8 +545,6 @@ termux_step_pre_configure() {
 
 			echo "Processing $PYTHON_PKG ..."
 
-			get_pypi_json ${PYTHON_PKG}
-
 			PYTHON_PKG_REQUIRES=( $( get_requires ) )
 			echo "PYTHON_PKG_REQUIRES='${PYTHON_PKG_REQUIRES[@]}'"
 			PYTHON_PKGS+=( "${PYTHON_PKG_REQUIRES[@]}" )
