@@ -161,6 +161,7 @@ termux_step_pre_configure() {
 			echo termux_setup_cmake already setup
 		}
 	}
+	_termux_setup_cmake
 	
 	_termux_setup_ninja() {
 		termux_setup_ninja
