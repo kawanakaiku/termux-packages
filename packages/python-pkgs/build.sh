@@ -469,7 +469,7 @@ termux_step_pre_configure() {
 					-DOPENCV_EXTRA_MODULES_PATH=$( readlink -f opencv-contrib-python/opencv/modules )
 				ARGS
 				# patch to prevent default
-				sed -i -e "s|cmake_args=cmake_args|cmake_args=open('${TERMUX_COMMON_CACHEDIR}/tmp_cmake_args_opencv').read().split('\n')[:-1]|" setup.py
+				sed -i -e "s|cmake_args=cmake_args|cmake_args=open('${TERMUX_COMMON_CACHEDIR}/tmp_cmake_args_opencv').read().split('\\n')[:-1]|" setup.py
 				;;
 		esac
 	}
