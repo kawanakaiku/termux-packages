@@ -263,6 +263,7 @@ termux_step_pre_configure() {
 			opencv-python )
 				export LDFLAGS+=" -llog"
 				# -DWITH_FFMPEG=OFF for error: use of undeclared identifier 'CODEC_ID_H264'; did you mean 'AV_CODEC_ID_H264'?
+				# -DOPENCV_EXTRA_MODULES_PATH=<opencv_contrib>/modules for with extra
 				export CMAKE_ARGS="
 					-DANDROID_NO_TERMUX=OFF
 					-DWITH_OPENEXR=OFF
@@ -270,9 +271,10 @@ termux_step_pre_configure() {
 					-DPROTOBUF_UPDATE_FILES=ON
 					-DOPENCV_GENERATE_PKGCONFIG=ON
 					-DPYTHON_DEFAULT_EXECUTABLE=python
-					-DPYTHON3_INCLUDE_PATH=$TERMUX_PREFIX/include/python${_PYTHON_VERSION}
-					-DPYTHON3_NUMPY_INCLUDE_DIRS=${_CROSSENV_PREFIX}/cross/lib/python${_PYTHON_VERSION}/site-packages/numpy/core/include
+					-DPYTHON3_INCLUDE_PATH=${TERMUX_PREFIX}/include/python${_PYTHON_VERSION}
+					-DPYTHON3_NUMPY_INCLUDE_DIRS=${TERMUX_PREFIX}/lib/python${_PYTHON_VERSION}/site-packages/numpy/core/include
 					-DWITH_FFMPEG=OFF
+					-DOPENCV_EXTRA_MODULES_PATH=$( readlink -f opencv-contrib-python/modules )
 				"
 				;;
 		esac
@@ -428,6 +430,10 @@ termux_step_pre_configure() {
 					xargs -n 1 sed -i \
 					-e 's/\([^A-Za-z0-9_]ANDROID\)\([^A-Za-z0-9_]\)/\1_NO_TERMUX\2/g' \
 					-e 's/\([^A-Za-z0-9_]ANDROID\)$/\1_NO_TERMUX/g'
+					
+				# with extra modules
+				get_pip_src opencv-contrib-python
+				
 				;;
 		esac
 	}
@@ -457,12 +463,15 @@ termux_step_pre_configure() {
 	
 	get_pip_src() {
 		local json url sha256 filename json dir
+		local PYTHON_PKG=$1
+		
 		case $PYTHON_PKG in
 			tensorflow )
 				git clone https://github.com/tensorflow/tensorflow.git --depth=1 --branch=v${TERMUX_SUBPKG_VERSION}
 				return ;;
 		esac
-		json="$( echo "$PYTHON_JSON" | jq -r '[.releases[.info.version][] | select(.packagetype=="sdist")][0]' )"
+		
+		json="$( get_pypi_json $PYTHON_PKG | jq -r '[.releases[.info.version][] | select(.packagetype=="sdist")][0]' )"
 		url=$( echo "$json" | jq -r '.url' )
 		sha256=$( echo "$json" | jq -r '.digests.sha256' )
 		filename="$( echo "$json" | jq -r '.filename' )"  # filename with space ex) kivy-garden
@@ -472,13 +481,14 @@ termux_step_pre_configure() {
 			*.zip ) unzip -q "$filename"; dir="${filename%%.zip}" ;;
 			* ) echo "unknown archive $filename"; exit 1 ;;
 		esac
+		rm $filename
 		mv "$dir" $PYTHON_PKG
 	}
 	
 	get_requires() {
 		python <<-PYTHON
 		import re, json
-		j = json.load(open("/tmp/tmp_python_json"))
+		j = json.load(open("${TERMUX_COMMON_CACHEDIR}/tmp_pypi_json_${PYTHON_PKG}"))
 
 		implementation_name = "cpython"
 		implementation_version = "$_PYTHON_FULL_VERSION"
@@ -511,8 +521,17 @@ termux_step_pre_configure() {
 		PYTHON
 	}
 	
+	get_pypi_json() {
+		local PYTHON_PKG=$1
+		local file=${TERMUX_COMMON_CACHEDIR}/tmp_pypi_json_${PYTHON_PKG}
+		if [ ! -f $file ]; then
+			curl --silent https://pypi.org/pypi/$PYTHON_PKG/json > ${TERMUX_COMMON_CACHEDIR}/tmp_pypi_json_${PYTHON_PKG}
+		fi
+		cat $file
+	}
+	
 	cross_build() {
-		local PYTHON_PKG PYTHON_JSON PYTHON_PKG_REQUIRES
+		local PYTHON_PKG PYTHON_PKG_REQUIRES
 		local TERMUX_SUBPKG_DESCRIPTION TERMUX_SUBPKG_DEPENDS TERMUX_SUBPKG_INCLUDE TERMUX_SUBPKG_PLATFORM_INDEPENDENT TERMUX_SUBPKG_VERSION 
 		local TERMUX_FILES_LIST_BEFORE TERMUX_FILES_LIST_AFTER
 
@@ -526,18 +545,17 @@ termux_step_pre_configure() {
 
 			echo "Processing $PYTHON_PKG ..."
 
-			PYTHON_JSON="$( curl --silent https://pypi.org/pypi/$PYTHON_PKG/json )"
-			echo "$PYTHON_JSON" > /tmp/tmp_python_json
+			get_pypi_json ${PYTHON_PKG}
 
 			PYTHON_PKG_REQUIRES=( $( get_requires ) )
 			echo "PYTHON_PKG_REQUIRES='${PYTHON_PKG_REQUIRES[@]}'"
 			PYTHON_PKGS+=( "${PYTHON_PKG_REQUIRES[@]}" )
-			TERMUX_SUBPKG_DESCRIPTION="$( echo "$PYTHON_JSON" | jq -r '.info.summary' | sed -e 's|"|\\"|g' )"
+			TERMUX_SUBPKG_DESCRIPTION="$( get_pypi_json $PYTHON_PKG | jq -r '.info.summary' | sed -e 's|"|\\"|g' )"
 			if [ "$TERMUX_SUBPKG_DESCRIPTION" == "" ]; then
 				# this may be empty  ex) traitlets==5.3.0
 				TERMUX_SUBPKG_DESCRIPTION="Python package $PYTHON_PKG"
 			fi
-			TERMUX_SUBPKG_VERSION="$( echo "$PYTHON_JSON" | jq -r '.info.version' )"
+			TERMUX_SUBPKG_VERSION="$( get_pypi_json $PYTHON_PKG | jq -r '.info.version' )"
 			TERMUX_SUBPKG_DEPENDS=( python $( to_pkgname "${PYTHON_PKG_REQUIRES[@]}" ) $( manage_depends ) )
 			TERMUX_SUBPKG_DEPENDS=( $( printf '%s\n' "${TERMUX_SUBPKG_DEPENDS[*]}" | sort | uniq ) )
 			TERMUX_SUBPKG_DEPENDS="$( echo "${TERMUX_SUBPKG_DEPENDS[*]}" | sed -e 's| |, |g' )"
