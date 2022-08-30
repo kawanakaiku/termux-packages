@@ -274,7 +274,7 @@ termux_step_pre_configure() {
 					-DPYTHON3_INCLUDE_PATH=${TERMUX_PREFIX}/include/python${_PYTHON_VERSION}
 					-DPYTHON3_NUMPY_INCLUDE_DIRS=${TERMUX_PREFIX}/lib/python${_PYTHON_VERSION}/site-packages/numpy/core/include
 					-DWITH_FFMPEG=OFF
-					-DOPENCV_EXTRA_MODULES_PATH=$( readlink -f opencv-contrib-python/modules )
+					-DOPENCV_EXTRA_MODULES_PATH=$( readlink -f opencv-contrib-python/opencv/modules )
 				"
 				;;
 		esac
