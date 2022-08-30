@@ -208,7 +208,7 @@ termux_step_pre_configure() {
 	PYTHON_PKGS=( pynacl zfec )
 	PYTHON_PKGS=( bcrypt homeassistant orjson sqlalchemy )
 	PYTHON_PKGS=( scipy )
-	PYTHON_PKGS=( numpy opencv-python scipy tqdm colorama scikit-learn scikit-image shapely yt-dlp pip beautifulsoup4 certifi demjson3 mechanize colorama cloudscraper lxml pandas cryptography pillow pyzmq pygame pynacl matplotlib jupyter uvloop )
+	PYTHON_PKGS=( numpy opencv-contrib-python scipy tqdm colorama scikit-learn scikit-image shapely yt-dlp pip beautifulsoup4 certifi demjson3 mechanize colorama cloudscraper lxml pandas cryptography pillow pyzmq pygame pynacl matplotlib jupyter uvloop )
 	
 	
 	PYTHON_PKGS_OK=( )
@@ -246,7 +246,7 @@ termux_step_pre_configure() {
 			homeassistant ) printf 'python-sqlalchemy' ;;
 			shapely ) printf 'libgeos' ;;
 			pillow ) printf 'freetype libimagequant libjpeg-turbo littlecms openjpeg libraqm libtiff libwebp libxcb zlib' ;;
-			opencv-python ) printf 'libjpeg-turbo libpng libprotobuf libtiff libwebp openjpeg openjpeg-tools zlib' ;;
+			opencv-contrib-python ) printf 'libjpeg-turbo libpng libprotobuf libtiff libwebp openjpeg openjpeg-tools zlib' ;;
 		esac
 	}
 	
@@ -260,7 +260,7 @@ termux_step_pre_configure() {
 			uvloop ) export LIBUV_CONFIGURE_HOST=x86_64-pc-linux-gnu ;;
 			scipy ) export SCIPY_USE_PYTHRAN=1 ;;
 			pyzmq ) export ZMQ_PREFIX=${TERMUX_PREFIX} ;;
-			opencv-python )
+			opencv-contrib-python )
 				export LDFLAGS+=" -llog"
 				# -DWITH_FFMPEG=OFF for error: use of undeclared identifier 'CODEC_ID_H264'; did you mean 'AV_CODEC_ID_H264'?
 				# -DOPENCV_EXTRA_MODULES_PATH=<opencv_contrib>/modules for with extra
@@ -420,20 +420,19 @@ termux_step_pre_configure() {
 				# echo 'INPUT(-lc)' > $TERMUX_PREFIX/lib/librt.so
 				sed -i -e 's|detected = self.test_build(zmq_prefix, self.compiler_settings)|detected = {"vers": (4, 3, 4)}|' setup.py
 				;;
-			opencv-python )
+			opencv-contrib-python )
 				cross_build numpy
 				_termux_setup_protobuf
 				# OpenCVConfig.cmake.in.patch
-				perl -i -pe "s|\Q@OpenCV_INCLUDE_DIRS_CONFIGCMAKE@\E|@TERMUX_PREFIX@/include|" cmake/templates/OpenCVConfig.cmake.in
-				# build.sh
+				perl -i -pe "s|\Q@OpenCV_INCLUDE_DIRS_CONFIGCMAKE@\E|@TERMUX_PREFIX@/include|" opencv/cmake/templates/OpenCVConfig.cmake.in
+				# build.sh tweak
 				find . -name CMakeLists.txt -o -name '*.cmake' | \
 					xargs -n 1 sed -i \
 					-e 's/\([^A-Za-z0-9_]ANDROID\)\([^A-Za-z0-9_]\)/\1_NO_TERMUX\2/g' \
 					-e 's/\([^A-Za-z0-9_]ANDROID\)$/\1_NO_TERMUX/g'
 					
 				# with extra modules
-				get_pip_src opencv-contrib-python
-				
+				# get_pip_src opencv-contrib-python  # this package includes opencv-python (cv2)
 				;;
 		esac
 	}
