@@ -457,7 +457,7 @@ termux_step_pre_configure() {
 				# get_pip_src opencv-contrib-python  # this package includes opencv-python (cv2)
 				
 				# cmake_args
-				cat ${TERMUX_COMMON_CACHEDIR}/tmp_cmake_args > ${TERMUX_COMMON_CACHEDIR}/tmp_cmake_args_opencv
+				grep -v -e "^-DCMAKE_INSTALL_" ${TERMUX_COMMON_CACHEDIR}/tmp_cmake_args > ${TERMUX_COMMON_CACHEDIR}/tmp_cmake_args_opencv
 				cat <<- ARGS >> ${TERMUX_COMMON_CACHEDIR}/tmp_cmake_args_opencv
 					-DANDROID_NO_TERMUX=OFF
 					-DWITH_OPENEXR=OFF
@@ -468,7 +468,7 @@ termux_step_pre_configure() {
 					-DPYTHON3_INCLUDE_PATH=${TERMUX_PREFIX}/include/python${_PYTHON_VERSION}
 					-DPYTHON3_NUMPY_INCLUDE_DIRS=${TERMUX_PREFIX}/lib/python${_PYTHON_VERSION}/site-packages/numpy/core/include
 					-DWITH_FFMPEG=OFF
-					-DOPENCV_EXTRA_MODULES_PATH=$( readlink -f opencv-contrib-python/opencv/modules )
+					-DOPENCV_EXTRA_MODULES_PATH=${PWD}/opencv-contrib-python/opencv/modules
 				ARGS
 				# patch to prevent default
 				sed -i -e "s|cmake_args=cmake_args|cmake_args=open('${TERMUX_COMMON_CACHEDIR}/tmp_cmake_args_opencv').read().split(os.linesep)[:-1]|" setup.py
