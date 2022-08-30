@@ -45,7 +45,7 @@ termux_step_pre_configure() {
 	)}
 	
 	get_pkgs_depends() {(
-		local TMP_BUILDER_DIR=paclages/nonexist
+		local TMP_BUILDER_DIR=$TERMUX_SCRIPTDIR/packages/nonexist
 		mkdir $TMP_BUILDER_DIR
 		cat <<-SH > $TMP_BUILDER_DIR/build.sh
 		TERMUX_PKG_DEPENDS="$( echo -n "$1"; shift; for arg; do echo -n ", $arg"; done )"
@@ -61,7 +61,7 @@ termux_step_pre_configure() {
 	disable_all_files() {
 		# cache files list
 		# disable all installed files
-		echo "$( get_pkg_files $( get_pkgs_depends TERMUX_PKG_NAME ) )" | while read f; do if test -f "$f"; then mv "$f" "$f.disabling"; fi; done
+		echo "$( get_pkg_files $( get_pkgs_depends $TERMUX_PKG_NAME ) )" | while read f; do if test -f "$f"; then mv "$f" "$f.disabling"; fi; done
 	}
 	
 	enable_python_pkg_files() {
@@ -703,22 +703,30 @@ termux_step_pre_configure() {
 					echo "seems to be TERMUX_SUBPKG_PLATFORM_INDEPENDENT" 1>&2
 					echo true
 				)
+				
+				# move to dist-packages
+				mkdir -p ${TERMUX_PREFIX}/lib/python${_PYTHON_VERSION}/dist-packages/
+				mv ${TERMUX_PREFIX}/lib/python${_PYTHON_VERSION}/site-packages/* ${TERMUX_PREFIX}/lib/python${_PYTHON_VERSION}/dist-packages/
+				TERMUX_SUBPKG_INCLUDE="$( echo "$TERMUX_SUBPKG_INCLUDE" | sed -e 's|/site-packages/|/dist-packages/|' )"
 
 				TERMUX_SUBPKG_INCLUDE="$(
 					awk_cmd=''
 					cd ${TERMUX_PREFIX}
 					INFO_DIR=$( echo "$TERMUX_SUBPKG_INCLUDE" | grep -oP '.+\.(dist-info|egg-info)' | head -n1 )
 					
+					# awk_cmd_dist="gsub( /\/site-packages\//, \"/dist-packages/\", \$1 ); "
 					awk_cmd_so="if ( \$1 ~ /.*\.so$/ ) { gsub( /cpython-${_PYTHON_VERSION//.}-.*\.so$/, \"cpython-${_PYTHON_VERSION//.}.so\", \$1 ); print; next }; "
 					awk_cmd_man="if ( \$1 ~ /.*\/share\/man\/.*/ ) { if ( \$1 ~ /.*\/share\/man\/man.*/ ) { if ( \$1 ~ /.*\/share\/man\/man.*/ ) {} else { \$1 = \$1 \".gz\" }; print }; next }"
 					awk_cmd_url="if ( \$1 ~ /\/direct_url\.json$/ ) { next }; "
-					awk_cmd+=" ${awk_cmd_so}; ${awk_cmd_man}; ${awk_cmd_url}"
+					awk_cmd+="${awk_cmd_so}; ${awk_cmd_man}; ${awk_cmd_url}"
 					
 					while read f; do
-						if [[ "$f" = $INFO_DIR/direct_url.json ]]; then
-							# avoid pip freeze from showing build dir
-							rm "$f"
-						elif [[ "$f" = ./lib/python${_PYTHON_VERSION}/site-packages/* ]]; then
+						if [[ "$f" = ./lib/python${_PYTHON_VERSION}/dist-packages/* ]]; then
+							if [[ "$f" = $INFO_DIR/direct_url.json ]]; then
+								# avoid pip freeze from showing build dir
+								rm "$f"
+								continue
+							fi
 							# orjson.cpython-310-aarch64-linux-gnu.so -> orjson.cpython-310.so
 							_f="$( echo $f | gawk "{ ${awk_cmd_so}; print }" )"
 							if [ "$f" != "$_f" ]; then
@@ -761,6 +769,19 @@ termux_step_pre_configure() {
 				TERMUX_SUBPKG_PLATFORM_INDEPENDENT=$TERMUX_SUBPKG_PLATFORM_INDEPENDENT
 				TERMUX_SUBPKG_DEPEND_ON_PARENT=no
 				TERMUX_SUBPKG_VERSION=$TERMUX_SUBPKG_VERSION
+				
+				termux_step_create_subpkg_debscripts() {
+					cat <<SH > postinst
+					#!${TERMUX_PREFIX}/bin/bash
+					f=${TERMUX_PREFIX}/lib/python${_PYTHON_VERSION}/site-packages/dist-packages.pth
+					if [ -f \$f ]; then echo '../dist-packages' >\$f; fi
+					cat <<SH > postrm
+					#!${TERMUX_PREFIX}/bin/bash
+					if [ -z "$(ls -A ${TERMUX_PREFIX}/lib/python${_PYTHON_VERSION}/dist-packages 2>/dev/null)" ]
+					then
+						rm -f ${TERMUX_PREFIX}/lib/python${_PYTHON_VERSION}/site-packages/dist-packages.pth
+					fi
+				}
 				EOF
 			fi
 
