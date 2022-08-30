@@ -33,7 +33,7 @@ termux_step_pre_configure() {
 
 				mkfifo data.tar.xz contents
 				tar Jtf data.tar.xz > contents &
-				ar x scipy_1.6.3_aarch64.deb data.tar.xz &
+				ar x $DEB_FILE data.tar.xz &
 				contents="$( cat contents | grep -v '/$' )"
 				echo "${contents}"		
 
