@@ -69,7 +69,7 @@ termux_step_pre_configure() {
 		disable_all_files
 		local PYTHON_PKG=$1
 		local PYTHON_PKG_REQUIRES=( python $( manage_depends $PYTHON_PKG ) )
-		local PYTHON_PKG_REQUIRES_RECURSIVE=( $( get_pkgs_depends "${PYTHON_PKG_REQUIRES[@]} ) )
+		local PYTHON_PKG_REQUIRES_RECURSIVE=( $( get_pkgs_depends "${PYTHON_PKG_REQUIRES[@]}" ) )
 		echo "$( get_pkg_files $( get_pkgs_depends ${PYTHON_PKG_REQUIRES_RECURSIVE[@]} ) )" | while read f; do if test -f "$f.disabling"; then mv "$f.disabling" "$f"; fi; done
 	}
 	
