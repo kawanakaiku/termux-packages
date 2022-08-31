@@ -92,7 +92,25 @@ termux_step_pre_configure() {
 		echo "runnning download_extract_deb_file $@" >&2
 		PKG=$1
 		cd "$TERMUX_SCRIPTDIR"
-		read PKG_DIR <<< $(./scripts/buildorder.py 2>/dev/null | awk -v PKG="$PKG" '{if($1==PKG){print $2; exit;}}')
+		#read PKG_DIR <<< $(./scripts/buildorder.py 2>/dev/null | awk -v PKG="$PKG" '{if($1==PKG){print $2; exit;}}')
+		PKG_DIR=$(
+			for i in packages root-packages x11-packages
+			do
+				if [ -d $i/$PKG ]
+				then
+					echo $i/$PKG
+					exit
+				else
+					f=$( $i/*/${PKG}.subpackage.sh | head -n1 )
+					if [ -f $f ]
+					then
+						echo $f
+						exit
+					fi
+				fi
+			done
+			echo ERROR
+		)
 		read DEP_ARCH DEP_VERSION DEP_VERSION_PAC <<< $(termux_extract_dep_info "$PKG" "${PKG_DIR}")
 		termux_download_deb_pac $PKG $DEP_ARCH $DEP_VERSION $DEP_VERSION_PAC
 		cd $TERMUX_COMMON_CACHEDIR-$DEP_ARCH
