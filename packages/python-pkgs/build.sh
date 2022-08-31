@@ -682,6 +682,11 @@ termux_step_pre_configure() {
 			TERMUX_FILES_LIST_AFTER="$( cd $TERMUX_PREFIX && find . -type f,l | sort )"
 			
 			TERMUX_SUBPKG_INCLUDE="$( comm -13 <( echo "$TERMUX_FILES_LIST_BEFORE" ) <( echo "$TERMUX_FILES_LIST_AFTER" ) )"
+			
+			if [ "$PYTHON_PKG" = "pip" ]; then
+				# /home/builder/.termux-build/python-pkgs/src/python-crossenv-prefix/cross/bin/pip: not found
+				cross-python -m pip install --upgrade --force-reinstall pip
+			fi
 
 			if [ "$TERMUX_SUBPKG_INCLUDE" == "" ]; then
 				echo "no file added while installing $PYTHON_PKG"
