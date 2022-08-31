@@ -19,6 +19,8 @@ _PYTHON_FULL_VERSION=$(. $TERMUX_SCRIPTDIR/packages/python/build.sh; echo $TERMU
 
 termux_step_pre_configure() {
 
+	local PYTHON_PKGS PYTHON_PKGS_OK PYTHON_PKG
+
 	PYTHON_PKGS=( )
 	PYTHON_PKGS+=( yt-dlp streamlink gallery-dl )
 	PYTHON_PKGS+=( pytz python-dateutil tqdm )
@@ -199,8 +201,6 @@ termux_step_pre_configure() {
 
 	cross-pip install -U pip wheel
 	build-pip install -U pip setuptools wheel Cython toml
-		
-	local PYTHON_PKGS PYTHON_PKGS_OK PYTHON_PKG
 	
 	_termux_setup_rust() {
 		termux_setup_rust
