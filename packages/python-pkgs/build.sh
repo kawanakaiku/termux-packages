@@ -79,8 +79,8 @@ termux_step_pre_configure() {
 	PYTHON_PKGS=( matplotlib )
 	PYTHON_PKGS=( pip wheel setuptools )
 	PYTHON_PKGS=( h5py streamlink gallery-dl )
-	PYTHON_PKGS=( cmake )
 	PYTHON_PKGS=( ipython notebook )
+	PYTHON_PKGS=( cmake )
 	
 	
 	PYTHON_PKGS_OK=( )
@@ -380,6 +380,7 @@ termux_step_pre_configure() {
 				# -DWITH_FFMPEG=OFF for error: use of undeclared identifier 'CODEC_ID_H264'; did you mean 'AV_CODEC_ID_H264'?
 				# -DOPENCV_EXTRA_MODULES_PATH=<opencv_contrib>/modules for with extra
 				;;
+			cmake ) export CC="$CC -L$TERMUX_PREFIX/lib" CXX="$CXX -L$TERMUX_PREFIX/lib"
 		esac
 	}
 	
