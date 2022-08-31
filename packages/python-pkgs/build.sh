@@ -23,7 +23,8 @@ termux_step_pre_configure() {
 	
 	download_extract_deb_file() {(
 		PKG=$1
-		read PKG_DIR <<< $(cd "$TERMUX_SCRIPTDIR"; ./scripts/buildorder.py 2>/dev/null | awk -v PKG=$PKG '{if($1==PKG){print $2}; exit; }')
+		cd "$TERMUX_SCRIPTDIR"
+		read PKG_DIR <<< $(./scripts/buildorder.py 2>/dev/null | awk -v PKG=$PKG '{if($1==PKG){print $2}; exit; }')
 		read DEP_ARCH DEP_VERSION DEP_VERSION_PAC <<< $(termux_extract_dep_info $PKG "${PKG_DIR}")
 		termux_download_deb_pac $PKG $DEP_ARCH $DEP_VERSION $DEP_VERSION_PAC
 		cd $TERMUX_COMMON_CACHEDIR-$DEP_ARCH
