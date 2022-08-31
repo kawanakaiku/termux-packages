@@ -31,11 +31,9 @@ termux_step_pre_configure() {
 				mkdir ${TMP_DIR}
 				cd ${TMP_DIR}
 
-				mkfifo data.tar.xz contents
-				tar Jtf data.tar.xz > contents &
-				ar x $DEB_FILE data.tar.xz &
-				contents="$( cat contents | grep -v '/$' )"
-				echo "${contents}"		
+				mkfifo data.tar.xz
+				tar Jtf data.tar.xz > ${TMP_FILE} &
+				ar x $DEB_FILE data.tar.xz
 
 				cd ${OLDPWD}
 				rm -rf ${TMP_DIR}
