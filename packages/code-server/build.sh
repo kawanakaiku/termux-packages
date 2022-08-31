@@ -28,6 +28,14 @@ termux_step_pre_configure() {
 	
 	# node-pre-gyp not found
 	yarn global add node-pre-gyp
+	
+	local bin=/tmp/bin
+	mkdir -p $bin
+	ln -sf $(which $AR) $bin/$AR
+	ln -sf $(which $LD) $bin/$LD
+	ln -sf $(which $CC) $bin/$CC
+	ln -sf $(which $CXX) $bin/$CXX
+	PATH="$bin:$PATH"
 }
 
 termux_step_make_install() {
