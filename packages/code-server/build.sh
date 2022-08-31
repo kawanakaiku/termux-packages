@@ -41,10 +41,34 @@ termux_step_post_make_install() {
 	rm ${TERMUX_PREFIX}/bin/node-pre-gyp
 	
 	(
-		cd $TERMUX_PREFIX
 		# no hard links
-		HARDLINKS="$(find . -type f -links +1)"
-		echo "${HARDLINKS}" | while read path; do find -samefile "$path" -print0 | xargs -0 -I@ sh -c "if [ '$path' != '@' ]; then rm '$path'; ln -s '$path' '@'; fi"; done
+		IFS=$'\n'
+		abs_to_rel() {
+			python <( cat <<-PYTHON
+				file_from = "$1".split("/")[1:]
+				file_to = "$2".split("/")[1:]
+				i = 0
+				while file_from[i] == file_to[i]:
+				  i += 1
+				up = len(file_from) - i
+				print( "../" * up + "/".join(file_to[i:]) )
+			PYTHON )
+		}
+		cd /
+		for HARDLINK in $(find $TERMUX_PREFIX -type f -links +1)
+		do
+			for FILE in $(find $TERMUX_PREFIX -samefile "$path")
+			do
+				if [ "HARDLINK" != "$FILE" ]
+				then
+					rm "$FILE"
+					# instead symlink
+					REL="$( abs_to_rel "$FILE" "$HARDLINK" )"
+					echo "symlinking $REL $FILE"
+					ln -s "$REL" "$FILE"
+				fi
+			done
+		done
 	)
 }
 
