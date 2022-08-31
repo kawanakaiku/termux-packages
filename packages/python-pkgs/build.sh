@@ -50,7 +50,7 @@ termux_step_pre_configure() {
 		SH
 		
 		cd "$TERMUX_SCRIPTDIR"
-		./scripts/buildorder.py -i "$TMP_BUILDER_DIR" packages root-packages x11-packages | awk '{print $1}'
+		./scripts/buildorder.py -i "$TMP_BUILDER_DIR" packages root-packages x11-packages | awk '{print $1}' | grep -v -e ndk-sysroot
 		cd "$OLDPWD"
 		
 		rm -rf $TMP_BUILDER_DIR
