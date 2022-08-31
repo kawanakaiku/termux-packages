@@ -101,7 +101,7 @@ termux_step_pre_configure() {
 					echo $i/$PKG
 					exit
 				else
-					f=$( $i/*/${PKG}.subpackage.sh | head -n1 )
+					f=$( echo $i/*/${PKG}.subpackage.sh | head -n1 )
 					if [ -f $f ]
 					then
 						echo $f
