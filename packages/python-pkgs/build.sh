@@ -76,9 +76,9 @@ termux_step_pre_configure() {
 	PYTHON_PKGS=( scipy )
 	PYTHON_PKGS=( numpy opencv-contrib-python scipy tqdm colorama scikit-learn scikit-image shapely yt-dlp pip beautifulsoup4 certifi demjson3 mechanize colorama cloudscraper lxml pandas cryptography pillow pyzmq pygame pynacl matplotlib jupyter uvloop )
 	PYTHON_PKGS=( yt-dlp )
+	PYTHON_PKGS=( matplotlib )
 	PYTHON_PKGS=( pip wheel setuptools )
 	PYTHON_PKGS=( h5py streamlink gallery-dl )
-	PYTHON_PKGS=( matplotlib )
 	
 	
 	PYTHON_PKGS_OK=( )
