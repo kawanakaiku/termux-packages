@@ -8,7 +8,7 @@ TERMUX_PKG_DEPENDS="nodejs"
 TERMUX_PKG_BUILD_DEPENDS="yarn"
 
 termux_step_get_source() {
-	:
+	mkdir -p "$TERMUX_PKG_SRCDIR"
 }
 
 termux_step_pre_configure() {
