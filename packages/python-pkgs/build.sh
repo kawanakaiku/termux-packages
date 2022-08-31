@@ -585,6 +585,10 @@ termux_step_pre_configure() {
 				#sed -z -i -e "s|with open('%spython.*custom_init_data)||" setup.py
 				sed -i -z -e "s|RearrangeCMakeOutput(\n|RearrangeCMakeOutput = lambda *args: args; RearrangeCMakeOutput(\n|" setup.py
 				;;
+			onnx )
+				# Protobuf compiler not found
+				_termux_setup_protobuf
+				;;
 		esac
 	}
 	
