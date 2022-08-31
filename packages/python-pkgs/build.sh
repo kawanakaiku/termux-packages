@@ -700,6 +700,7 @@ termux_step_pre_configure() {
 					done <<< "$TERMUX_SUBPKG_INCLUDE"
 					echo "seems to be TERMUX_SUBPKG_PLATFORM_INDEPENDENT" 1>&2
 					echo true
+				)
 
 				TERMUX_SUBPKG_INCLUDE="$(
 					awk_cmd=''
