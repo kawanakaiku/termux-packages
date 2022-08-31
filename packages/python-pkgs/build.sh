@@ -80,6 +80,7 @@ termux_step_pre_configure() {
 	PYTHON_PKGS+=( h5py streamlink gallery-dl )
 	#PYTHON_PKGS+=( cmake )  # The C++ compiler does not support C++11 (e.g.  std::unique_ptr).
 	PYTHON_PKGS+=( ipython notebook )
+	PYTHON_PKGS+=( onnx )
 	
 	
 	PYTHON_PKGS_OK=( )
@@ -88,10 +89,11 @@ termux_step_pre_configure() {
 	# for accurate dependency
 	
 	download_extract_deb_file() {(
+		echo "runnning download_extract_deb_file $@" >&2
 		PKG=$1
 		cd "$TERMUX_SCRIPTDIR"
-		read PKG_DIR <<< $(./scripts/buildorder.py 2>/dev/null | awk -v PKG=$PKG '{if($1==PKG){print $2; exit;}}')
-		read DEP_ARCH DEP_VERSION DEP_VERSION_PAC <<< $(termux_extract_dep_info $PKG "${PKG_DIR}")
+		read PKG_DIR <<< $(./scripts/buildorder.py 2>/dev/null | awk -v PKG="$PKG" '{if($1==PKG){print $2; exit;}}')
+		read DEP_ARCH DEP_VERSION DEP_VERSION_PAC <<< $(termux_extract_dep_info "$PKG" "${PKG_DIR}")
 		termux_download_deb_pac $PKG $DEP_ARCH $DEP_VERSION $DEP_VERSION_PAC
 		cd $TERMUX_COMMON_CACHEDIR-$DEP_ARCH
 		rm -f data.tar.xz; mkfifo data.tar.xz
@@ -847,7 +849,8 @@ termux_step_pre_configure() {
 	
 	# rm all installed files
 	disable_all_files
-	echo "$( get_pkg_files $( get_pkgs_depends $TERMUX_PKG_NAME ) )" | while read f; do rm -f "$f.disabling"; done
+	#echo "$( get_pkg_files $( get_pkgs_depends $TERMUX_PKG_NAME ) )" | while read f; do rm -f "$f.disabling"; done
+	find $TERMUX_PREFIX -name "*.disabling" -type f,l -delete
 	
 	# move to dist
 	rm -rf ${TERMUX_PREFIX}/lib/python${_PYTHON_VERSION}/dist-packages
