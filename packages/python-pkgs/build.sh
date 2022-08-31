@@ -399,6 +399,11 @@ termux_step_pre_configure() {
 				# -DWITH_FFMPEG=OFF for error: use of undeclared identifier 'CODEC_ID_H264'; did you mean 'AV_CODEC_ID_H264'?
 				# -DOPENCV_EXTRA_MODULES_PATH=<opencv_contrib>/modules for with extra
 				;;
+			onnx )
+				# Could NOT find PythonLibs (missing: PYTHON_LIBRARIES) (found version "3.10.6")
+				# Could NOT find pybind11 (missing: pybind11_DIR)
+				export CMAKE_ARGS="-DPYTHON_INCLUDE_DIRS=${TERMUX_PREFIX}/include -DPYTHON_LIBRARIES=${TERMUX_PREFIX}/lib -Dpybind11_DIR=${TERMUX_PREFIX}/lib/python${_PYTHON_VERSION}/site-packages/pybind11 -Dpybind11_INCLUDE_DIRS=${TERMUX_PREFIX}/lib/python${_PYTHON_VERSION}/site-packages/pybind11/include"
+				;;
 		esac
 	}
 	
