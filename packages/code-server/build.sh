@@ -7,6 +7,10 @@ TERMUX_PKG_SRCURL=https://github.com/coder/code-server.git
  TERMUX_PKG_DEPENDS="nodejs"
 TERMUX_PKG_BUILD_IN_SRC=true
 
+termux_step_pre_configure() {
+	termux_setup_nodejs
+}
+
 termux_step_make_install() {
 	./install.sh --prefix=${TERMUX_PREFIX}
 }
