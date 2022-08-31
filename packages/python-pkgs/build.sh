@@ -644,9 +644,7 @@ termux_step_pre_configure() {
 			[[ " ${PYTHON_PKGS_OK[*]} " =~ " $PYTHON_PKG " ]] && continue
 			
 			# order: setuptools => wheel => pip (last)
-			if ! $LAST_BUILD; then
-				[[ " setuptools wheel pip " =~ " $PYTHON_PKG " ]] && continue
-			fi
+			#[[ " setuptools wheel pip " =~ " $PYTHON_PKG " ]] && continue
 
 			echo "Processing $PYTHON_PKG ..."
 			
@@ -675,7 +673,7 @@ termux_step_pre_configure() {
 			(
 				cd $PYTHON_PKG
 				manage_exports
-				cross-pip -v install --upgrade --force-reinstall --no-deps --no-binary :all: --prefix $TERMUX_PREFIX --no-build-isolation --no-cache-dir --compile $(for opt in $( manage-opts ); do echo "--install-option=$opt"; done ) .
+				cross-pip -v install --user --upgrade --force-reinstall --no-deps --no-binary :all: --prefix $TERMUX_PREFIX --no-build-isolation --no-cache-dir --compile $(for opt in $( manage-opts ); do echo "--install-option=$opt"; done ) .
 				#python setup.py install --prefix $TERMUX_PREFIX  # creates egg
 			)
 			TERMUX_FILES_LIST_AFTER="$( cd $TERMUX_PREFIX && find . -type f,l | sort )"
@@ -799,8 +797,6 @@ termux_step_pre_configure() {
 	
 	for PYTHON_PKG in ${PYTHON_PKGS[@]}; do build-pip install --upgrade $PYTHON_PKG || true; done
 	
-	local LAST_BUILD=false
-	
 	while [ ${#PYTHON_PKGS[@]} -ne 0 ]
 	do
 		PYTHON_PKG=${PYTHON_PKGS[0],,}
@@ -808,9 +804,6 @@ termux_step_pre_configure() {
 		
 		cross_build $PYTHON_PKG
 	done
-	
-	LAST_BUILD=true
-	cross_build setuptools wheel pip
 	
 	# rm all installed files
 	disable_all_files
