@@ -770,7 +770,7 @@ termux_step_pre_configure() {
 							echo "file '$f' found" 1>&2
 							echo false
 							exit
-						elif [[ $f = */bin/* ]] && ! grep -qI . $f; then
+						elif [[ $f = ./bin/* ]] && ! grep -qI . $f; then
 							echo "file '$f' is binary" 1>&2
 							echo false
 							exit
