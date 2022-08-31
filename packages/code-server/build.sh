@@ -25,9 +25,14 @@ termux_step_pre_configure() {
 	chmod 0755 $yarn
 
 	export PATH=$bin:$PATH
+	
+	# node-pre-gyp not found
+	yarn global add node-pre-gyp
 }
 
 termux_step_make_install() {
-	yarn install --modules-folder ${TERMUX_PREFIX}/share/code-server/node_modules \
+	yarn add --modules-folder ${TERMUX_PREFIX}/share/code-server/node_modules \
 		code-server@${TERMUX_PKG_VERSION}
+		
+	ln -s ${TERMUX_PREFIX}/share/code-server/node_modules/.bin/code-server ${TERMUX_PREFIX}/bin/code-server
 }
