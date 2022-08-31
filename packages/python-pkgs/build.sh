@@ -8,8 +8,8 @@ TERMUX_PKG_VERSION=2022.08.25
 # TERMUX_PKG_BUILD_DEPENDS="python, glu, freeglut, mesa"
 # TERMUX_PKG_BUILD_DEPENDS="python, mesa, glib, gstreamer, sdl2, sdl2-image, sdl2-mixer, sdl2-ttf"
 # TERMUX_PKG_BUILD_DEPENDS="python, libopenblas, libgeos, ffmpeg"
-#TERMUX_PKG_BUILD_DEPENDS="python, double-conversion, ffmpeg, fontconfig-utils, freeglut, freetype, glib, glu, graphviz, gstreamer, leptonica, libgeos, libgmp, libhdf5, libjpeg-turbo, libmpc, libmpfr, libopenblas, libpng, libprotobuf, libsndfile, libsodium, libuv, libxml2, libxslt, libyaml, libzmq, lz4, mesa, pcre, portaudio, portmidi, qpdf, sdl2, sdl2-image, sdl2-mixer, sdl2-ttf, tesseract, zbar, zlib, freetype, libimagequant, libjpeg-turbo, littlecms, openjpeg, libraqm, libtiff, libwebp, libxcb, zlib, libjpeg-turbo, libpng, libprotobuf, libtiff, libwebp, openjpeg, openjpeg-tools, zlib"
-TERMUX_PKG_BUILD_DEPENDS="python, libhdf5"
+# TERMUX_PKG_BUILD_DEPENDS="python, double-conversion, ffmpeg, fontconfig-utils, freeglut, freetype, glib, glu, graphviz, gstreamer, leptonica, libgeos, libgmp, libhdf5, libjpeg-turbo, libmpc, libmpfr, libopenblas, libpng, libprotobuf, libsndfile, libsodium, libuv, libxml2, libxslt, libyaml, libzmq, lz4, mesa, pcre, portaudio, portmidi, qpdf, sdl2, sdl2-image, sdl2-mixer, sdl2-ttf, tesseract, zbar, zlib, freetype, libimagequant, libjpeg-turbo, littlecms, openjpeg, libraqm, libtiff, libwebp, libxcb, zlib, libjpeg-turbo, libpng, libprotobuf, libtiff, libwebp, openjpeg, openjpeg-tools, zlib"
+# TERMUX_PKG_BUILD_DEPENDS="python"
 TERMUX_PKG_BUILD_IN_SRC=true
 TERMUX_PKG_SKIP_SRC_EXTRACT=true
 TERMUX_PKG_NO_STATICSPLIT=true
@@ -20,6 +20,18 @@ _PYTHON_FULL_VERSION=$(. $TERMUX_SCRIPTDIR/packages/python/build.sh; echo $TERMU
 termux_step_pre_configure() {
 
 	# for accurate dependency
+	
+	download_extract_deb_file() {(
+		PKG=$1
+		read PKG_DIR <<< $(cd "$TERMUX_SCRIPTDIR"; ./scripts/buildorder.py 2>/dev/null | awk -v PKG=$PKG '{if($1==PKG){print $2}; exit; }')
+		read DEP_ARCH DEP_VERSION DEP_VERSION_PAC <<< $(termux_extract_dep_info $PKG "${PKG_DIR}")
+		termux_download_deb_pac $PKG $DEP_ARCH $DEP_VERSION $DEP_VERSION_PAC
+		cd $TERMUX_COMMON_CACHEDIR-$DEP_ARCH
+		rm -f data.tar.xz; mkfifo data.tar.xz
+		tar Jxf data.tar.xz --strip-components=1 --no-overwrite-dir -C / &
+		ar x ${PKG}_${DEP_VERSION}_${DEP_ARCH}.deb data.tar.xz
+		rm -f data.tar.xz
+	)}
 
 	get_pkg_files() {(
 		local PKG
@@ -28,6 +40,9 @@ termux_step_pre_configure() {
 			if [ ! -f ${TMP_FILE} ]; then
 				local TMP_DIR=${TERMUX_PKG_TMPDIR}/get_deb_files_${RANDOM}
 				local DEB_FILE=${TERMUX_COMMON_CACHEDIR}-*/${PKG}_*_*.deb
+				if [ ! -f ${DEB_FILE} ]; then
+					download_extract_deb_file ${PKG}
+				fi
 				mkdir ${TMP_DIR}
 				cd ${TMP_DIR}
 
