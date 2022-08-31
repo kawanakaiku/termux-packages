@@ -104,7 +104,7 @@ termux_step_pre_configure() {
 					f=$( echo $i/*/${PKG}.subpackage.sh | head -n1 )
 					if [ -f $f ]
 					then
-						echo $f
+						dirname $f
 						exit
 					fi
 				fi
