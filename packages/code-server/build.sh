@@ -48,7 +48,7 @@ termux_step_post_make_install() {
 				file_from = "$1".split("/")[1:]
 				file_to = "$2".split("/")[1:]
 				i = 0
-				while file_from[i] == file_to[i]:
+				while i < min(len(file_from), len(file_to)) and file_from[i] == file_to[i]:
 				  i += 1
 				up = len(file_from) - i
 				print( "../" * up + "/".join(file_to[i:]) )
