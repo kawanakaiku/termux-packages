@@ -10,7 +10,8 @@ TERMUX_PKG_BUILD_IN_SRC=true
 termux_step_pre_configure() {
 	termux_setup_nodejs
 	npm install --prefix=$TERMUX_COMMON_CACHEDIR yarn
-	find / -name yarn 2>/dev/null
+	# find / -name yarn 2>/dev/null
+	PATH="$TERMUX_COMMON_CACHEDIR/node_modules/yarn/bin/yarn:$PATH"
 }
 
 termux_step_make_install() {
