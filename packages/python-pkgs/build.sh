@@ -80,6 +80,7 @@ termux_step_pre_configure() {
 	PYTHON_PKGS=( pip wheel setuptools )
 	PYTHON_PKGS=( h5py streamlink gallery-dl )
 	PYTHON_PKGS=( cmake )
+	PYTHON_PKGS=( ipython notebook )
 	
 	
 	PYTHON_PKGS_OK=( )
