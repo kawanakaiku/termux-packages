@@ -22,7 +22,7 @@ termux_step_pre_configure() {
 	# for accurate dependency
 	
 	download_extract_deb_file() {(
-		echo "running $1"
+		echo "running download_extract_deb_file $1"
 		PKG=$1
 		cd "$TERMUX_SCRIPTDIR"
 		read PKG_DIR <<< $(./scripts/buildorder.py 2>/dev/null | awk -v PKG=$PKG '{if($1==PKG){print $2}; exit; }')
@@ -45,7 +45,7 @@ termux_step_pre_configure() {
 				local TMP_DIR=${TERMUX_PKG_TMPDIR}/get_deb_files_${RANDOM}
 				local DEB_FILE=${TERMUX_COMMON_CACHEDIR}-*/${PKG}_*_*.deb
 				if [ ! -f ${DEB_FILE} ]; then
-					download_extract_deb_file ${PKG}
+					download_extract_deb_file ${PKG} >&2
 				fi
 				mkdir ${TMP_DIR}
 				cd ${TMP_DIR}
