@@ -138,11 +138,15 @@ termux_step_pre_configure() {
 		rm -rf $TMP_BUILDER_DIR
 	)}
 	
-	disable_all_files() {
-		# cache files list
-		# disable all installed files
-		echo "$( get_pkg_files $( get_pkgs_depends $TERMUX_PKG_NAME ) )" | while read f; do if test -f "$f"; then mv "$f" "$f.disabling"; fi; done
-	}
+	disable_all_files() {(
+		(
+			# cache files list
+			# disable all installed files
+			get_pkg_files $( get_pkgs_depends $TERMUX_PKG_NAME )
+			cat ${TERMUX_COMMON_CACHEDIR}/get_pkg_files_*
+		) |
+		while read f; do if test -f "$f"; then mv "$f" "$f.disabling"; fi; done
+	)}
 	
 	enable_python_pkg_files() {
 		# install just required packages
