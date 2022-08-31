@@ -31,6 +31,7 @@ termux_step_pre_configure() {
 }
 
 termux_step_make_install() {
+	export LINK="$CXX"
 	yarn add --modules-folder ${TERMUX_PREFIX}/share/code-server/node_modules \
 		code-server@${TERMUX_PKG_VERSION}
 		
