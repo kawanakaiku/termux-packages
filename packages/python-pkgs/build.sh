@@ -589,6 +589,11 @@ termux_step_pre_configure() {
 				# Protobuf compiler not found
 				_termux_setup_protobuf
 				perl -i -pe "s|\\$\{_PROTOBUF_INSTALL_PREFIX\}|${TERMUX_PREFIX}|" CMakeLists.txt
+				
+				# Could NOT find pybind11 (missing: pybind11_DIR)
+				# Python config failure: Python is 64-bit, chosen compiler is 32-bit
+				build-pip install -U pybind11
+				cross_build pybind11
 				;;
 		esac
 	}
