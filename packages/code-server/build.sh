@@ -54,15 +54,15 @@ termux_step_post_make_install() {
 			PYTHON
 		}
 		cd /
-		for HARDLINK in $(find $TERMUX_PREFIX -type f -links +1)
+		for HARDLINK in $(find $TERMUX_PREFIX -type f -links +1 | grep -v '^$')
 		do
-			for FILE in $(find $TERMUX_PREFIX -samefile "$HARDLINK")
+			for FILE in $(find $TERMUX_PREFIX -samefile "$HARDLINK" | grep -v '^$')
 			do
 				if [ "HARDLINK" != "$FILE" ]
 				then
 					rm "$FILE"
 					# instead symlink
-					REL="$( abs_to_rel "$FILE" "$HARDLINK" )"
+					REL="$( abs_to_rel "$FILE" "$HARDLINK")"
 					echo "symlinking $REL $FILE"
 					ln -s "$REL" "$FILE"
 				fi
