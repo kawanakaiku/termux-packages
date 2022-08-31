@@ -57,7 +57,7 @@ termux_step_post_make_install() {
 		cd /
 		for HARDLINK in $(find $TERMUX_PREFIX -type f -links +1)
 		do
-			for FILE in $(find $TERMUX_PREFIX -samefile "$path")
+			for FILE in $(find $TERMUX_PREFIX -samefile "$HARDLINK")
 			do
 				if [ "HARDLINK" != "$FILE" ]
 				then
