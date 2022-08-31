@@ -644,7 +644,7 @@ termux_step_pre_configure() {
 			[[ " ${PYTHON_PKGS_OK[*]} " =~ " $PYTHON_PKG " ]] && continue
 			
 			# order: setuptools => wheel => pip (last)
-			if $LAST_BUILD; then
+			if ! $LAST_BUILD; then
 				[[ " setuptools wheel pip " =~ " $PYTHON_PKG " ]] && continue
 			fi
 
