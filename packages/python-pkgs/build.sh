@@ -399,6 +399,11 @@ termux_step_pre_configure() {
 				# -DWITH_FFMPEG=OFF for error: use of undeclared identifier 'CODEC_ID_H264'; did you mean 'AV_CODEC_ID_H264'?
 				# -DOPENCV_EXTRA_MODULES_PATH=<opencv_contrib>/modules for with extra
 				;;
+			onnx )
+				# Could NOT find Protobuf (missing: Protobuf_LIBRARIES Protobuf_INCLUDE_DIR)
+				export PROTOBUF_LIBRARIES=${TERMUX_PREFIX}/lib
+				export PROTOBUF_INCLUDE_DIRS=${TERMUX_PREFIX}/include
+				;;
 		esac
 	}
 	
