@@ -700,12 +700,6 @@ termux_step_pre_configure() {
 					done <<< "$TERMUX_SUBPKG_INCLUDE"
 					echo "seems to be TERMUX_SUBPKG_PLATFORM_INDEPENDENT" 1>&2
 					echo true
-				)
-				
-				# move to dist-packages
-				mkdir -p ${TERMUX_PREFIX}/lib/python${_PYTHON_VERSION}/dist-packages/
-				mv ${TERMUX_PREFIX}/lib/python${_PYTHON_VERSION}/site-packages/* ${TERMUX_PREFIX}/lib/python${_PYTHON_VERSION}/dist-packages/
-				TERMUX_SUBPKG_INCLUDE="$( echo "$TERMUX_SUBPKG_INCLUDE" | sed -e 's|/site-packages/|/dist-packages/|' )"
 
 				TERMUX_SUBPKG_INCLUDE="$(
 					awk_cmd=''
@@ -719,7 +713,7 @@ termux_step_pre_configure() {
 					awk_cmd+="${awk_cmd_so}; ${awk_cmd_man}; ${awk_cmd_url}"
 					
 					while read f; do
-						if [[ "$f" = ./lib/python${_PYTHON_VERSION}/dist-packages/* ]]; then
+						if [[ "$f" = ./lib/python${_PYTHON_VERSION}/site-packages/* ]]; then
 							if [[ "$f" = $INFO_DIR/direct_url.json ]]; then
 								# avoid pip freeze from showing build dir
 								rm "$f"
@@ -757,6 +751,11 @@ termux_step_pre_configure() {
 						fi
 					done
 				)"
+				
+				# move to dist-packages after all build
+				#mkdir -p ${TERMUX_PREFIX}/lib/python${_PYTHON_VERSION}/dist-packages/
+				#mv ${TERMUX_PREFIX}/lib/python${_PYTHON_VERSION}/site-packages/* ${TERMUX_PREFIX}/lib/python${_PYTHON_VERSION}/dist-packages/
+				TERMUX_SUBPKG_INCLUDE="$( echo "$TERMUX_SUBPKG_INCLUDE" | sed -e 's|/site-packages/|/dist-packages/|' )"
 				
 				echo "TERMUX_SUBPKG_INCLUDE=${TERMUX_SUBPKG_INCLUDE}"
 
