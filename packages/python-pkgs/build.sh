@@ -642,10 +642,11 @@ termux_step_pre_configure() {
 		for PYTHON_PKG in $@; do
 
 			[[ " ${PYTHON_PKGS_OK[*]} " =~ " $PYTHON_PKG " ]] && continue
-
-			[[ " pip " =~ " $PYTHON_PKG " ]] && [ ${#PYTHON_PKGS[@]} -ne 0 ] && PYTHON_PKGS+=( $PYTHON_PKG ) && continue
-			[[ " setuptools wheel " =~ " $PYTHON_PKG " ]] && ( for pkg in ${PYTHON_PKGS[*]}; do [[ " pip setuptools wheel "  =~ " $pkg " ]] || exit 0; done; exit 1 ) && PYTHON_PKGS+=( $PYTHON_PKG ) && continue
-			[[ "    " =~ " $PYTHON_PKG " ]] && continue
+			
+			# order: setuptools => wheel => pip (last)
+			if $LAST_BUILD; then
+				[[ " setuptools wheel pip " =~ " $PYTHON_PKG " ]] && continue
+			fi
 
 			echo "Processing $PYTHON_PKG ..."
 			
@@ -798,6 +799,8 @@ termux_step_pre_configure() {
 	
 	for PYTHON_PKG in ${PYTHON_PKGS[@]}; do build-pip install --upgrade $PYTHON_PKG || true; done
 	
+	local LAST_BUILD=false
+	
 	while [ ${#PYTHON_PKGS[@]} -ne 0 ]
 	do
 		PYTHON_PKG=${PYTHON_PKGS[0],,}
@@ -805,6 +808,9 @@ termux_step_pre_configure() {
 		
 		cross_build $PYTHON_PKG
 	done
+	
+	LAST_BUILD=true
+	cross_build setuptools wheel pip
 	
 	# rm all installed files
 	disable_all_files
