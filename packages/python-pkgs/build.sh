@@ -79,6 +79,7 @@ termux_step_pre_configure() {
 	PYTHON_PKGS=( matplotlib )
 	PYTHON_PKGS=( pip wheel setuptools )
 	PYTHON_PKGS=( h5py streamlink gallery-dl )
+	PYTHON_PKGS=( cmake )
 	
 	
 	PYTHON_PKGS_OK=( )
