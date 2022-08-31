@@ -12,5 +12,5 @@ termux_step_pre_configure() {
 }
 
 termux_step_make_install() {
-	yarn --cwd ${TERMUX_PREFIX} add .
+	npm install --prefix ${TERMUX_PREFIX} .
 }
