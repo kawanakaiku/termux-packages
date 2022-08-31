@@ -36,3 +36,7 @@ termux_step_make_install() {
 		
 	ln -s ${TERMUX_PREFIX}/share/code-server/node_modules/.bin/code-server ${TERMUX_PREFIX}/bin/code-server
 }
+
+termux_step_install_license() {
+	:
+}
