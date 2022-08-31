@@ -801,6 +801,10 @@ termux_step_pre_configure() {
 	# rm all installed files
 	disable_all_files
 	echo "$( get_pkg_files $( get_pkgs_depends $TERMUX_PKG_NAME ) )" | while read f; do rm -f "$f.disabling"; done
+	
+	# move to dist
+	rm -rf ${TERMUX_PREFIX}/lib/python${_PYTHON_VERSION}/dist-packages
+	mv ${TERMUX_PREFIX}/lib/python${_PYTHON_VERSION}/site-packages ${TERMUX_PREFIX}/lib/python${_PYTHON_VERSION}/dist-packages
 }
 
 termux_step_configure() { :; }
