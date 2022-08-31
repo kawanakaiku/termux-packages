@@ -773,12 +773,15 @@ termux_step_pre_configure() {
 					#!${TERMUX_PREFIX}/bin/bash
 					f=${TERMUX_PREFIX}/lib/python${_PYTHON_VERSION}/site-packages/dist-packages.pth
 					if [ -f \$f ]; then echo '../dist-packages' >\$f; fi
+					SH
+					
 					cat <<SH > postrm
 					#!${TERMUX_PREFIX}/bin/bash
 					if [ -z "$(ls -A ${TERMUX_PREFIX}/lib/python${_PYTHON_VERSION}/dist-packages 2>/dev/null)" ]
 					then
 						rm -f ${TERMUX_PREFIX}/lib/python${_PYTHON_VERSION}/site-packages/dist-packages.pth
 					fi
+					SH
 				}
 				EOF
 			fi
