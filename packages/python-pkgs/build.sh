@@ -402,7 +402,7 @@ termux_step_pre_configure() {
 			onnx )
 				# Could NOT find PythonLibs (missing: PYTHON_LIBRARIES) (found version "3.10.6")
 				# Could NOT find pybind11 (missing: pybind11_DIR)
-				export CMAKE_ARGS="-DPYTHON_INCLUDE_DIRS=${TERMUX_PREFIX}/include -DPYTHON_LIBRARIES=${TERMUX_PREFIX}/lib -Dpybind11_DIR=${TERMUX_PREFIX}/lib/python${_PYTHON_VERSION}/site-packages/pybind11 -Dpybind11_INCLUDE_DIRS=${TERMUX_PREFIX}/lib/python${_PYTHON_VERSION}/site-packages/pybind11/include"
+				#export CMAKE_ARGS="-DPYTHON_INCLUDE_DIRS=${TERMUX_PREFIX}/include -DPYTHON_LIBRARIES=${TERMUX_PREFIX}/lib -Dpybind11_DIR=${TERMUX_PREFIX}/lib/python${_PYTHON_VERSION}/site-packages/pybind11 -Dpybind11_INCLUDE_DIRS=${TERMUX_PREFIX}/lib/python${_PYTHON_VERSION}/site-packages/pybind11/include"
 				;;
 		esac
 	}
@@ -596,9 +596,11 @@ termux_step_pre_configure() {
 				perl -i -pe "s|\\$\{_PROTOBUF_INSTALL_PREFIX\}|${TERMUX_PREFIX}|" CMakeLists.txt
 				
 				# Could NOT find pybind11 (missing: pybind11_DIR)
+				#build-pip install -U pybind11
+				#cross_build pybind11
+				
 				# Python config failure: Python is 64-bit, chosen compiler is 32-bit
-				build-pip install -U pybind11
-				cross_build pybind11
+				perl -i -pe 's|message\(FATAL_ERROR|message(STATUS|' third_party/pybind11/tools/FindPythonLibsNew.cmake
 				;;
 		esac
 	}
