@@ -62,7 +62,7 @@ termux_step_post_make_install() {
 				then
 					rm "$FILE"
 					# instead symlink
-					echo "running abs_to_rel $@"
+					echo "running abs_to_rel $FILE $HARDLINK"
 					REL="$( abs_to_rel "$FILE" "$HARDLINK")"
 					echo "REL=$REL"
 					echo "symlinking $REL $FILE"
