@@ -37,6 +37,17 @@ termux_step_make_install() {
 	ln -s ${TERMUX_PREFIX}/share/code-server/node_modules/.bin/code-server ${TERMUX_PREFIX}/bin/code-server
 }
 
+termux_step_post_make_install() {
+	rm ${TERMUX_PREFIX}/bin/node-pre-gyp
+	
+	(
+		cd $TERMUX_PREFIX
+		# no hard links
+		HARDLINKS="$(find . -type f -links +1)"
+		echo "${HARDLINKS}" | while read path; do find -samefile "$path" -print0 | xargs -0 -I@ sh -c "if [ '$path' != '@' ]; then rm '$path'; ln -s '$path' '@'; fi"; done
+	)
+}
+
 termux_step_install_license() {
 	:
 }
