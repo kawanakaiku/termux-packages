@@ -588,7 +588,7 @@ termux_step_pre_configure() {
 			onnx )
 				# Protobuf compiler not found
 				_termux_setup_protobuf
-				perl -i -pe "s|\Q\${_PROTOBUF_INSTALL_PREFIX}\E|${TERMUX_PREFIX}|" CMakeLists.txt
+				perl -i -pe "s|\\$\{_PROTOBUF_INSTALL_PREFIX\}|${TERMUX_PREFIX}|" CMakeLists.txt
 				;;
 		esac
 	}
