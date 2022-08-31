@@ -44,7 +44,7 @@ termux_step_post_make_install() {
 		# no hard links
 		IFS=$'\n'
 		abs_to_rel() {
-			python <( cat <<-PYTHON
+			python - <<-PYTHON
 				file_from = "$1".split("/")[1:]
 				file_to = "$2".split("/")[1:]
 				i = 0
@@ -52,7 +52,7 @@ termux_step_post_make_install() {
 				  i += 1
 				up = len(file_from) - i
 				print( "../" * up + "/".join(file_to[i:]) )
-			PYTHON )
+			PYTHON
 		}
 		cd /
 		for HARDLINK in $(find $TERMUX_PREFIX -type f -links +1)
