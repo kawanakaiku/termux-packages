@@ -58,7 +58,7 @@ termux_step_post_make_install() {
 		do
 			for FILE in $(find $TERMUX_PREFIX -samefile "$HARDLINK" | grep -v '^$')
 			do
-				if [ "HARDLINK" != "$FILE" ]
+				if [ "$HARDLINK" != "$FILE" ]
 				then
 					rm "$FILE"
 					# instead symlink
