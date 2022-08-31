@@ -22,13 +22,10 @@ termux_step_pre_configure() {
 	# for accurate dependency
 	
 	download_extract_deb_file() {(
-		echo "running download_extract_deb_file $1"
 		PKG=$1
 		cd "$TERMUX_SCRIPTDIR"
 		read PKG_DIR <<< $(./scripts/buildorder.py 2>/dev/null | awk -v PKG=$PKG '{if($1==PKG){print $2; exit;}}')
-		echo "$PKG_DIR"
 		read DEP_ARCH DEP_VERSION DEP_VERSION_PAC <<< $(termux_extract_dep_info $PKG "${PKG_DIR}")
-		echo "$DEP_ARCH $DEP_VERSION $DEP_VERSION_PAC"
 		termux_download_deb_pac $PKG $DEP_ARCH $DEP_VERSION $DEP_VERSION_PAC
 		cd $TERMUX_COMMON_CACHEDIR-$DEP_ARCH
 		rm -f data.tar.xz; mkfifo data.tar.xz
@@ -316,6 +313,7 @@ termux_step_pre_configure() {
 	PYTHON_PKGS=( yt-dlp )
 	PYTHON_PKGS=( pip wheel setuptools )
 	PYTHON_PKGS=( h5py streamlink gallery-dl )
+	PYTHON_PKGS=( matplotlib )
 	
 	
 	PYTHON_PKGS_OK=( )
@@ -610,8 +608,15 @@ termux_step_pre_configure() {
 		mv "$dir" $PYTHON_PKG
 	}
 	
-	get_requires() {
+	get_requires() {(
 		local PYTHON_PKG=$1
+		
+		REQUIRES=$(
+		case $PYTHON_PKG in
+			setuptools ) printf 'cycler kiwisolver' ;;
+		esac
+		)
+		echo "$REQUIRES "
 		
 		python <<-PYTHON
 		import re, json
@@ -646,7 +651,7 @@ termux_step_pre_configure() {
 
 		print(" ".join(sorted(set(requires))))
 		PYTHON
-	}
+	)}
 	
 	get_pypi_json() {
 		local PYTHON_PKG=$1
