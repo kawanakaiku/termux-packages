@@ -88,12 +88,12 @@ termux_step_pre_configure() {
 
 	# for accurate dependency
 	
-	download_extract_deb_file() {(
+	download_extract_deb_file() {
 		echo "runnning download_extract_deb_file $@" >&2
-		PKG=$1
+		local PKG=$1
 		cd "$TERMUX_SCRIPTDIR"
 		#read PKG_DIR <<< $(./scripts/buildorder.py 2>/dev/null | awk -v PKG="$PKG" '{if($1==PKG){print $2; exit;}}')
-		PKG_DIR=$(
+		local PKG_DIR=$(
 			for i in packages root-packages x11-packages
 			do
 				if [ -d $i/$PKG ]
@@ -101,6 +101,7 @@ termux_step_pre_configure() {
 					echo $i/$PKG
 					exit
 				else
+					# ex) TERMUX_NDK_VERSION not exported
 					f=$( echo $i/*/${PKG}.subpackage.sh | head -n1 )
 					if [ -f $f ]
 					then
@@ -111,6 +112,7 @@ termux_step_pre_configure() {
 			done
 			echo ERROR
 		)
+		local DEP_ARCH DEP_VERSION DEP_VERSION_PAC
 		read DEP_ARCH DEP_VERSION DEP_VERSION_PAC <<< $(termux_extract_dep_info "$PKG" "${PKG_DIR}")
 		termux_download_deb_pac $PKG $DEP_ARCH $DEP_VERSION $DEP_VERSION_PAC
 		cd $TERMUX_COMMON_CACHEDIR-$DEP_ARCH
@@ -118,9 +120,9 @@ termux_step_pre_configure() {
 		tar Jxf data.tar.xz --strip-components=1 --no-overwrite-dir -C / &
 		ar x ${PKG}_${DEP_VERSION}_${DEP_ARCH}.deb data.tar.xz
 		rm -f data.tar.xz
-	)}
+	}
 
-	get_pkg_files() {(
+	get_pkg_files() {
 		local PKG
 		for PKG do
 			local TMP_FILE=${TERMUX_COMMON_CACHEDIR}/get_pkg_files_${PKG}
@@ -142,9 +144,9 @@ termux_step_pre_configure() {
 			fi
 			cat ${TMP_FILE}
 		done
-	)}
+	}
 	
-	get_pkgs_depends() {(
+	get_pkgs_depends() {
 		local TMP_BUILDER_DIR=$TERMUX_SCRIPTDIR/packages/nonexist
 		mkdir $TMP_BUILDER_DIR
 		cat <<-SH > $TMP_BUILDER_DIR/build.sh
@@ -156,11 +158,11 @@ termux_step_pre_configure() {
 		cd "$OLDPWD"
 		
 		rm -rf $TMP_BUILDER_DIR
-	)}
+	}
 	
-	disable_all_files() {(
+	disable_all_files() {
 		cd /
-                IFS=$'\n'
+                local IFS=$'\n'
 		for f in $(
 			# cache files list
 			# disable all installed files
@@ -174,16 +176,17 @@ termux_step_pre_configure() {
 				mv "$f" "$f.disabling"
 			fi
 		done
-	)}
+	}
 	
-	enable_python_pkg_files() {(
+	enable_python_pkg_files() {
 		# install just required packages
 		disable_all_files
 		local PYTHON_PKG=$1
 		local PYTHON_PKG_REQUIRES=( python $( manage_depends $PYTHON_PKG ) )
 		local PYTHON_PKG_REQUIRES_RECURSIVE=( $( get_pkgs_depends "${PYTHON_PKG_REQUIRES[@]}" ) )
 		cd /
-		IFS=$'\n'
+		local IFS=$'\n'
+		local f
 		for f in $( get_pkg_files $( get_pkgs_depends ${PYTHON_PKG_REQUIRES_RECURSIVE[@]} ) )
 		do
 			if test -f "$f.disabling"
@@ -192,7 +195,7 @@ termux_step_pre_configure() {
 				mv "$f.disabling" "$f"
 			fi
 		done
-	)}
+	}
 	
 	
 	# for building onnx
@@ -669,10 +672,10 @@ termux_step_pre_configure() {
 		mv "$dir" $PYTHON_PKG
 	}
 	
-	get_requires() {(
+	get_requires() {
 		local PYTHON_PKG=$1
 		
-		REQUIRES=$(
+		local REQUIRES=$(
 		case $PYTHON_PKG in
 			matplotlib ) printf 'cycler kiwisolver' ;;
 		esac
@@ -712,7 +715,7 @@ termux_step_pre_configure() {
 
 		print(" ".join(sorted(set(requires))))
 		PYTHON
-	)}
+	}
 	
 	get_pypi_json() {
 		local PYTHON_PKG=$1
