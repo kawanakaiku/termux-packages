@@ -150,7 +150,7 @@ termux_step_pre_configure() {
 
 				rm -rf ${TMP_DIR}
 			fi
-			cat ${TMP_FILE} | grep -v -e '/$' -e '^$' || true
+			cat ${TMP_FILE} | grep -v -e '/$' -e '^$'
 		done
 	}
 	
@@ -179,7 +179,8 @@ termux_step_pre_configure() {
 		for PKG do
 			if grep -q $PKG <<< "$PKGS_DISABLE"; then
 				echo "enabling $PKG"
-				get_pkg_files $PKG | xargs -I@ echo enable /@.disabling /@
+				#get_pkg_files $PKG | xargs -I@ echo enable /@.disabling /@
+				get_pkg_files $PKG | xargs -I@ ls /@
 				PKGS_ENABLE="$( echo "$PKGS_ENABLE" ; echo $PKG )"
 				PKGS_DISABLE="$( echo "$PKGS_DISABLE" | grep -v $PKG )"
 			elif ! grep -q $PKG <<< "$PKGS_ENABLE"; then
@@ -198,7 +199,8 @@ termux_step_pre_configure() {
 			if grep -q $PKG <<< "$PKGS_ENABLE"
 			then
 				echo "disabling $PKG"
-				get_pkg_files $PKG | xargs -I@ echo disable /@ /@.disabling
+				#get_pkg_files $PKG | xargs -I@ echo disable /@ /@.disabling
+				get_pkg_files $PKG | xargs -I@ ls /@
 				PKGS_ENABLE="$( echo "$PKGS_ENABLE" | grep -v $PKG )"
 				PKGS_DISABLE="$( echo "$PKGS_DISABLE" ; echo $PKG )"
 			fi
