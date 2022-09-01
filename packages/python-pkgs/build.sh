@@ -177,13 +177,12 @@ termux_step_pre_configure() {
 		echo "running enable_pkgs_files $@"
 		local PKG
 		for PKG do
-			if grep -q $PKG <<< "$PKGS_DISABLE"
-			then
+			if grep -q $PKG <<< "$PKGS_DISABLE"; then
 				echo "enabling $PKG"
 				get_pkg_files $PKG | xargs -I@ mv /@.disabling /@
 				PKGS_ENABLE="$( echo "$PKGS_ENABLE" ; echo $PKG )"
 				PKGS_DISABLE="$( echo "$PKGS_DISABLE" | grep -v $PKG )"
-			elif ! grep -q $PKG <<< "$PKGS_ENABLE"
+			elif ! grep -q $PKG <<< "$PKGS_ENABLE"; then
 				echo "installing $PKG"
 				download_extract_deb_file ${PKG}
 				get_pkg_files $PKG >/dev/null
