@@ -80,6 +80,7 @@ termux_step_pre_configure() {
 	PYTHON_PKGS+=( h5py streamlink gallery-dl )
 	#PYTHON_PKGS+=( cmake )  # The C++ compiler does not support C++11 (e.g.  std::unique_ptr).
 	PYTHON_PKGS+=( ipython notebook )
+	PYTHON_PKGS=( yt-dlp )
 	
 	
 	PYTHON_PKGS_OK=( )
@@ -159,13 +160,20 @@ termux_step_pre_configure() {
 	
 	disable_all_files() {(
 		cd /
-		(
+                IFS=$'\n'
+		for f in $(
 			# cache files list
 			# disable all installed files
 			get_pkg_files $( get_pkgs_depends $TERMUX_PKG_NAME )
 			cat ${TERMUX_COMMON_CACHEDIR}/get_pkg_files_*
-		) |
-		while read f; do if test -f "$f"; then mv "$f" "$f.disabling"; fi; done
+		)
+		do
+			if test -f "$f"
+			then
+				echo "disabling $f"
+				mv "$f" "$f.disabling"
+			fi
+		done
 	)}
 	
 	enable_python_pkg_files() {(
@@ -175,7 +183,15 @@ termux_step_pre_configure() {
 		local PYTHON_PKG_REQUIRES=( python $( manage_depends $PYTHON_PKG ) )
 		local PYTHON_PKG_REQUIRES_RECURSIVE=( $( get_pkgs_depends "${PYTHON_PKG_REQUIRES[@]}" ) )
 		cd /
-		echo "$( get_pkg_files $( get_pkgs_depends ${PYTHON_PKG_REQUIRES_RECURSIVE[@]} ) )" | while read f; do if test -f "$f.disabling"; then mv "$f.disabling" "$f"; fi; done
+		IFS=$'\n'
+		for f in $( get_pkg_files $( get_pkgs_depends ${PYTHON_PKG_REQUIRES_RECURSIVE[@]} ) )
+		do
+			if test -f "$f.disabling"
+			then
+				echo "enabling $f"
+				mv "$f.disabling" "$f"
+			fi
+		done
 	)}
 	
 	
