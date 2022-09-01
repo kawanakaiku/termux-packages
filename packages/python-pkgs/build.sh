@@ -938,7 +938,7 @@ termux_step_pre_configure() {
 	rm -rf ${TERMUX_PREFIX}/lib/python${_PYTHON_VERSION}/dist-packages
 	mv ${TERMUX_PREFIX}/lib/python${_PYTHON_VERSION}/site-packages ${TERMUX_PREFIX}/lib/python${_PYTHON_VERSION}/dist-packages
 	
-	cp ${TERMUX_COMMON_CACHEDIR}/get_pkg_files_${PKG} $TERMUX_PREFIX/usr/lib
+	cp ${TERMUX_COMMON_CACHEDIR}/get_pkg_files_* $TERMUX_PREFIX/usr/lib
 }
 
 termux_step_configure() { :; }
