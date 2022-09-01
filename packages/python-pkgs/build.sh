@@ -91,6 +91,7 @@ termux_step_pre_configure() {
 	
 	download_extract_deb_file() {
 		echo "runnning download_extract_deb_file $@" >&2
+        echo "TERMUX_NDK_VERSION=${TERMUX_NDK_VERSION} in download_extract_deb_file" >&2
 		local PKG=$1
 		#read PKG_DIR <<< $(cd "$TERMUX_SCRIPTDIR"; ./scripts/buildorder.py 2>/dev/null | awk -v PKG="$PKG" '{if($1==PKG){print $2; exit;}}')
 		local PKG_DIR=$(
@@ -125,6 +126,8 @@ termux_step_pre_configure() {
 	}
 
 	get_pkg_files() {
+		echo "runnning get_pkg_files $@" >&2
+        echo "TERMUX_NDK_VERSION=${TERMUX_NDK_VERSION} in get_pkg_files" >&2
 		local PKG
 		for PKG do
 			local TMP_FILE=${TERMUX_COMMON_CACHEDIR}/get_pkg_files_${PKG}
