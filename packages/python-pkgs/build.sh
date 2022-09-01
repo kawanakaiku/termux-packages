@@ -90,7 +90,7 @@ termux_step_pre_configure() {
 	# for accurate dependency
 	
 	download_extract_deb_file() {
-		echo "runnning download_extract_deb_file $@" >&2
+		echo "runnning download_extract_deb_file $*" >&2
 		local PKG=$1
 		#read PKG_DIR <<< $(cd "$TERMUX_SCRIPTDIR"; ./scripts/buildorder.py 2>/dev/null | awk -v PKG="$PKG" '{if($1==PKG){print $2; exit;}}')
 		local PKG_DIR=$(
@@ -132,7 +132,7 @@ termux_step_pre_configure() {
 	}
 
 	get_pkg_files() {
-		echo "runnning get_pkg_files $@" >&2
+		echo "runnning get_pkg_files $*" >&2
 		local PKG
 		for PKG do
 			local TMP_FILE=${TERMUX_COMMON_CACHEDIR}/get_pkg_files_${PKG}
@@ -174,7 +174,7 @@ termux_step_pre_configure() {
 	local PKGS_DISABLE=""
 	
 	enable_pkgs_files() {
-		echo "running enable_pkgs_files $@"
+		echo "running enable_pkgs_files $*"
 		local PKG
 		for PKG do
 			if grep -q $PKG <<< "$PKGS_DISABLE"; then
@@ -192,7 +192,7 @@ termux_step_pre_configure() {
 	}
 	
 	disable_pkgs_files() {
-		echo "running disable_pkgs_files $@"
+		echo "running disable_pkgs_files $*"
 		local PKG
 		for PKG do
 			if grep -q $PKG <<< "$PKGS_ENABLE"
@@ -216,7 +216,7 @@ termux_step_pre_configure() {
 				disable_pkgs_files ${PKG}
 			fi
 		done
-		for PKG in ${PYTHON_PKG_REQUIRES_RECURSIVE[@]}; do
+		for PKG in "${PYTHON_PKG_REQUIRES_RECURSIVE[@]}"; do
 			if ! [[ " ${PKGS_ENABLE//$'\n'/ } " =~ " ${PKG} " ]]; then
 				enable_pkgs_files ${PKG}
 			fi
@@ -757,7 +757,7 @@ termux_step_pre_configure() {
 		local TERMUX_SUBPKG_DESCRIPTION TERMUX_SUBPKG_DEPENDS TERMUX_SUBPKG_INCLUDE TERMUX_SUBPKG_PLATFORM_INDEPENDENT TERMUX_SUBPKG_VERSION 
 		local TERMUX_FILES_LIST_BEFORE TERMUX_FILES_LIST_AFTER
 
-		for PYTHON_PKG in $@; do
+		for PYTHON_PKG in "$@"; do
 
 			[[ " ${PYTHON_PKGS_OK[*]} " =~ " $PYTHON_PKG " ]] && continue
 			
@@ -769,7 +769,7 @@ termux_step_pre_configure() {
 			enable_python_pkg_files $PYTHON_PKG
 
 			PYTHON_PKG_REQUIRES=( $( get_requires $PYTHON_PKG ) )
-			echo "PYTHON_PKG_REQUIRES='${PYTHON_PKG_REQUIRES[@]}'"
+			echo "PYTHON_PKG_REQUIRES='${PYTHON_PKG_REQUIRES[*]}'"
 			PYTHON_PKGS+=( "${PYTHON_PKG_REQUIRES[@]}" )
 			TERMUX_SUBPKG_DESCRIPTION="$( get_pypi_json $PYTHON_PKG | jq -r '.info.summary' | sed -e 's|"|\\"|g' )"
 			if [ "$TERMUX_SUBPKG_DESCRIPTION" == "" ]; then
@@ -920,7 +920,7 @@ termux_step_pre_configure() {
 		done
 	}
 	
-	for PYTHON_PKG in ${PYTHON_PKGS[@]}; do build-pip install --upgrade $PYTHON_PKG || true; done
+	for PYTHON_PKG in "${PYTHON_PKGS[@]}"; do build-pip install --upgrade $PYTHON_PKG || true; done
 	
 	while [ ${#PYTHON_PKGS[@]} -ne 0 ]
 	do
