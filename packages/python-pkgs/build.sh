@@ -80,7 +80,6 @@ termux_step_pre_configure() {
 	PYTHON_PKGS+=( h5py streamlink gallery-dl )
 	#PYTHON_PKGS+=( cmake )  # The C++ compiler does not support C++11 (e.g.  std::unique_ptr).
 	PYTHON_PKGS+=( ipython notebook )
-	PYTHON_PKGS=( onnx )
 	
 	
 	PYTHON_PKGS_OK=( )
@@ -159,6 +158,7 @@ termux_step_pre_configure() {
 	)}
 	
 	disable_all_files() {(
+		cd /
 		(
 			# cache files list
 			# disable all installed files
