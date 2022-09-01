@@ -171,7 +171,6 @@ termux_step_pre_configure() {
 	
 	local PKGS_ENABLE="$( for f in ${TERMUX_COMMON_CACHEDIR}/get_pkg_files_*; do echo ${f##*_}; done )"
 	local PKGS_DISABLE=""
-	echo "PKGS_ENABLE=$PKGS_ENABLE"
 	
 	enable_pkgs_files() {
 		echo "running enable_pkgs_files $*"
@@ -182,16 +181,16 @@ termux_step_pre_configure() {
 				#get_pkg_files $PKG | xargs -I@ echo enable /@.disabling /@
 				IFS=$'\n'
 				for f in $(get_pkg_files $PKG); do
-					mv "/$f.disabling" "/$f"
+					mv "/$f.disabling" "/$f" && echo ok "$f" || echo ng "$f"
 				done
 				IFS="$_IFS"
-				PKGS_ENABLE="$( echo "$PKGS_ENABLE" ; echo $PKG )"
-				PKGS_DISABLE="$( echo "$PKGS_DISABLE" | grep -v $PKG )"
+				PKGS_ENABLE="$( echo "$PKGS_ENABLE" ; echo "$PKG" )"
+				PKGS_DISABLE="$( echo "$PKGS_DISABLE" | grep -v "^$PKG$" )"
 			elif ! grep -q $PKG <<< "$PKGS_ENABLE"; then
 				echo "installing $PKG"
 				download_extract_deb_file ${PKG}
 				get_pkg_files $PKG >/dev/null
-				PKGS_ENABLE="$( echo "$PKGS_ENABLE" ; echo $PKG )"
+				PKGS_ENABLE="$( echo "$PKGS_ENABLE" ; echo "$PKG" )"
 			fi
 		done
 	}
@@ -206,11 +205,11 @@ termux_step_pre_configure() {
 				#get_pkg_files $PKG | xargs -I@ echo disable /@ /@.disabling
 				IFS=$'\n'
 				for f in $(get_pkg_files $PKG); do
-					mv "/$f" "/$f.disabling" || echo "failed $f"
+					mv "/$f" "/$f.disabling" && echo ok "$f" || echo ng "$f"
 				done
 				IFS="$_IFS"
-				PKGS_ENABLE="$( echo "$PKGS_ENABLE" | grep -v $PKG )"
-				PKGS_DISABLE="$( echo "$PKGS_DISABLE" ; echo $PKG )"
+				PKGS_ENABLE="$( echo "$PKGS_ENABLE" | grep -v "^$PKG$" )"
+				PKGS_DISABLE="$( echo "$PKGS_DISABLE" ; echo "$PKG" )"
 			fi
 		done
 	}
@@ -948,7 +947,7 @@ termux_step_pre_configure() {
 	rm -rf ${TERMUX_PREFIX}/lib/python${_PYTHON_VERSION}/dist-packages
 	mv ${TERMUX_PREFIX}/lib/python${_PYTHON_VERSION}/site-packages ${TERMUX_PREFIX}/lib/python${_PYTHON_VERSION}/dist-packages
 	
-	cp ${TERMUX_COMMON_CACHEDIR}/get_pkg_files_* $TERMUX_PREFIX/lib
+	#cp ${TERMUX_COMMON_CACHEDIR}/get_pkg_files_* $TERMUX_PREFIX/lib
 }
 
 termux_step_configure() { :; }
