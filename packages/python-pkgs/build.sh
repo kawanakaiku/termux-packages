@@ -19,14 +19,6 @@ _PYTHON_FULL_VERSION=$(. $TERMUX_SCRIPTDIR/packages/python/build.sh; echo $TERMU
 
 termux_step_pre_configure() {
 
-	# set -x
-	echo test1
-	(
-		cd $TERMUX_SCRIPTDIR
-		./scripts/get_hash_from_file.py /home/builder/.termux-build/_cache-aarch64/packages-cf.termux.dev-apt-termux-main-stable-main-Packages libc++ 25-2
-	)
-	echo test1 end
-
 	local PYTHON_PKGS PYTHON_PKGS_OK PYTHON_PKG
 
 	PYTHON_PKGS=( )
