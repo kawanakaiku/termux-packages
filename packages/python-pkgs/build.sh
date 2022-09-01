@@ -202,7 +202,7 @@ termux_step_pre_configure() {
 				PKGS_ENABLE="$( echo "$PKGS_ENABLE" | grep -v $PKG )"
 				PKGS_DISABLE="$( echo "$PKGS_DISABLE" ; echo $PKG )"
 			fi
-		done
+		done || true
 	}
 	
 	enable_python_pkg_files() {
