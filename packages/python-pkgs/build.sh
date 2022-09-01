@@ -168,14 +168,15 @@ termux_step_pre_configure() {
 		while read f; do if test -f "$f"; then mv "$f" "$f.disabling"; fi; done
 	)}
 	
-	enable_python_pkg_files() {
+	enable_python_pkg_files() {(
 		# install just required packages
 		disable_all_files
 		local PYTHON_PKG=$1
 		local PYTHON_PKG_REQUIRES=( python $( manage_depends $PYTHON_PKG ) )
 		local PYTHON_PKG_REQUIRES_RECURSIVE=( $( get_pkgs_depends "${PYTHON_PKG_REQUIRES[@]}" ) )
+		cd /
 		echo "$( get_pkg_files $( get_pkgs_depends ${PYTHON_PKG_REQUIRES_RECURSIVE[@]} ) )" | while read f; do if test -f "$f.disabling"; then mv "$f.disabling" "$f"; fi; done
-	}
+	)}
 	
 	
 	# for building onnx
