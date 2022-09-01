@@ -178,12 +178,7 @@ termux_step_pre_configure() {
 		for PKG do
 			if grep -q $PKG <<< "$PKGS_DISABLE"; then
 				echo "enabling $PKG"
-				#get_pkg_files $PKG | xargs -I@ echo enable /@.disabling /@
-				IFS=$'\n'
-				for f in $(get_pkg_files $PKG); do
-					mv "/$f.disabling" "/$f" && echo ok "$f" || echo ng "$f"
-				done
-				IFS="$_IFS"
+				get_pkg_files $PKG | xargs -I@ echo enable /@.disabling /@
 				PKGS_ENABLE="$( echo "$PKGS_ENABLE" ; echo "$PKG" )"
 				PKGS_DISABLE="$( echo "$PKGS_DISABLE" | grep -v "^$PKG$" )"
 			elif ! grep -q $PKG <<< "$PKGS_ENABLE"; then
@@ -201,16 +196,11 @@ termux_step_pre_configure() {
 		for PKG do
 			if grep -q $PKG <<< "$PKGS_ENABLE"; then
 				echo "disabling $PKG"
-				#get_pkg_files $PKG | xargs -I@ echo disable /@ /@.disabling
-				IFS=$'\n'
-				for f in $(get_pkg_files $PKG); do
-					mv "/$f" "/$f.disabling" && echo ok "$f" || echo ng "$f"
-				done
-				IFS="$_IFS"
+				get_pkg_files $PKG | xargs -I@ echo disable /@ /@.disabling
 				PKGS_ENABLE="$( echo "$PKGS_ENABLE" | grep -v "^$PKG$" )"
 				PKGS_DISABLE="$( echo "$PKGS_DISABLE" ; echo "$PKG" )"
 			fi
-		done || echo ng=$?
+		done
 	}
 	
 	enable_python_pkg_files() {
@@ -940,7 +930,7 @@ termux_step_pre_configure() {
 	
 	# rm all installed files
 	disable_pkgs_files $PKGS_ENABLE
-	find $TERMUX_PREFIX -name "*.disabling" -type f,l -delete
+	find $TERMUX_PREFIX -name "*.disabling" -print0 | xargs -0 rm -rf
 	
 	# move to dist
 	rm -rf ${TERMUX_PREFIX}/lib/python${_PYTHON_VERSION}/dist-packages
