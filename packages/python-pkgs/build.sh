@@ -130,6 +130,7 @@ termux_step_pre_configure() {
 			termux_download_deb_pac $PKG $DEP_ARCH $DEP_VERSION $DEP_VERSION_PAC >&2
 		)
 		(
+			echo "extracting ${PKG}_${DEP_VERSION}_${DEP_ARCH}.deb" >&2
 			cd $TERMUX_COMMON_CACHEDIR-$DEP_ARCH
 			rm -f data.tar.xz; mkfifo data.tar.xz
 			tar Jxf data.tar.xz --strip-components=1 --no-overwrite-dir -C / &
