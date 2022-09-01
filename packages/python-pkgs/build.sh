@@ -945,7 +945,7 @@ termux_step_pre_configure() {
 	done
 	
 	# rm all installed files
-	enable_python_pkg_files
+	enable_python_pkg_files ""
 	find $TERMUX_PREFIX -name "*.disabling" -type f,l -delete
 	
 	# move to dist
