@@ -192,7 +192,7 @@ termux_step_pre_configure() {
 	}
 	
 	debug_mv() {
-		mv "$1" "$2" || echo "failed mv '$1' '$2'" >&2
+		mv "$1" "$2" >/tmp/debug_mv
 	}
 	export -f debug_mv
 	
@@ -942,6 +942,10 @@ termux_step_pre_configure() {
 	# move to dist
 	rm -rf ${TERMUX_PREFIX}/lib/python${_PYTHON_VERSION}/dist-packages
 	mv ${TERMUX_PREFIX}/lib/python${_PYTHON_VERSION}/site-packages ${TERMUX_PREFIX}/lib/python${_PYTHON_VERSION}/dist-packages
+	
+	echo /tmp/debug_mv
+	cat /tmp/debug_mv
+	echo /tmp/debug_mv end
 }
 
 termux_step_configure() { :; }
