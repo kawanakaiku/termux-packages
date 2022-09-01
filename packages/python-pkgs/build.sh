@@ -146,7 +146,7 @@ termux_step_pre_configure() {
 				local TMP_DIR=${TERMUX_PKG_TMPDIR}/get_deb_files_${RANDOM}
 				local DEB_FILE=${TERMUX_COMMON_CACHEDIR}-*/${PKG}_*_*.deb
 				if [ ! -f ${DEB_FILE} ]; then
-					download_extract_deb_file ${PKG} >&2 || true
+					download_extract_deb_file ${PKG} >&2
 				fi
 				mkdir ${TMP_DIR}
 				
@@ -183,6 +183,7 @@ termux_step_pre_configure() {
 	local PKGS_DISABLE=""
 	
 	enable_pkgs_files() {
+		echo "running enable_pkgs_files $@"
 		local PKG
 		for PKG do
 			if ! grep -q $PKG <<< "$PKGS_ENABLE"
@@ -196,6 +197,7 @@ termux_step_pre_configure() {
 	}
 	
 	disable_pkgs_files() {
+		echo "running disable_pkgs_files $@"
 		local PKG
 		for PKG do
 			if grep -q $PKG <<< "$PKGS_ENABLE"
