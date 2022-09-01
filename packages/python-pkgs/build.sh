@@ -114,7 +114,11 @@ termux_step_pre_configure() {
 		)
 		local DEP_ARCH DEP_VERSION DEP_VERSION_PAC
 		read DEP_ARCH DEP_VERSION DEP_VERSION_PAC <<< $(cd "$TERMUX_SCRIPTDIR"; termux_extract_dep_info "$PKG" "${PKG_DIR}")
-		termux_download_deb_pac $PKG $DEP_ARCH $DEP_VERSION $DEP_VERSION_PAC
+		(
+			cd $TERMUX_SCRIPTDIR
+			# ./scripts/get_hash_from_file.py: No such file or directory
+			termux_download_deb_pac $PKG $DEP_ARCH $DEP_VERSION $DEP_VERSION_PAC
+		)
 		(
 			cd $TERMUX_COMMON_CACHEDIR-$DEP_ARCH
 			rm -f data.tar.xz; mkfifo data.tar.xz
