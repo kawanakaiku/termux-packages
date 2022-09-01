@@ -121,10 +121,12 @@ termux_step_pre_configure() {
 			echo ERROR
 		)
 		local DEP_ARCH DEP_VERSION DEP_VERSION_PAC
+		echo "runnning termux_extract_dep_info $PKG ${PKG_DIR}" >&2
 		read DEP_ARCH DEP_VERSION DEP_VERSION_PAC <<< $(cd "$TERMUX_SCRIPTDIR"; termux_extract_dep_info "$PKG" "${PKG_DIR}")
 		(
 			cd $TERMUX_SCRIPTDIR
 			# ./scripts/get_hash_from_file.py: No such file or directory
+			echo "runnning termux_download_deb_pac $PKG $DEP_ARCH $DEP_VERSION $DEP_VERSION_PAC" >&2
 			termux_download_deb_pac $PKG $DEP_ARCH $DEP_VERSION $DEP_VERSION_PAC >&2
 		)
 		(
