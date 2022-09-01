@@ -194,6 +194,7 @@ termux_step_pre_configure() {
 	debug_mv() {
 		mv "$1" "$2" || echo "failed mv '$1' '$2'" >&2
 	}
+	export -f debug_mv
 	
 	disable_pkgs_files() {
 		echo "running disable_pkgs_files $*"
