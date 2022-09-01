@@ -182,7 +182,7 @@ termux_step_pre_configure() {
 			if ! grep -q $pkg <<< "$PKGS_ENABLE"
 			then
 				echo "enabling $pkg"
-				get_pkg_files $pkg | xargs -I@ mv @.disabling @
+				get_pkg_files $pkg | xargs -I@ mv /@.disabling /@
 				PKGS_ENABLE="$( echo "$PKGS_ENABLE" ; echo $PKG )"
 				PKGS_DISABLE="$( echo "$PKGS_DISABLE" | grep -v $PKG )"
 			fi
@@ -195,7 +195,7 @@ termux_step_pre_configure() {
 			if grep -q $pkg <<< "$PKGS_ENABLE"
 			then
 				echo "disabling $pkg"
-				get_pkg_files $pkg | xargs -I@ mv @.disabling @
+				get_pkg_files $pkg | xargs -I@ mv /@.disabling /@
 				PKGS_ENABLE="$( echo "$PKGS_ENABLE" | grep -v $PKG )"
 				PKGS_DISABLE="$( echo "$PKGS_DISABLE" ; echo $PKG )"
 			fi
