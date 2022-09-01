@@ -179,7 +179,7 @@ termux_step_pre_configure() {
 			f=/$f
 			if ls "$f" &>/dev/null
 			then
-				echo "disabling $f"
+				#echo "disabling $f"
 				mv "$f" "$f.disabling"
 			fi
 		done || true
@@ -197,7 +197,7 @@ termux_step_pre_configure() {
 			f=/$f
 			if ls "$f.disabling" &>/dev/null
 			then
-				echo "enabling $f"
+				#echo "enabling $f"
 				mv "$f.disabling" "$f"
 			fi
 		done || true
