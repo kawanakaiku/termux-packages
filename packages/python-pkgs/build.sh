@@ -171,6 +171,7 @@ termux_step_pre_configure() {
 	
 	local PKGS_ENABLE="$( for f in ${TERMUX_COMMON_CACHEDIR}/get_pkg_files_*; do echo ${f##*_}; done )"
 	local PKGS_DISABLE=""
+	echo "PKGS_ENABLE=$PKGS_ENABLE"
 	
 	enable_pkgs_files() {
 		echo "running enable_pkgs_files $*"
