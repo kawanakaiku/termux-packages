@@ -150,7 +150,7 @@ termux_step_pre_configure() {
 
 				rm -rf ${TMP_DIR}
 			fi
-			cat ${TMP_FILE}
+			cat ${TMP_FILE} | grep -v -e '/$'
 		done
 	}
 	
