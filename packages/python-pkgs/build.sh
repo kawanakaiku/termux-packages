@@ -182,8 +182,7 @@ termux_step_pre_configure() {
 				echo "disabling $f"
 				mv "$f" "$f.disabling"
 			fi
-		done
-		true
+		done || true
 	}
 	
 	enable_python_pkg_files() {
@@ -201,8 +200,7 @@ termux_step_pre_configure() {
 				echo "enabling $f"
 				mv "$f.disabling" "$f"
 			fi
-		done
-		true
+		done || true
 	}
 	
 	
