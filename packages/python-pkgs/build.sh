@@ -19,7 +19,10 @@ _PYTHON_FULL_VERSION=$(. $TERMUX_SCRIPTDIR/packages/python/build.sh; echo $TERMU
 
 termux_step_pre_configure() {
 
-	set -x
+	# set -x
+	echo test1
+	./scripts/get_hash_from_file.py /home/builder/.termux-build/_cache-aarch64/packages-cf.termux.dev-apt-termux-main-stable-main-Packages libc++ 25-2
+	echo test1 end
 
 	local PYTHON_PKGS PYTHON_PKGS_OK PYTHON_PKG
 
@@ -119,7 +122,7 @@ termux_step_pre_configure() {
 		(
 			cd $TERMUX_SCRIPTDIR
 			# ./scripts/get_hash_from_file.py: No such file or directory
-			termux_download_deb_pac $PKG $DEP_ARCH $DEP_VERSION $DEP_VERSION_PAC
+			termux_download_deb_pac $PKG $DEP_ARCH $DEP_VERSION $DEP_VERSION_PAC >&2
 		)
 		(
 			cd $TERMUX_COMMON_CACHEDIR-$DEP_ARCH
