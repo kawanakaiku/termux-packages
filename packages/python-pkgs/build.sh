@@ -85,14 +85,14 @@ termux_step_pre_configure() {
 	
 	PYTHON_PKGS_OK=( )
 	
+	echo "TERMUX_NDK_VERSION=${TERMUX_NDK_VERSION}"
 
 	# for accurate dependency
 	
 	download_extract_deb_file() {
 		echo "runnning download_extract_deb_file $@" >&2
 		local PKG=$1
-		cd "$TERMUX_SCRIPTDIR"
-		#read PKG_DIR <<< $(./scripts/buildorder.py 2>/dev/null | awk -v PKG="$PKG" '{if($1==PKG){print $2; exit;}}')
+		#read PKG_DIR <<< $(cd "$TERMUX_SCRIPTDIR"; ./scripts/buildorder.py 2>/dev/null | awk -v PKG="$PKG" '{if($1==PKG){print $2; exit;}}')
 		local PKG_DIR=$(
 			for i in packages root-packages x11-packages
 			do
@@ -113,13 +113,15 @@ termux_step_pre_configure() {
 			echo ERROR
 		)
 		local DEP_ARCH DEP_VERSION DEP_VERSION_PAC
-		read DEP_ARCH DEP_VERSION DEP_VERSION_PAC <<< $(termux_extract_dep_info "$PKG" "${PKG_DIR}")
+		read DEP_ARCH DEP_VERSION DEP_VERSION_PAC <<< $(cd "$TERMUX_SCRIPTDIR"; termux_extract_dep_info "$PKG" "${PKG_DIR}")
 		termux_download_deb_pac $PKG $DEP_ARCH $DEP_VERSION $DEP_VERSION_PAC
-		cd $TERMUX_COMMON_CACHEDIR-$DEP_ARCH
-		rm -f data.tar.xz; mkfifo data.tar.xz
-		tar Jxf data.tar.xz --strip-components=1 --no-overwrite-dir -C / &
-		ar x ${PKG}_${DEP_VERSION}_${DEP_ARCH}.deb data.tar.xz
-		rm -f data.tar.xz
+		(
+			cd $TERMUX_COMMON_CACHEDIR-$DEP_ARCH
+			rm -f data.tar.xz; mkfifo data.tar.xz
+			tar Jxf data.tar.xz --strip-components=1 --no-overwrite-dir -C / &
+			ar x ${PKG}_${DEP_VERSION}_${DEP_ARCH}.deb data.tar.xz
+			rm -f data.tar.xz
+		)
 	}
 
 	get_pkg_files() {
@@ -133,13 +135,14 @@ termux_step_pre_configure() {
 					download_extract_deb_file ${PKG} >&2
 				fi
 				mkdir ${TMP_DIR}
-				cd ${TMP_DIR}
+				
+				(
+					cd ${TMP_DIR}
+					mkfifo data.tar.xz
+					tar Jtf data.tar.xz > ${TMP_FILE} &
+					ar x $DEB_FILE data.tar.xz
+				)
 
-				mkfifo data.tar.xz
-				tar Jtf data.tar.xz > ${TMP_FILE} &
-				ar x $DEB_FILE data.tar.xz
-
-				cd ${OLDPWD}
 				rm -rf ${TMP_DIR}
 			fi
 			cat ${TMP_FILE}
@@ -155,7 +158,6 @@ termux_step_pre_configure() {
 		
 		cd "$TERMUX_SCRIPTDIR"
 		./scripts/buildorder.py -i "$TMP_BUILDER_DIR" packages root-packages x11-packages | awk '{print $1}' | grep -v -e ndk-sysroot -e $TERMUX_PKG_NAME
-		cd "$OLDPWD"
 		
 		rm -rf $TMP_BUILDER_DIR
 	}
