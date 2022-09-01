@@ -177,7 +177,7 @@ termux_step_pre_configure() {
 		while read f
 		do
 			f=/$f
-			if test -e "$f"
+			if ls "$f" &>/dev/null
 			then
 				echo "disabling $f"
 				mv "$f" "$f.disabling"
@@ -195,7 +195,7 @@ termux_step_pre_configure() {
 		while read f
 		do
 			f=/$f
-			if test -e "$f.disabling"
+			if ls "$f.disabling" &>/dev/null
 			then
 				echo "enabling $f"
 				mv "$f.disabling" "$f"
