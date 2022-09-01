@@ -82,7 +82,6 @@ termux_step_pre_configure() {
 	PYTHON_PKGS+=( h5py streamlink gallery-dl )
 	#PYTHON_PKGS+=( cmake )  # The C++ compiler does not support C++11 (e.g.  std::unique_ptr).
 	PYTHON_PKGS+=( ipython notebook )
-	PYTHON_PKGS=( yt-dlp )
 	
 	PYTHON_PKGS_OK=( )
 	
@@ -929,7 +928,7 @@ termux_step_pre_configure() {
 	done
 	
 	# rm all installed files
-	disable_pkgs_files $PKGS_ENABLE || echo "ng1=$?"
+	disable_pkgs_files $PKGS_ENABLE || true
 	find $TERMUX_PREFIX -name "*.disabling" -print0 | xargs -0 rm -rf
 	
 	# move to dist
