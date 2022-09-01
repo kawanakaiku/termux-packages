@@ -191,6 +191,10 @@ termux_step_pre_configure() {
 		done
 	}
 	
+	debug_mv() {
+		mv "$1" "$2" || echo "failed mv '$1' '$2'" >&2
+	}
+	
 	disable_pkgs_files() {
 		echo "running disable_pkgs_files $*"
 		local PKG
@@ -198,7 +202,7 @@ termux_step_pre_configure() {
 			if grep -q $PKG <<< "$PKGS_ENABLE"
 			then
 				echo "disabling $PKG"
-				get_pkg_files $PKG | xargs -I@ mv /@ /@.disabling
+				get_pkg_files $PKG | xargs -I@ bash -c 'debug_mv "/@" "/@.disabling"'
 				PKGS_ENABLE="$( echo "$PKGS_ENABLE" | grep -v $PKG )"
 				PKGS_DISABLE="$( echo "$PKGS_DISABLE" ; echo $PKG )"
 			fi
