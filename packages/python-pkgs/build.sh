@@ -91,7 +91,6 @@ termux_step_pre_configure() {
 	
 	download_extract_deb_file() {
 		echo "runnning download_extract_deb_file $@" >&2
-		echo "TERMUX_NDK_VERSION=${TERMUX_NDK_VERSION} in download_extract_deb_file" >&2
 		local PKG=$1
 		#read PKG_DIR <<< $(cd "$TERMUX_SCRIPTDIR"; ./scripts/buildorder.py 2>/dev/null | awk -v PKG="$PKG" '{if($1==PKG){print $2; exit;}}')
 		local PKG_DIR=$(
@@ -103,7 +102,6 @@ termux_step_pre_configure() {
 					echo $i/$PKG
 					exit
 				else
-					# ex) TERMUX_NDK_VERSION not exported
 					f=$( echo $i/*/${PKG}.subpackage.sh | head -n1 )
 					if [ -f $f ]
 					then
@@ -116,7 +114,6 @@ termux_step_pre_configure() {
 		)
 		local DEP_ARCH DEP_VERSION DEP_VERSION_PAC
 		read DEP_ARCH DEP_VERSION DEP_VERSION_PAC <<< $(cd "$TERMUX_SCRIPTDIR"; termux_extract_dep_info "$PKG" "${PKG_DIR}")
-		echo "running PKG=$PKG DEP_ARCH=$DEP_ARCH DEP_VERSION=$DEP_VERSION DEP_VERSION_PAC=$DEP_VERSION_PAC"
 		termux_download_deb_pac $PKG $DEP_ARCH $DEP_VERSION $DEP_VERSION_PAC
 		(
 			cd $TERMUX_COMMON_CACHEDIR-$DEP_ARCH
@@ -129,7 +126,6 @@ termux_step_pre_configure() {
 
 	get_pkg_files() {
 		echo "runnning get_pkg_files $@" >&2
-		echo "TERMUX_NDK_VERSION=${TERMUX_NDK_VERSION} in get_pkg_files" >&2
 		local PKG
 		for PKG do
 			local TMP_FILE=${TERMUX_COMMON_CACHEDIR}/get_pkg_files_${PKG}
@@ -168,13 +164,13 @@ termux_step_pre_configure() {
 	}
 	
 	disable_all_files() {
-                local IFS=$'\n'
-		for f in $(
+		echo "$(
 			# cache files list
 			# disable all installed files
 			get_pkg_files $( get_pkgs_depends $TERMUX_PKG_NAME )
 			cat ${TERMUX_COMMON_CACHEDIR}/get_pkg_files_*
-		)
+		)" |
+		while read f
 		do
 			f=/$f
 			if test -f "$f"
@@ -191,9 +187,8 @@ termux_step_pre_configure() {
 		local PYTHON_PKG=$1
 		local PYTHON_PKG_REQUIRES=( python $( manage_depends $PYTHON_PKG ) )
 		local PYTHON_PKG_REQUIRES_RECURSIVE=( $( get_pkgs_depends "${PYTHON_PKG_REQUIRES[@]}" ) )
-		local IFS=$'\n'
-		local f
-		for f in $( get_pkg_files $( get_pkgs_depends ${PYTHON_PKG_REQUIRES_RECURSIVE[@]} ) )
+		echo "$( get_pkg_files $( get_pkgs_depends ${PYTHON_PKG_REQUIRES_RECURSIVE[@]} ) )" |
+		while read f
 		do
 			f=/$f
 			if test -f "$f.disabling"
