@@ -149,7 +149,7 @@ termux_step_pre_configure() {
 
 				rm -rf ${TMP_DIR}
 			fi
-			cat ${TMP_FILE} | grep -v -e '/$' -e '^$'
+			grep -v -e '/$' -e '^$' ${TMP_FILE} || true
 		done
 	}
 	
@@ -212,7 +212,7 @@ termux_step_pre_configure() {
 				PKGS_ENABLE="$( echo "$PKGS_ENABLE" | grep -v $PKG )"
 				PKGS_DISABLE="$( echo "$PKGS_DISABLE" ; echo $PKG )"
 			fi
-		done || true
+		done
 	}
 	
 	enable_python_pkg_files() {
