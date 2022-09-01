@@ -206,7 +206,7 @@ termux_step_pre_configure() {
 				#get_pkg_files $PKG | xargs -I@ echo disable /@ /@.disabling
 				IFS=$'\n'
 				for f in $(get_pkg_files $PKG); do
-					mv "/$f" "/$f.disabling"
+					mv "/$f" "/$f.disabling" || echo "failed $f"
 				done
 				IFS="$_IFS"
 				PKGS_ENABLE="$( echo "$PKGS_ENABLE" | grep -v $PKG )"
