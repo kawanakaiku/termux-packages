@@ -167,7 +167,6 @@ termux_step_pre_configure() {
 	}
 	
 	disable_all_files() {
-		cd /
                 local IFS=$'\n'
 		for f in $(
 			# cache files list
@@ -176,6 +175,7 @@ termux_step_pre_configure() {
 			cat ${TERMUX_COMMON_CACHEDIR}/get_pkg_files_*
 		)
 		do
+			f=/$f
 			if test -f "$f"
 			then
 				echo "disabling $f"
@@ -190,11 +190,11 @@ termux_step_pre_configure() {
 		local PYTHON_PKG=$1
 		local PYTHON_PKG_REQUIRES=( python $( manage_depends $PYTHON_PKG ) )
 		local PYTHON_PKG_REQUIRES_RECURSIVE=( $( get_pkgs_depends "${PYTHON_PKG_REQUIRES[@]}" ) )
-		cd /
 		local IFS=$'\n'
 		local f
 		for f in $( get_pkg_files $( get_pkgs_depends ${PYTHON_PKG_REQUIRES_RECURSIVE[@]} ) )
 		do
+			f=/$f
 			if test -f "$f.disabling"
 			then
 				echo "enabling $f"
