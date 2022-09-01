@@ -848,17 +848,19 @@ termux_step_pre_configure() {
 				
 				termux_step_create_subpkg_debscripts() {
 					cat <<SH > postinst
-					#!${TERMUX_PREFIX}/bin/bash
-					f=${TERMUX_PREFIX}/lib/python${_PYTHON_VERSION}/site-packages/dist-packages.pth
-					if [ -f \\\$f ]
+					#!${TERMUX_PREFIX}/bin/sh
+					d=${TERMUX_PREFIX}/lib/python${_PYTHON_VERSION}/site-packages
+					f=\\\$d/dist-packages.pth
+					if ! test -f \\\$f
 					then
+						mkdir -p \\\$d
 						echo '../dist-packages' >\\\$f
 					fi
 					SH
 					
 					cat <<SH > postrm
-					#!${TERMUX_PREFIX}/bin/bash
-					if [ -z "\\\$(ls -A ${TERMUX_PREFIX}/lib/python${_PYTHON_VERSION}/dist-packages 2>/dev/null)" ]
+					#!${TERMUX_PREFIX}/bin/sh
+					if test -z "\\\$(ls -A ${TERMUX_PREFIX}/lib/python${_PYTHON_VERSION}/dist-packages 2>/dev/null)"
 					then
 						rm -f ${TERMUX_PREFIX}/lib/python${_PYTHON_VERSION}/site-packages/dist-packages.pth
 					fi
