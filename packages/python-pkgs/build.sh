@@ -402,7 +402,7 @@ termux_step_pre_configure() {
 			onnx )
 				# Could NOT find PythonLibs (missing: PYTHON_LIBRARIES) (found version "3.10.6")
 				# Could NOT find pybind11 (missing: pybind11_DIR)
-				#export CMAKE_ARGS="-DPYTHON_INCLUDE_DIRS=${TERMUX_PREFIX}/include -DPYTHON_LIBRARIES=${TERMUX_PREFIX}/lib -Dpybind11_DIR=${TERMUX_PREFIX}/lib/python${_PYTHON_VERSION}/site-packages/pybind11 -Dpybind11_INCLUDE_DIRS=${TERMUX_PREFIX}/lib/python${_PYTHON_VERSION}/site-packages/pybind11/include"
+				#export CMAKE_ARGS="-DCMAKE_SYSTEM_LIBRARY_PATH==${TERMUX_PREFIX}/lib -DPYTHON_INCLUDE_DIRS=${TERMUX_PREFIX}/include -DPYTHON_LIBRARIES=${TERMUX_PREFIX}/lib -Dpybind11_DIR=${TERMUX_PREFIX}/lib/python${_PYTHON_VERSION}/site-packages/pybind11 -Dpybind11_INCLUDE_DIRS=${TERMUX_PREFIX}/lib/python${_PYTHON_VERSION}/site-packages/pybind11/include"
 				;;
 		esac
 	}
