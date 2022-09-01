@@ -91,7 +91,7 @@ termux_step_pre_configure() {
 		#echo "runnning download_extract_deb_file $*" >&2
 		local PKG=$1
 		if [[ $PKG = *-static ]]; then
-			exit
+			return
 		fi
 		#read PKG_DIR <<< $(cd "$TERMUX_SCRIPTDIR"; ./scripts/buildorder.py 2>/dev/null | awk -v PKG="$PKG" '{if($1==PKG){print $2; exit;}}')
 		local PKG_DIR=$(
