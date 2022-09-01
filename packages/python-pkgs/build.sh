@@ -116,6 +116,7 @@ termux_step_pre_configure() {
 		)
 		local DEP_ARCH DEP_VERSION DEP_VERSION_PAC
 		read DEP_ARCH DEP_VERSION DEP_VERSION_PAC <<< $(cd "$TERMUX_SCRIPTDIR"; termux_extract_dep_info "$PKG" "${PKG_DIR}")
+		echo "running PKG=$PKG DEP_ARCH=$DEP_ARCH DEP_VERSION=$DEP_VERSION DEP_VERSION_PAC=$DEP_VERSION_PAC"
 		termux_download_deb_pac $PKG $DEP_ARCH $DEP_VERSION $DEP_VERSION_PAC
 		(
 			cd $TERMUX_COMMON_CACHEDIR-$DEP_ARCH
@@ -128,7 +129,7 @@ termux_step_pre_configure() {
 
 	get_pkg_files() {
 		echo "runnning get_pkg_files $@" >&2
-        echo "TERMUX_NDK_VERSION=${TERMUX_NDK_VERSION} in get_pkg_files" >&2
+		echo "TERMUX_NDK_VERSION=${TERMUX_NDK_VERSION} in get_pkg_files" >&2
 		local PKG
 		for PKG do
 			local TMP_FILE=${TERMUX_COMMON_CACHEDIR}/get_pkg_files_${PKG}
