@@ -91,10 +91,11 @@ termux_step_pre_configure() {
 	
 	download_extract_deb_file() {
 		echo "runnning download_extract_deb_file $@" >&2
-        echo "TERMUX_NDK_VERSION=${TERMUX_NDK_VERSION} in download_extract_deb_file" >&2
+		echo "TERMUX_NDK_VERSION=${TERMUX_NDK_VERSION} in download_extract_deb_file" >&2
 		local PKG=$1
 		#read PKG_DIR <<< $(cd "$TERMUX_SCRIPTDIR"; ./scripts/buildorder.py 2>/dev/null | awk -v PKG="$PKG" '{if($1==PKG){print $2; exit;}}')
 		local PKG_DIR=$(
+			cd "$TERMUX_SCRIPTDIR"
 			for i in packages root-packages x11-packages
 			do
 				if [ -d $i/$PKG ]
