@@ -199,8 +199,7 @@ termux_step_pre_configure() {
 		echo "running disable_pkgs_files $*"
 		local PKG f
 		for PKG do
-			if grep -q $PKG <<< "$PKGS_ENABLE"
-			then
+			if grep -q $PKG <<< "$PKGS_ENABLE"; then
 				echo "disabling $PKG"
 				#get_pkg_files $PKG | xargs -I@ echo disable /@ /@.disabling
 				IFS=$'\n'
@@ -211,7 +210,7 @@ termux_step_pre_configure() {
 				PKGS_ENABLE="$( echo "$PKGS_ENABLE" | grep -v "^$PKG$" )"
 				PKGS_DISABLE="$( echo "$PKGS_DISABLE" ; echo "$PKG" )"
 			fi
-		done
+		done || echo ng=$?
 	}
 	
 	enable_python_pkg_files() {
