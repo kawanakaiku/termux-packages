@@ -177,12 +177,12 @@ termux_step_pre_configure() {
 	local PKGS_DISABLE=""
 	
 	enable_pkgs_files() {
-		local pkg
-		for pkg do
-			if ! grep -q $pkg <<< "$PKGS_ENABLE"
+		local PKG
+		for PKG do
+			if ! grep -q $PKG <<< "$PKGS_ENABLE"
 			then
-				echo "enabling $pkg"
-				get_pkg_files $pkg | xargs -I@ mv /@.disabling /@
+				echo "enabling $PKG"
+				get_pkg_files $PKG | xargs -I@ mv /@.disabling /@
 				PKGS_ENABLE="$( echo "$PKGS_ENABLE" ; echo $PKG )"
 				PKGS_DISABLE="$( echo "$PKGS_DISABLE" | grep -v $PKG )"
 			fi
@@ -190,12 +190,12 @@ termux_step_pre_configure() {
 	}
 	
 	disable_pkgs_files() {
-		local pkg
-		for pkg do
-			if grep -q $pkg <<< "$PKGS_ENABLE"
+		local PKG
+		for PKG do
+			if grep -q $PKG <<< "$PKGS_ENABLE"
 			then
-				echo "disabling $pkg"
-				get_pkg_files $pkg | xargs -I@ mv /@ /@.disabling
+				echo "disabling $PKG"
+				get_pkg_files $PKG | xargs -I@ mv /@ /@.disabling
 				PKGS_ENABLE="$( echo "$PKGS_ENABLE" | grep -v $PKG )"
 				PKGS_DISABLE="$( echo "$PKGS_DISABLE" ; echo $PKG )"
 			fi
@@ -207,15 +207,15 @@ termux_step_pre_configure() {
 		local PYTHON_PKG=$1
 		local PYTHON_PKG_REQUIRES=( python $( manage_depends $PYTHON_PKG ) )
 		local PYTHON_PKG_REQUIRES_RECURSIVE=( $( get_pkgs_depends "${PYTHON_PKG_REQUIRES[@]}" ) )
-		local pkg
-		for pkg in ${PKGS_ENABLE}; do
-			if ! [[ " ${PYTHON_PKG_REQUIRES_RECURSIVE[*]} " =~ " ${pkg} " ]]; then
-				disable_pkgs_files ${pkg}
+		local PKG
+		for PKG in ${PKGS_ENABLE}; do
+			if ! [[ " ${PYTHON_PKG_REQUIRES_RECURSIVE[*]} " =~ " ${PKG} " ]]; then
+				disable_pkgs_files ${PKG}
 			fi
 		done
-		for pkg in ${PYTHON_PKG_REQUIRES_RECURSIVE[@]}; do
-			if ! [[ " ${PKGS_ENABLE//$'\n'/ } " =~ " ${pkg} " ]]; then
-				enable_pkgs_files
+		for PKG in ${PYTHON_PKG_REQUIRES_RECURSIVE[@]}; do
+			if ! [[ " ${PKGS_ENABLE//$'\n'/ } " =~ " ${PKG} " ]]; then
+				enable_pkgs_files ${PKG}
 			fi
 		done
 	}
