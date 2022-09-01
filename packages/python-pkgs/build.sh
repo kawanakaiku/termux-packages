@@ -150,7 +150,7 @@ termux_step_pre_configure() {
 
 				rm -rf ${TMP_DIR}
 			fi
-			cat ${TMP_FILE} | grep -v -e '/$'
+			cat ${TMP_FILE} | grep -v -e '/$' -e '^$'
 		done
 	}
 	
@@ -167,22 +167,55 @@ termux_step_pre_configure() {
 		rm -rf $TMP_BUILDER_DIR
 	}
 	
-	disable_all_files() {
-		(
-			# cache files list
-			# disable all installed files
-			get_pkg_files $( get_pkgs_depends $TERMUX_PKG_NAME )
-			cat ${TERMUX_COMMON_CACHEDIR}/get_pkg_files_*
-		) | grep -v -e '/$' |
-		while read f
-		do
-			f=/$f
-			if ls "$f" &>/dev/null
+	# cache files list
+	get_pkg_files $( get_pkgs_depends $TERMUX_PKG_NAME ) >/dev/null
+	
+	local PKGS_ENABLE="$( for f in ${TERMUX_COMMON_CACHEDIR}/get_pkg_files_*; do echo ${f##*_}; done )"
+	local PKGS_DISABLE=""
+	
+	enable_pkgs_files() {
+		local pkg
+		for pkg do
+			if grep -q $pkg <<< "$PKGS_DISABLE"
 			then
-				#echo "disabling $f"
-				mv "$f" "$f.disabling"
+				echo "enabling $pkg"
+				get_pkg_files $pkg | xargs -I@ mv @.disabling @
+				PKGS_ENABLE="$( echo "$PKGS_ENABLE" ; echo $PKG )"
+				PKGS_DISABLE="$( echo "$PKGS_DISABLE" | grep -v $PKG )"
 			fi
-		done || true
+		done
+	}
+	
+	disable_pkgs_files() {
+		local pkg
+		for pkg do
+			if grep -q $pkg <<< "$PKGS_ENABLE"
+			then
+				echo "disabling $pkg"
+				get_pkg_files $pkg | xargs -I@ mv @.disabling @
+				PKGS_ENABLE="$( echo "$PKGS_ENABLE" | grep -v $PKG )"
+				PKGS_DISABLE="$( echo "$PKGS_DISABLE" ; echo $PKG )"
+			fi
+		done
+	}
+	
+	enable_python_pkg_files() {
+		# install just required packages
+		disable_all_files
+		local PYTHON_PKG=$1
+		local PYTHON_PKG_REQUIRES=( python $( manage_depends $PYTHON_PKG ) )
+		local PYTHON_PKG_REQUIRES_RECURSIVE=( $( get_pkgs_depends "${PYTHON_PKG_REQUIRES[@]}" ) )
+		local pkg
+		for pkg in ${PKGS_ENABLE}; do
+			if ! [[ " ${PYTHON_PKG_REQUIRES_RECURSIVE[*]} " =~ " ${pkg} " ]]; then
+				disable_pkgs_files ${pkg}
+			fi
+		done
+		for pkg in ${PKGS_DISABLE}; do
+			if [[ " ${PYTHON_PKG_REQUIRES_RECURSIVE[*]} " =~ " ${pkg} " ]]; then
+				enable_pkgs_files ${pkg}
+			fi
+		done
 	}
 	
 	enable_python_pkg_files() {
@@ -911,8 +944,7 @@ termux_step_pre_configure() {
 	done
 	
 	# rm all installed files
-	disable_all_files
-	#echo "$( get_pkg_files $( get_pkgs_depends $TERMUX_PKG_NAME ) )" | while read f; do rm -f "$f.disabling"; done
+	enable_python_pkg_files
 	find $TERMUX_PREFIX -name "*.disabling" -type f,l -delete
 	
 	# move to dist
