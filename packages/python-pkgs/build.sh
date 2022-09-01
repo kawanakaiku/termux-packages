@@ -601,6 +601,8 @@ termux_step_pre_configure() {
 				
 				# Python config failure: Python is 64-bit, chosen compiler is 32-bit
 				perl -i -pe 's|message\(FATAL_ERROR|message(STATUS|' third_party/pybind11/tools/FindPythonLibsNew.cmake
+				
+				perl -i -pe "s|Protobuf REQUIRED|Protobuf REQUIRED ${TERMUX_PREFIX}/lib|" CMakeLists.txt
 				;;
 		esac
 	}
