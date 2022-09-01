@@ -30,7 +30,7 @@ termux_step_pre_configure() {
 	PYTHON_PKGS+=( beautifulsoup4 certifi demjson3 mechanize colorama cloudscraper )
 	PYTHON_PKGS+=( cffi )
 	PYTHON_PKGS+=( h5py )
-	PYTHON_PKGS+=( jupyter )
+	#PYTHON_PKGS+=( jupyter )  conflicts with jupyter-core
 	#PYTHON_PKGS+=( biopython )
 	PYTHON_PKGS+=( matplotlib )
 	PYTHON_PKGS+=( pytest )
@@ -75,7 +75,7 @@ termux_step_pre_configure() {
 	PYTHON_PKGS+=( tesserocr )
 	PYTHON_PKGS+=( pynacl zfec )
 	PYTHON_PKGS+=( bcrypt homeassistant orjson sqlalchemy )
-	#PYTHON_PKGS+=( numpy opencv-contrib-python scipy tqdm colorama scikit-learn scikit-image shapely yt-dlp pip beautifulsoup4 certifi demjson3 mechanize colorama cloudscraper lxml pandas cryptography pillow pyzmq pygame pynacl matplotlib jupyter uvloop )
+	#PYTHON_PKGS+=( numpy opencv-contrib-python scipy tqdm colorama scikit-learn scikit-image shapely yt-dlp pip beautifulsoup4 certifi demjson3 mechanize colorama cloudscraper lxml pandas cryptography pillow pyzmq pygame pynacl matplotlib uvloop )
 	PYTHON_PKGS+=( yt-dlp )
 	PYTHON_PKGS+=( matplotlib )
 	PYTHON_PKGS+=( pip wheel setuptools )
