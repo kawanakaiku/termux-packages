@@ -146,7 +146,7 @@ termux_step_pre_configure() {
 				local TMP_DIR=${TERMUX_PKG_TMPDIR}/get_deb_files_${RANDOM}
 				local DEB_FILE=${TERMUX_COMMON_CACHEDIR}-*/${PKG}_*_*.deb
 				if [ ! -f ${DEB_FILE} ]; then
-					download_extract_deb_file ${PKG} >&2
+					download_extract_deb_file ${PKG} >&2 || true
 				fi
 				mkdir ${TMP_DIR}
 				
