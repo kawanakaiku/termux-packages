@@ -128,6 +128,7 @@ termux_step_pre_configure() {
 			ar x ${PKG}_${DEP_VERSION}_${DEP_ARCH}.deb data.tar.xz
 			rm -f data.tar.xz
 		)
+		PKGS_ENABLE="$( echo "$PKGS_ENABLE" ; echo $PKG )"
 	}
 
 	get_pkg_files() {
@@ -178,7 +179,7 @@ termux_step_pre_configure() {
 	enable_pkgs_files() {
 		local pkg
 		for pkg do
-			if grep -q $pkg <<< "$PKGS_DISABLE"
+			if ! grep -q $pkg <<< "$PKGS_ENABLE"
 			then
 				echo "enabling $pkg"
 				get_pkg_files $pkg | xargs -I@ mv @.disabling @
@@ -203,7 +204,6 @@ termux_step_pre_configure() {
 	
 	enable_python_pkg_files() {
 		# install just required packages
-		disable_all_files
 		local PYTHON_PKG=$1
 		local PYTHON_PKG_REQUIRES=( python $( manage_depends $PYTHON_PKG ) )
 		local PYTHON_PKG_REQUIRES_RECURSIVE=( $( get_pkgs_depends "${PYTHON_PKG_REQUIRES[@]}" ) )
@@ -213,28 +213,11 @@ termux_step_pre_configure() {
 				disable_pkgs_files ${pkg}
 			fi
 		done
-		for pkg in ${PKGS_DISABLE}; do
-			if [[ " ${PYTHON_PKG_REQUIRES_RECURSIVE[*]} " =~ " ${pkg} " ]]; then
-				enable_pkgs_files ${pkg}
+		for pkg in ${PYTHON_PKG_REQUIRES_RECURSIVE[@]}; do
+			if ! [[ " ${PKGS_ENABLE//$'\n'/ } " =~ " ${pkg} " ]]; then
+				enable_pkgs_files
 			fi
 		done
-	}
-	
-	enable_python_pkg_files() {
-		# install just required packages
-		local PYTHON_PKG=$1
-		local PYTHON_PKG_REQUIRES=( python $( manage_depends $PYTHON_PKG ) )
-		local PYTHON_PKG_REQUIRES_RECURSIVE=( $( get_pkgs_depends "${PYTHON_PKG_REQUIRES[@]}" ) )
-		get_pkg_files $( get_pkgs_depends ${PYTHON_PKG_REQUIRES_RECURSIVE[@]} ) |
-		while read f
-		do
-			f=/$f
-			if ls "$f.disabling" &>/dev/null
-			then
-				#echo "enabling $f"
-				mv "$f.disabling" "$f"
-			fi
-		done || true
 	}
 	
 	
@@ -945,7 +928,7 @@ termux_step_pre_configure() {
 	done
 	
 	# rm all installed files
-	enable_python_pkg_files ""
+	disable_pkgs_files $PKGS_ENABLE
 	find $TERMUX_PREFIX -name "*.disabling" -type f,l -delete
 	
 	# move to dist
