@@ -137,7 +137,6 @@ termux_step_pre_configure() {
 			ar x ${PKG}_${DEP_VERSION}_${DEP_ARCH}.deb data.tar.xz
 			rm -f data.tar.xz
 		)
-		PKGS_ENABLE="$( echo "$PKGS_ENABLE" ; echo $PKG )"
 	}
 
 	get_pkg_files() {
@@ -148,9 +147,6 @@ termux_step_pre_configure() {
 			if [ ! -f ${TMP_FILE} ]; then
 				local TMP_DIR=${TERMUX_PKG_TMPDIR}/get_deb_files_${RANDOM}
 				local DEB_FILE=${TERMUX_COMMON_CACHEDIR}-*/${PKG}_*_*.deb
-				if [ ! -f ${DEB_FILE} ]; then
-					download_extract_deb_file ${PKG} >&2
-				fi
 				mkdir ${TMP_DIR}
 				
 				(
@@ -189,12 +185,17 @@ termux_step_pre_configure() {
 		echo "running enable_pkgs_files $@"
 		local PKG
 		for PKG do
-			if ! grep -q $PKG <<< "$PKGS_ENABLE"
+			if grep -q $PKG <<< "$PKGS_DISABLE"
 			then
 				echo "enabling $PKG"
 				get_pkg_files $PKG | xargs -I@ mv /@.disabling /@
 				PKGS_ENABLE="$( echo "$PKGS_ENABLE" ; echo $PKG )"
 				PKGS_DISABLE="$( echo "$PKGS_DISABLE" | grep -v $PKG )"
+			elif ! grep -q $PKG <<< "$PKGS_ENABLE"
+				echo "installing $PKG"
+				download_extract_deb_file ${PKG}
+				get_pkg_files $PKG >/dev/null
+				PKGS_ENABLE="$( echo "$PKGS_ENABLE" ; echo $PKG )"
 			fi
 		done
 	}
