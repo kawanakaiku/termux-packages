@@ -19,6 +19,8 @@ _PYTHON_FULL_VERSION=$(. $TERMUX_SCRIPTDIR/packages/python/build.sh; echo $TERMU
 
 termux_step_pre_configure() {
 
+	set -x
+
 	local PYTHON_PKGS PYTHON_PKGS_OK PYTHON_PKG
 
 	PYTHON_PKGS=( )
