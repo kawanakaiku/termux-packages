@@ -764,7 +764,7 @@ termux_step_pre_configure() {
 			# order: setuptools => wheel => pip (last)
 			#[[ " setuptools wheel pip " =~ " $PYTHON_PKG " ]] && continue
 
-			echo "Processing $PYTHON_PKG ..."
+			echo "Cross Compiling $PYTHON_PKG ..."
 			
 			enable_python_pkg_files $PYTHON_PKG
 
