@@ -19,6 +19,8 @@ _PYTHON_FULL_VERSION=$(. $TERMUX_SCRIPTDIR/packages/python/build.sh; echo $TERMU
 
 termux_step_pre_configure() {
 
+	_IFS="$IFS"
+
 	local PYTHON_PKGS PYTHON_PKGS_OK PYTHON_PKG
 
 	PYTHON_PKGS=( )
@@ -82,11 +84,8 @@ termux_step_pre_configure() {
 	PYTHON_PKGS+=( ipython notebook )
 	PYTHON_PKGS=( yt-dlp )
 	
-	
 	PYTHON_PKGS_OK=( )
 	
-	echo "TERMUX_NDK_VERSION=${TERMUX_NDK_VERSION}"
-
 	# for accurate dependency
 	
 	download_extract_deb_file() {
@@ -175,12 +174,14 @@ termux_step_pre_configure() {
 	
 	enable_pkgs_files() {
 		echo "running enable_pkgs_files $*"
-		local PKG
+		local PKG f
 		for PKG do
 			if grep -q $PKG <<< "$PKGS_DISABLE"; then
 				echo "enabling $PKG"
 				#get_pkg_files $PKG | xargs -I@ echo enable /@.disabling /@
-				get_pkg_files $PKG | xargs -I@ ls /@
+				for f in $(get_pkg_files $PKG); do
+					mv /$f.disabling /$f
+				done
 				PKGS_ENABLE="$( echo "$PKGS_ENABLE" ; echo $PKG )"
 				PKGS_DISABLE="$( echo "$PKGS_DISABLE" | grep -v $PKG )"
 			elif ! grep -q $PKG <<< "$PKGS_ENABLE"; then
@@ -194,13 +195,15 @@ termux_step_pre_configure() {
 	
 	disable_pkgs_files() {
 		echo "running disable_pkgs_files $*"
-		local PKG
+		local PKG f
 		for PKG do
 			if grep -q $PKG <<< "$PKGS_ENABLE"
 			then
 				echo "disabling $PKG"
 				#get_pkg_files $PKG | xargs -I@ echo disable /@ /@.disabling
-				get_pkg_files $PKG | xargs -I@ ls /@
+				for f in $(get_pkg_files $PKG); do
+					mv /$f /$f.disabling
+				done
 				PKGS_ENABLE="$( echo "$PKGS_ENABLE" | grep -v $PKG )"
 				PKGS_DISABLE="$( echo "$PKGS_DISABLE" ; echo $PKG )"
 			fi
