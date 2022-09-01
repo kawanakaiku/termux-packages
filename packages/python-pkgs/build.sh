@@ -127,7 +127,7 @@ termux_step_pre_configure() {
 			cd $TERMUX_SCRIPTDIR
 			# ./scripts/get_hash_from_file.py: No such file or directory
 			echo "runnning termux_download_deb_pac $PKG $DEP_ARCH $DEP_VERSION $DEP_VERSION_PAC" >&2
-			termux_download_deb_pac $PKG $DEP_ARCH $DEP_VERSION $DEP_VERSION_PAC >&2
+			termux_download_deb_pac $PKG $DEP_ARCH $DEP_VERSION $DEP_VERSION_PAC >&2 || true
 		)
 		(
 			echo "extracting ${PKG}_${DEP_VERSION}_${DEP_ARCH}.deb" >&2
