@@ -929,8 +929,7 @@ termux_step_pre_configure() {
 	done
 	
 	# rm all installed files
-	disable_pkgs_files $PKGS_ENABLE
-	set -x
+	disable_pkgs_files $PKGS_ENABLE || echo "ng1=$?"
 	find $TERMUX_PREFIX -name "*.disabling" -print0 | xargs -0 rm -rf
 	
 	# move to dist
