@@ -88,7 +88,7 @@ termux_step_pre_configure() {
 	# for accurate dependency
 	
 	download_extract_deb_file() {
-		echo "runnning download_extract_deb_file $*" >&2
+		#echo "runnning download_extract_deb_file $*" >&2
 		local PKG=$1
 		if [[ $PKG = *-static ]]; then
 			exit
@@ -114,16 +114,16 @@ termux_step_pre_configure() {
 			echo ERROR
 		)
 		local DEP_ARCH DEP_VERSION DEP_VERSION_PAC
-		echo "runnning termux_extract_dep_info $PKG ${PKG_DIR}" >&2
+		#echo "runnning termux_extract_dep_info $PKG ${PKG_DIR}" >&2
 		read DEP_ARCH DEP_VERSION DEP_VERSION_PAC <<< $(cd "$TERMUX_SCRIPTDIR"; termux_extract_dep_info "$PKG" "${PKG_DIR}")
 		(
 			cd $TERMUX_SCRIPTDIR
 			# ./scripts/get_hash_from_file.py: No such file or directory
-			echo "runnning termux_download_deb_pac $PKG $DEP_ARCH $DEP_VERSION $DEP_VERSION_PAC" >&2
+			#echo "runnning termux_download_deb_pac $PKG $DEP_ARCH $DEP_VERSION $DEP_VERSION_PAC" >&2
 			termux_download_deb_pac $PKG $DEP_ARCH $DEP_VERSION $DEP_VERSION_PAC >&2 || true
 		)
 		(
-			echo "extracting ${PKG}_${DEP_VERSION}_${DEP_ARCH}.deb" >&2
+			#echo "extracting ${PKG}_${DEP_VERSION}_${DEP_ARCH}.deb" >&2
 			cd $TERMUX_COMMON_CACHEDIR-$DEP_ARCH
 			rm -f data.tar.xz; mkfifo data.tar.xz
 			tar Jxf data.tar.xz --strip-components=1 --no-overwrite-dir -C / &
@@ -133,7 +133,7 @@ termux_step_pre_configure() {
 	}
 
 	get_pkg_files() {
-		echo "runnning get_pkg_files $*" >&2
+		#echo "runnning get_pkg_files $*" >&2
 		local PKG
 		for PKG do
 			local TMP_FILE=${TERMUX_COMMON_CACHEDIR}/get_pkg_files_${PKG}
@@ -175,7 +175,7 @@ termux_step_pre_configure() {
 	local PKGS_DISABLE=""
 	
 	enable_pkgs_files() {
-		echo "running enable_pkgs_files $*"
+		#echo "running enable_pkgs_files $*"
 		local PKG f
 		for PKG do
 			if grep -q $PKG <<< "$PKGS_DISABLE"; then
@@ -193,7 +193,7 @@ termux_step_pre_configure() {
 	}
 	
 	disable_pkgs_files() {
-		echo "running disable_pkgs_files $*"
+		#echo "running disable_pkgs_files $*"
 		local PKG f
 		for PKG do
 			if grep -q $PKG <<< "$PKGS_ENABLE"; then
