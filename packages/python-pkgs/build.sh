@@ -462,8 +462,8 @@ termux_step_pre_configure() {
 			 if "requires" in t["build-system"] and t["build-system"]["requires"] != []:
 			  import subprocess
 			  for i in t["build-system"]["requires"]:
-			   subprocess.run("build-pip install --only-binary :all: -U".split() + [i])
-			   subprocess.run("cross-pip install --only-binary :all: -U".split() + [i])
+			   subprocess.run("build-pip install --only-binary :all: -U".split() + [i], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+			   subprocess.run("cross-pip install --only-binary :all: -U".split() + [i], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 			  t["build-system"]["requires"] = []
 			 #if "build-backend" in t["build-system"] and t["build-system"]["build-backend"] != []:
 			 # t["build-system"]["build-backend"] = []
@@ -726,7 +726,7 @@ termux_step_pre_configure() {
 
 		requires = []
 		
-		# already included
+		# already included default
 		no_need = "dataclasses typing".split()
 
 		for require in j["info"]["requires_dist"] or []:
@@ -741,7 +741,7 @@ termux_step_pre_configure() {
 		  requires += [require]
 
 		print(" ".join(sorted(set(requires))))
-		PYTHON
+		PYTHON 
 	}
 	
 	get_pypi_json() {
@@ -766,8 +766,6 @@ termux_step_pre_configure() {
 			#[[ " setuptools wheel pip " =~ " $PYTHON_PKG " ]] && continue
 
 			echo "Cross Compiling $PYTHON_PKG ..."
-			
-			enable_python_pkg_files $PYTHON_PKG
 
 			PYTHON_PKG_REQUIRES=( $( get_requires $PYTHON_PKG ) )
 			echo "PYTHON_PKG_REQUIRES='${PYTHON_PKG_REQUIRES[*]}'"
@@ -787,6 +785,9 @@ termux_step_pre_configure() {
 			pushd $PYTHON_PKG
 			patch_src
 			popd
+			
+			# should be just before compiling
+			enable_python_pkg_files $PYTHON_PKG
 			
 			TERMUX_FILES_LIST_BEFORE="$( cd $TERMUX_PREFIX && find . -type f,l | sort )"
 			(
