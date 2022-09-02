@@ -13,7 +13,7 @@ TERMUX_PKG_VERSION_INDEX=3
 TERMUX_PKG_VERSION=${TERMUX_PKG_VERSION_LIST[$((TERMUX_PKG_VERSION_INDEX*2))]}
 TERMUX_PKG_SHA256=${TERMUX_PKG_VERSION_LIST[$((TERMUX_PKG_VERSION_INDEX*2+1))]}
 TERMUX_PKG_SRCURL=https://github.com/wine-mirror/wine/archive/refs/tags/wine-${TERMUX_PKG_VERSION}.tar.gz
-TERMUX_PKG_DEPENDS="freetype, libpng, libx11"
+TERMUX_PKG_DEPENDS="freetype, libpng, libjpeg-turbo, libtiff, cups, openldap, libgnutls, mesa, glu, fontconfig, dbus, libx11, libxcomposite, libxcursor, libxfixes, libxinerama, libxi, libxml2, libxslt"
 #TERMUX_PKG_BUILD_DEPENDS=""
 TERMUX_PKG_HOSTBUILD=true
 TERMUX_PKG_EXTRA_HOSTBUILD_CONFIGURE_ARGS="
@@ -24,7 +24,25 @@ enable_wineandroid_drv=no
 --with-wine-tools=${TERMUX_PKG_HOSTBUILD_DIR}
 --with-freetype
 --with-png
+--with-jpeg
+--with-tiff
+--with-cups
+--with-ldap
+--with-gnutls
+--with-opengl
+--with-glu
+--with-fontconfig
+--with-dbus
 --with-x
+--with-xcomposite
+--with-xcursor
+--with-xfixes
+--with-xinerama
+--with-xinput
+--with-xml
+--with-xslt
+--without-unwind
+--without-pulse
 --disable-tests
 "
 
