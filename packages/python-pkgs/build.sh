@@ -423,7 +423,6 @@ termux_step_pre_configure() {
 			uvloop ) printf 'libuv' ;;
 			ujson ) printf 'double-conversion' ;;
 			tesserocr ) printf 'tesseract leptonica' ;;
-			homeassistant ) printf 'python-sqlalchemy' ;;
 			shapely ) printf 'libgeos' ;;
 			pillow ) printf 'freetype libimagequant libjpeg-turbo littlecms openjpeg libraqm libtiff libwebp libxcb zlib' ;;
 			opencv-contrib-python ) printf 'libjpeg-turbo libpng libprotobuf libtiff libwebp openjpeg openjpeg-tools zlib' ;;
@@ -704,6 +703,7 @@ termux_step_pre_configure() {
 		local REQUIRES=$(
 		case $PYTHON_PKG in
 			matplotlib ) printf 'cycler kiwisolver' ;;
+			homeassistant ) printf 'sqlalchemy' ;;
 		esac
 		)
 		echo "$REQUIRES "
