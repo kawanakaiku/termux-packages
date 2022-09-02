@@ -3,6 +3,7 @@ TERMUX_PKG_DESCRIPTION="WINE Is Not An Emulator - runs MS Windows programs"
 TERMUX_PKG_LICENSE="LGPL-2.1"
 TERMUX_PKG_MAINTAINER="@kawanakaiku"
 TERMUX_PKG_VERSION=6.0.4
+TERMUX_PKG_SHA256=ca50376e3f7200493214daa5f7fd1145bfc9dd085c4814e4d502d4723e7b52a6
 TERMUX_PKG_SRCURL=https://github.com/wine-mirror/wine/archive/refs/tags/wine-.tar.gz
 TERMUX_PKG_DEPENDS="libc++, libexpat, libpng, libzopfli, zlib"
 TERMUX_PKG_BUILD_DEPENDS=""
