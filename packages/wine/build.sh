@@ -40,13 +40,15 @@ termux_step_host_build() {
 }
 
 termux_step_pre_configure() {
-	# winebuild: cannot find the 'as' tool
 	(
-		for i in ar as nm ranlib windres; do
-			exe=$(which llvm-$i)
-			_bin=$(dirname $exe)
-			ln -s llvm-$i $_bin/$i
-		done
+		# winebuild: cannot find the 'as' tool
+		winebuild=${TERMUX_PKG_HOSTBUILD_DIR}/tools/winebuild/winebuild
+		mv ${winebuild} ${winebuild}_
+		cat <<-SH >${winebuild}
+		#!/usr/bin/sh
+		exec ${winebuild}_ --as-cmd=$(which llvm-as) --cc-cmd=$(which $CC) --ld-cmd=$(which $LD) --nm-cmd=$(which llvm-nm)
+		SH
+		chmod +x ${winebuild}
 	)
 	
 	case $TERMUX_PKG_VERSION in
