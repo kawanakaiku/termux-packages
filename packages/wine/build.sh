@@ -28,6 +28,7 @@ termux_step_host_build() {
 }
 
 _cross_compile_errors() {
+	:
 	# 6.0.6
 	
 	# 7.16
