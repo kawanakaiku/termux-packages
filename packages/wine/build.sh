@@ -13,7 +13,7 @@ TERMUX_PKG_VERSION_INDEX=3
 TERMUX_PKG_VERSION=${TERMUX_PKG_VERSION_LIST[$((TERMUX_PKG_VERSION_INDEX*2))]}
 TERMUX_PKG_SHA256=${TERMUX_PKG_VERSION_LIST[$((TERMUX_PKG_VERSION_INDEX*2+1))]}
 TERMUX_PKG_SRCURL=https://github.com/wine-mirror/wine/archive/refs/tags/wine-${TERMUX_PKG_VERSION}.tar.gz
-TERMUX_PKG_DEPENDS="dbus, fontconfig, freetype, libgnutls, libjpeg-turbo, libpng, libtiff, mesa, glu, libx11, libxcomposite, libxcursor, libxfixes, libxinerama, libxi, libxml2, libxslt"
+TERMUX_PKG_DEPENDS="libandroid-shmem, dbus, fontconfig, freetype, libgnutls, libjpeg-turbo, libpng, libtiff, mesa, glu, libx11, libxcomposite, libxcursor, libxfixes, libxinerama, libxi, libxml2, libxslt"
 #TERMUX_PKG_BUILD_DEPENDS=""
 TERMUX_PKG_HOSTBUILD=true
 TERMUX_PKG_EXTRA_HOSTBUILD_CONFIGURE_ARGS="
@@ -79,6 +79,12 @@ termux_step_pre_configure() {
 			# ld: error: undefined symbol: pthread_mutexattr_setprotocol
 			# LDFLAGS+=" -pthread"
 			# add --without-pulse
+			
+			# ld: error: undefined symbol: libandroid_shmget
+			# ld: error: undefined symbol: libandroid_shmat
+			# ld: error: undefined symbol: libandroid_shmctl
+			# ld: error: undefined symbol: libandroid_shmdt
+			LDFLAGS+=" -landroid-shmem"
 			;;
 
 		7.16 )
