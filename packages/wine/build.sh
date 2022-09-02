@@ -21,6 +21,12 @@ TERMUX_PKG_EXTRA_HOSTBUILD_CONFIGURE_ARGS="
 "
 # https://wiki.winehq.org/Building_Wine
 TERMUX_PKG_EXTRA_CONFIGURE_ARGS="
+--bindir=${TERMUX_PREFIX}/bin
+--sbindir=${TERMUX_PREFIX}/bin
+--libexecdir=${TERMUX_PREFIX}/libexec
+--libdir=${TERMUX_PREFIX}/lib
+--includedir=${TERMUX_PREFIX}/include
+--datarootdir=${TERMUX_PREFIX}/share
 --with-wine-tools=${TERMUX_PKG_HOSTBUILD_DIR}
 --without-pulse
 --with-dbus
