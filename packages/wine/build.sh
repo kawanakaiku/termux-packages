@@ -46,7 +46,8 @@ termux_step_pre_configure() {
 		mv ${winebuild} ${winebuild}_
 		cat <<-SH >${winebuild}
 		#!/usr/bin/sh
-		exec ${winebuild}_ --as-cmd=$(which llvm-as) --cc-cmd=$(which $CC) --ld-cmd=$(which $LD) --nm-cmd=$(which llvm-nm) "$@"
+		echo "running winebui"
+		exec ${winebuild}_ --as-cmd=$(which llvm-as) --cc-cmd=$(which $CC) --ld-cmd=$(which $LD) --nm-cmd=$(which llvm-nm) "\$@"
 		SH
 		chmod +x ${winebuild}
 	)
