@@ -23,7 +23,7 @@ termux_step_pre_configure() {
 
 	local PYTHON_PKGS PYTHON_PKGS_OK PYTHON_PKG
 
-	PYTHON_PKGS=( numpy )
+	PYTHON_PKGS=( asgiref numpy )
 	PYTHON_PKGS+=( yt-dlp streamlink gallery-dl )
 	PYTHON_PKGS+=( pytz python-dateutil tqdm )
 	PYTHON_PKGS+=( gmpy2 )
@@ -710,7 +710,8 @@ termux_step_pre_configure() {
 		
 		python <<-PYTHON
 		import re, json
-		j = json.loads(r'''$( get_pypi_json $PYTHON_PKG )''')
+		# json may include triple single quotation  ex) asgiref
+		j = json.load(open("$( get_pypi_json -f $PYTHON_PKG )"))
 
 		implementation_name = "cpython"
 		implementation_version = "$_PYTHON_FULL_VERSION"
@@ -744,12 +745,20 @@ termux_step_pre_configure() {
 	}
 	
 	get_pypi_json() {
-		local PYTHON_PKG=$1
+		local PYTHON_PKG
+		local print_filename=false
+		local arg
+		for arg do
+			case $arg in
+				-f ) print_filename=true ;;
+				* ) PYTHON_PKG="$arg" ;;
+			esac
+		done
 		local file=${TERMUX_COMMON_CACHEDIR}/tmp_pypi_json_${PYTHON_PKG}
 		if [ ! -f $file ]; then
 			curl --silent https://pypi.org/pypi/$PYTHON_PKG/json > ${TERMUX_COMMON_CACHEDIR}/tmp_pypi_json_${PYTHON_PKG}
 		fi
-		cat $file
+		$print_filename && echo $file || cat $file
 	}
 	
 	cross_build() {
