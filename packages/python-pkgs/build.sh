@@ -738,7 +738,7 @@ termux_step_pre_configure() {
 		no_need = "dataclasses typing backports.zoneinfo".split()
 
 		for require in j["info"]["requires_dist"] or []:
-		 [name, ok] = match_markers(condition)
+		 [name, ok] = match_markers(require)
 		 if ok and ( name.lower() not in no_need ):
 		  requires += [name]
 
