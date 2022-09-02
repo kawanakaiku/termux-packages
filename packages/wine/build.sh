@@ -40,23 +40,24 @@ termux_step_host_build() {
 }
 
 termux_step_pre_configure() {
-	case $TERMUX_PKG_VERSION in
-	5.0.5 )
-		# winebuild: cannot find the 'as' tool
-		echo symlinking as
-		(
-			exe="$(which llvm-as)"
-			_bin="$(dirname "$exe")"
-			ln -s llvm-as "$_bin/as"
-		)
-		which -a as
-		;;
-	6.0.6 )
-		# /home/builder/.termux-build/wine/src/dlls/ws2_32/socket.c:1986:24: error: invalid application of 'sizeof' to an incomplete type 'struct sockaddr_ipx'
-		;;
+	# winebuild: cannot find the 'as' tool
+	(
+		for i in ar as nm ranlib windres; do
+			exe=$(which llvm-$i)
+			_bin=$(dirname $exe)
+			ln -s llvm-$i $_bin/$i
+		done
+	)
 	
-	7.16 )
-		# winebuild: cannot find the 'dlltool' tool
-		;;
+	case $TERMUX_PKG_VERSION in
+		5.0.5 )
+			;;
+		6.0.6 )
+			# /home/builder/.termux-build/wine/src/dlls/ws2_32/socket.c:1986:24: error: invalid application of 'sizeof' to an incomplete type 'struct sockaddr_ipx'
+			;;
+
+		7.16 )
+			# winebuild: cannot find the 'dlltool' tool
+			;;
 	esac
 }
