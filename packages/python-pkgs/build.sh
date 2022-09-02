@@ -727,7 +727,7 @@ termux_step_pre_configure() {
 		requires = []
 		
 		# already included default
-		no_need = "dataclasses typing".split()
+		no_need = "dataclasses typing backports.zoneinfo".split()
 
 		for require in j["info"]["requires_dist"] or []:
 		 ok = True
