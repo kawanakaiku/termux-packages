@@ -19,20 +19,20 @@ TERMUX_PKG_HOSTBUILD=true
 TERMUX_PKG_EXTRA_HOSTBUILD_CONFIGURE_ARGS="
 --enable-win64 --with-freetype --with-gettext --disable-tests --disable-win16 --without-alsa --without-capi --without-cms --without-coreaudio --without-cups --without-curses --without-dbus --without-fontconfig --without-gphoto --without-glu --without-gnutls --without-gsm --without-gstreamer --without-hal --without-jpeg --without-krb5 --without-ldap --without-mpg123 --without-netapi --without-openal --without-opencl --without-opengl --without-osmesa --without-oss --without-pcap --without-pulse --without-png --without-sane --without-tiff --without-v4l --without-x --without-xcomposite --without-xcursor --without-xinerama --without-xinput --without-xinput2 --without-xml --without-xrandr --without-xrender --without-xshape --without-xshm --without-xslt --without-xxf86vm --without-zlib
 "
+# https://wiki.winehq.org/Building_Wine
 TERMUX_PKG_EXTRA_CONFIGURE_ARGS="
-enable_wineandroid_drv=no
 --with-wine-tools=${TERMUX_PKG_HOSTBUILD_DIR}
+--with-pulse
+--with-dbus
+--with-fontconfig
 --with-freetype
---with-png
---with-jpeg
---with-tiff
---with-cups
---with-ldap
 --with-gnutls
+--with-jpeg
+--with-png
+--with-tiff
 --with-opengl
 --with-glu
---with-fontconfig
---with-dbus
+--without-unwind
 --with-x
 --with-xcomposite
 --with-xcursor
@@ -41,9 +41,8 @@ enable_wineandroid_drv=no
 --with-xinput
 --with-xml
 --with-xslt
---without-unwind
---without-pulse
 --disable-tests
+enable_wineandroid_drv=no
 "
 
 termux_step_host_build() {
