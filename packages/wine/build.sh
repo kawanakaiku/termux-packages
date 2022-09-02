@@ -18,8 +18,6 @@ TERMUX_PKG_DEPENDS="freetype, libpng, libx11"
 TERMUX_PKG_HOSTBUILD=true
 TERMUX_PKG_EXTRA_HOSTBUILD_CONFIGURE_ARGS="
 --enable-win64 --with-freetype --with-gettext --disable-tests --disable-win16 --without-alsa --without-capi --without-cms --without-coreaudio --without-cups --without-curses --without-dbus --without-fontconfig --without-gphoto --without-glu --without-gnutls --without-gsm --without-gstreamer --without-hal --without-jpeg --without-krb5 --without-ldap --without-mpg123 --without-netapi --without-openal --without-opencl --without-opengl --without-osmesa --without-oss --without-pcap --without-pulse --without-png --without-sane --without-tiff --without-v4l --without-x --without-xcomposite --without-xcursor --without-xinerama --without-xinput --without-xinput2 --without-xml --without-xrandr --without-xrender --without-xshape --without-xshm --without-xslt --without-xxf86vm --without-zlib
-FREETYPE_CFLAGS=-I${TERMUX_PKG_HOSTBUILD_DIR}/prefix/usr/include/freetype2
-FREETYPE_LIBS=-L${TERMUX_PKG_HOSTBUILD_DIR}/prefix/usr/lib/x86_64-linux-gnu
 "
 TERMUX_PKG_EXTRA_CONFIGURE_ARGS="
 enable_wineandroid_drv=no
@@ -31,16 +29,12 @@ enable_wineandroid_drv=no
 "
 
 termux_step_host_build() {
-	wget -nv \
-		http://archive.ubuntu.com/ubuntu/pool/main/f/freetype/libfreetype6_2.11.1%2bdfsg-1ubuntu0.1_amd64.deb \
-		http://jp.archive.ubuntu.com/ubuntu/pool/main/f/freetype/libfreetype-dev_2.11.1%2bdfsg-1ubuntu0.1_amd64.deb
-	
-	local deb_file
-	for deb_file in *.deb; do
-		dpkg-deb --extract "$deb_file" ${TERMUX_PKG_HOSTBUILD_DIR}/prefix
-		rm "$deb_file"
-	done
-		
+	(
+		unset sudo
+		sudo apt-get update
+		sudo apt-get install -y --no-install-recommends libfreetype-dev
+	)
+
 	"$TERMUX_PKG_SRCDIR/configure" ${TERMUX_PKG_EXTRA_HOSTBUILD_CONFIGURE_ARGS}
 	make -j "$TERMUX_MAKE_PROCESSES" __tooldeps__
 }
