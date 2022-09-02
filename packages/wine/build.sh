@@ -13,7 +13,7 @@ TERMUX_PKG_VERSION_INDEX=3
 TERMUX_PKG_VERSION=${TERMUX_PKG_VERSION_LIST[$((TERMUX_PKG_VERSION_INDEX*2))]}
 TERMUX_PKG_SHA256=${TERMUX_PKG_VERSION_LIST[$((TERMUX_PKG_VERSION_INDEX*2+1))]}
 TERMUX_PKG_SRCURL=https://github.com/wine-mirror/wine/archive/refs/tags/wine-${TERMUX_PKG_VERSION}.tar.gz
-TERMUX_PKG_DEPENDS="pulseaudio, dbus, fontconfig, freetype, libgnutls, libjpeg-turbo, libpng, libtiff, mesa, glu, libx11, libxcomposite, libxcursor, libxfixes, libxinerama, libxi, libxml2, libxslt"
+TERMUX_PKG_DEPENDS="dbus, fontconfig, freetype, libgnutls, libjpeg-turbo, libpng, libtiff, mesa, glu, libx11, libxcomposite, libxcursor, libxfixes, libxinerama, libxi, libxml2, libxslt"
 #TERMUX_PKG_BUILD_DEPENDS=""
 TERMUX_PKG_HOSTBUILD=true
 TERMUX_PKG_EXTRA_HOSTBUILD_CONFIGURE_ARGS="
@@ -22,7 +22,7 @@ TERMUX_PKG_EXTRA_HOSTBUILD_CONFIGURE_ARGS="
 # https://wiki.winehq.org/Building_Wine
 TERMUX_PKG_EXTRA_CONFIGURE_ARGS="
 --with-wine-tools=${TERMUX_PKG_HOSTBUILD_DIR}
---with-pulse
+--without-pulse
 --with-dbus
 --with-fontconfig
 --with-freetype
@@ -77,7 +77,8 @@ termux_step_pre_configure() {
 			sed -i -e 's|define HAS_IPX|define _disbale_HAS_IPX|' dlls/ws2_32/socket.c server/sock.c
 			
 			# ld: error: undefined symbol: pthread_mutexattr_setprotocol
-			LDFLAGS+=" -pthread"
+			# LDFLAGS+=" -pthread"
+			# add --without-pulse
 			;;
 
 		7.16 )
