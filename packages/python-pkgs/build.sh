@@ -83,6 +83,8 @@ termux_step_pre_configure() {
 	#PYTHON_PKGS+=( cmake )  # The C++ compiler does not support C++11 (e.g.  std::unique_ptr).
 	PYTHON_PKGS+=( ipython notebook )
 	
+	PYTHON_PKGS=( notebook )
+	
 	PYTHON_PKGS_OK=( )
 	
 	# for accurate dependency
@@ -646,6 +648,10 @@ termux_step_pre_configure() {
 				
 				# Python config failure: Python is 64-bit, chosen compiler is 32-bit
 				perl -i -pe 's|message\(FATAL_ERROR|message(STATUS|' third_party/pybind11/tools/FindPythonLibsNew.cmake
+				;;
+			notebook )
+				# set use_redirect_file False as default since external browser cannot load file
+				sed -i -e 's|use_redirect_file = Bool(True|use_redirect_file = Bool(False|' notebook/notebookapp.py
 				;;
 		esac
 	}
