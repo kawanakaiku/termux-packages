@@ -53,7 +53,7 @@ termux_step_host_build() {
 	)
 	
 	# ld.lld: error: unknown argument '--no-wchar-size-warning'
-	sed -i -E 's|^.*--no-wchar-size-warning.*$|;|' tools/winebuild/utils.c tools/winegcc/winegcc.c
+	( cd $TERMUX_PKG_SRCDIR && sed -i -E 's|^.*--no-wchar-size-warning.*$|;|' tools/winebuild/utils.c tools/winegcc/winegcc.c )
 
 	"$TERMUX_PKG_SRCDIR/configure" ${TERMUX_PKG_EXTRA_HOSTBUILD_CONFIGURE_ARGS}
 	make -j "$TERMUX_MAKE_PROCESSES" __tooldeps__
@@ -77,7 +77,7 @@ termux_step_pre_configure() {
 		6.0.4 )
 			# /home/builder/.termux-build/wine/src/dlls/ws2_32/socket.c:1986:24: error: invalid application of 'sizeof' to an incomplete type 'struct sockaddr_ipx'
 			# /home/builder/.termux-build/wine/src/server/sock.c:228:25: error: field has incomplete type 'struct sockaddr_ipx'
-			sed -i -e 's|define HAS_IPX|define _disbale_HAS_IPX|' dlls/ws2_32/socket.c server/sock.c
+			( cd $TERMUX_PKG_SRCDIR && sed -i -e 's|define HAS_IPX|define _disbale_HAS_IPX|' dlls/ws2_32/socket.c server/sock.c )
 			
 			# ld: error: undefined symbol: pthread_mutexattr_setprotocol
 			# LDFLAGS+=" -pthread"
