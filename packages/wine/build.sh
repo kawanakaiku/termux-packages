@@ -9,14 +9,18 @@ TERMUX_PKG_VERSION_LIST=(
 6.0.4	ca50376e3f7200493214daa5f7fd1145bfc9dd085c4814e4d502d4723e7b52a6
 7.16	ba3002fd2520e3b7250aba127a8da682a07a7dc8919d3791a9a60448ffc2de06
 )
-TERMUX_PKG_VERSION_INDEX=0
+TERMUX_PKG_VERSION_INDEX=2
 TERMUX_PKG_VERSION=${TERMUX_PKG_VERSION_LIST[$((TERMUX_PKG_VERSION_INDEX*2))]}
 TERMUX_PKG_SHA256=${TERMUX_PKG_VERSION_LIST[$((TERMUX_PKG_VERSION_INDEX*2+1))]}
 TERMUX_PKG_SRCURL=https://github.com/wine-mirror/wine/archive/refs/tags/wine-${TERMUX_PKG_VERSION}.tar.gz
 TERMUX_PKG_DEPENDS="freetype, libpng, libx11"
 #TERMUX_PKG_BUILD_DEPENDS=""
 TERMUX_PKG_HOSTBUILD=true
-TERMUX_PKG_EXTRA_HOSTBUILD_CONFIGURE_ARGS="--enable-win64 --without-freetype --without-gettext --disable-tests --disable-win16 --without-alsa --without-capi --without-cms --without-coreaudio --without-cups --without-curses --without-dbus --without-fontconfig --without-gphoto --without-glu --without-gnutls --without-gsm --without-gstreamer --without-hal --without-jpeg --without-krb5 --without-ldap --without-mpg123 --without-netapi --without-openal --without-opencl --without-opengl --without-osmesa --without-oss --without-pcap --without-pulse --without-png --without-sane --without-tiff --without-v4l --without-x --without-xcomposite --without-xcursor --without-xinerama --without-xinput --without-xinput2 --without-xml --without-xrandr --without-xrender --without-xshape --without-xshm --without-xslt --without-xxf86vm --without-zlib"
+TERMUX_PKG_EXTRA_HOSTBUILD_CONFIGURE_ARGS="
+--enable-win64 --with-freetype --with-gettext --disable-tests --disable-win16 --without-alsa --without-capi --without-cms --without-coreaudio --without-cups --without-curses --without-dbus --without-fontconfig --without-gphoto --without-glu --without-gnutls --without-gsm --without-gstreamer --without-hal --without-jpeg --without-krb5 --without-ldap --without-mpg123 --without-netapi --without-openal --without-opencl --without-opengl --without-osmesa --without-oss --without-pcap --without-pulse --without-png --without-sane --without-tiff --without-v4l --without-x --without-xcomposite --without-xcursor --without-xinerama --without-xinput --without-xinput2 --without-xml --without-xrandr --without-xrender --without-xshape --without-xshm --without-xslt --without-xxf86vm --without-zlib
+FREETYPE_CFLAGS=-I${TERMUX_PKG_HOSTBUILD_DIR}/prefix/usr/include/freetype2
+FREETYPE_LIBS=-L${TERMUX_PKG_HOSTBUILD_DIR}/prefix/usr/lib/x86_64-linux-gnu
+"
 TERMUX_PKG_EXTRA_CONFIGURE_ARGS="
 enable_wineandroid_drv=no
 --with-wine-tools=${TERMUX_PKG_HOSTBUILD_DIR}
@@ -27,6 +31,16 @@ enable_wineandroid_drv=no
 "
 
 termux_step_host_build() {
+	wget -nv \
+		http://archive.ubuntu.com/ubuntu/pool/main/f/freetype/libfreetype6_2.11.1%2bdfsg-1ubuntu0.1_amd64.deb \
+		http://jp.archive.ubuntu.com/ubuntu/pool/main/f/freetype/libfreetype-dev_2.11.1%2bdfsg-1ubuntu0.1_amd64.deb
+	
+	local deb_file
+	for deb_file in *.deb; do
+		dpkg-deb --extract "$deb_file" ${TERMUX_PKG_HOSTBUILD_DIR}/prefix
+		rm "$deb_file"
+	done
+		
 	"$TERMUX_PKG_SRCDIR/configure" ${TERMUX_PKG_EXTRA_HOSTBUILD_CONFIGURE_ARGS}
 	make -j "$TERMUX_MAKE_PROCESSES" __tooldeps__
 }
