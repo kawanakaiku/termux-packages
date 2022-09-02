@@ -741,7 +741,7 @@ termux_step_pre_configure() {
 		  requires += [require]
 
 		print(" ".join(sorted(set(requires))))
-		PYTHON 
+		PYTHON
 	}
 	
 	get_pypi_json() {
