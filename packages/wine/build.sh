@@ -2,10 +2,10 @@ TERMUX_PKG_HOMEPAGE=https://www.winehq.org/
 TERMUX_PKG_DESCRIPTION="WINE Is Not An Emulator - runs MS Windows programs"
 TERMUX_PKG_LICENSE="LGPL-2.1"
 TERMUX_PKG_MAINTAINER="@kawanakaiku"
-TERMUX_PKG_VERSION=6.0.4
-TERMUX_PKG_SHA256=ca50376e3f7200493214daa5f7fd1145bfc9dd085c4814e4d502d4723e7b52a6
 TERMUX_PKG_VERSION=7.16
 TERMUX_PKG_SHA256=ba3002fd2520e3b7250aba127a8da682a07a7dc8919d3791a9a60448ffc2de06
+TERMUX_PKG_VERSION=6.0.4
+TERMUX_PKG_SHA256=ca50376e3f7200493214daa5f7fd1145bfc9dd085c4814e4d502d4723e7b52a6
 TERMUX_PKG_SRCURL=https://github.com/wine-mirror/wine/archive/refs/tags/wine-${TERMUX_PKG_VERSION}.tar.gz
 TERMUX_PKG_DEPENDS="freetype, libpng, libx11"
 #TERMUX_PKG_BUILD_DEPENDS=""
@@ -23,4 +23,12 @@ enable_wineandroid_drv=no
 termux_step_host_build() {
 	"$TERMUX_PKG_SRCDIR/configure" ${TERMUX_PKG_EXTRA_HOSTBUILD_CONFIGURE_ARGS}
 	make -j "$TERMUX_MAKE_PROCESSES" __tooldeps__
+}
+
+_cross_compile_errors() {
+	# 6.0.6
+	
+	# 7.16
+	# winebuild: cannot find the 'dlltool' tool
+	# /home/builder/.termux-build/wine/src/dlls/ws2_32/socket.c:1986:24: error: invalid application of 'sizeof' to an incomplete type 'struct sockaddr_ipx'
 }
