@@ -73,7 +73,12 @@ termux_step_pre_configure() {
 			;;
 		6.0.4 )
 			# /home/builder/.termux-build/wine/src/dlls/ws2_32/socket.c:1986:24: error: invalid application of 'sizeof' to an incomplete type 'struct sockaddr_ipx'
-			sed -i -e 's|define HAS_IPX|define _disbale_HAS_IPX|' dlls/ws2_32/socket.c
+			# /home/builder/.termux-build/wine/src/server/sock.c:228:25: error: field has incomplete type 'struct sockaddr_ipx'
+			local c
+			for c in dlls/ws2_32/socket.c server/sock.c
+			do
+				sed -i -e 's|define HAS_IPX|define _disbale_HAS_IPX|' dlls/ws2_32/socket.c server/sock.c
+			done
 			;;
 
 		7.16 )
