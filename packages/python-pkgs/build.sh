@@ -693,7 +693,8 @@ termux_step_pre_configure() {
 			*.zip ) unzip -q "$filename"; dir="${filename%%.zip}" ;;
 			* ) echo "unknown archive $filename"; exit 1 ;;
 		esac
-		rm $filename
+		# file with space ex) Kivy%20Garden
+		rm "$filename"
 		mv "$dir" $PYTHON_PKG
 	}
 	
