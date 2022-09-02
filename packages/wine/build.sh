@@ -4,10 +4,10 @@ TERMUX_PKG_LICENSE="LGPL-2.1"
 TERMUX_PKG_MAINTAINER="@kawanakaiku"
 TERMUX_PKG_VERSION=7.16
 TERMUX_PKG_SHA256=ba3002fd2520e3b7250aba127a8da682a07a7dc8919d3791a9a60448ffc2de06
-TERMUX_PKG_VERSION=5.0.5
-TERMUX_PKG_SHA256=e1c97716788a7865232f87853a5c860e3d9d06de815500d30449c9326c5204f8
 TERMUX_PKG_VERSION=6.0.4
 TERMUX_PKG_SHA256=ca50376e3f7200493214daa5f7fd1145bfc9dd085c4814e4d502d4723e7b52a6
+TERMUX_PKG_VERSION=5.0.5
+TERMUX_PKG_SHA256=e1c97716788a7865232f87853a5c860e3d9d06de815500d30449c9326c5204f8
 TERMUX_PKG_SRCURL=https://github.com/wine-mirror/wine/archive/refs/tags/wine-${TERMUX_PKG_VERSION}.tar.gz
 TERMUX_PKG_DEPENDS="freetype, libpng, libx11"
 #TERMUX_PKG_BUILD_DEPENDS=""
@@ -27,11 +27,22 @@ termux_step_host_build() {
 	make -j "$TERMUX_MAKE_PROCESSES" __tooldeps__
 }
 
-_cross_compile_errors() {
-	:
-	# 6.0.6
+termux_step_pre_configure() {
+	case $TERMUX_PKG_VERSION in
+	5.0.5 )
+		# winebuild: cannot find the 'as' tool
+		(
+			exe="$(which llvm-as)"
+			_bin="$(dirname "$exe")"
+			ln -s llvm-as "$_bin/as"
+		)
+		;;
+	6.0.6 )
+		# /home/builder/.termux-build/wine/src/dlls/ws2_32/socket.c:1986:24: error: invalid application of 'sizeof' to an incomplete type 'struct sockaddr_ipx'
+		;;
 	
-	# 7.16
-	# winebuild: cannot find the 'dlltool' tool
-	# /home/builder/.termux-build/wine/src/dlls/ws2_32/socket.c:1986:24: error: invalid application of 'sizeof' to an incomplete type 'struct sockaddr_ipx'
+	7.16 )
+		# winebuild: cannot find the 'dlltool' tool
+		;;
+	esac
 }
