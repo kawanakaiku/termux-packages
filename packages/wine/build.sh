@@ -2,12 +2,23 @@ TERMUX_PKG_HOMEPAGE=https://www.winehq.org/
 TERMUX_PKG_DESCRIPTION="WINE Is Not An Emulator - runs MS Windows programs"
 TERMUX_PKG_LICENSE="LGPL-2.1"
 TERMUX_PKG_MAINTAINER="@kawanakaiku"
-TERMUX_PKG_VERSION=7.16
-TERMUX_PKG_SHA256=ba3002fd2520e3b7250aba127a8da682a07a7dc8919d3791a9a60448ffc2de06
-TERMUX_PKG_VERSION=6.0.4
-TERMUX_PKG_SHA256=ca50376e3f7200493214daa5f7fd1145bfc9dd085c4814e4d502d4723e7b52a6
-TERMUX_PKG_VERSION=5.0.5
-TERMUX_PKG_SHA256=e1c97716788a7865232f87853a5c860e3d9d06de815500d30449c9326c5204f8
+TERMUX_PKG_VERSION_LIST=(
+7.16
+6.0.4
+5.0.5
+4.0.4
+3.0.4
+)
+TERMUX_PKG_SHA256_LIST=(
+ba3002fd2520e3b7250aba127a8da682a07a7dc8919d3791a9a60448ffc2de06
+ca50376e3f7200493214daa5f7fd1145bfc9dd085c4814e4d502d4723e7b52a6
+e1c97716788a7865232f87853a5c860e3d9d06de815500d30449c9326c5204f8
+665e4e6a4ce8474da551c5bf4511d4ffd81702a598d2882c38b9e4f9d3e14e0c
+e48489b67763321a20e69bc1ef691904b9c94583066f0b4f155718f04cc281c4
+)
+TERMUX_PKG_VERSION_INDEX=2
+TERMUX_PKG_VERSION=${TERMUX_PKG_VERSION_LIST[$TERMUX_PKG_VERSION_INDEX]}
+TERMUX_PKG_SHA256=${TERMUX_PKG_SHA256_LIST[$TERMUX_PKG_VERSION_INDEX]}
 TERMUX_PKG_SRCURL=https://github.com/wine-mirror/wine/archive/refs/tags/wine-${TERMUX_PKG_VERSION}.tar.gz
 TERMUX_PKG_DEPENDS="freetype, libpng, libx11"
 #TERMUX_PKG_BUILD_DEPENDS=""
@@ -31,11 +42,13 @@ termux_step_pre_configure() {
 	case $TERMUX_PKG_VERSION in
 	5.0.5 )
 		# winebuild: cannot find the 'as' tool
+		echo symlinking as
 		(
 			exe="$(which llvm-as)"
 			_bin="$(dirname "$exe")"
 			ln -s llvm-as "$_bin/as"
 		)
+		which -a as
 		;;
 	6.0.6 )
 		# /home/builder/.termux-build/wine/src/dlls/ws2_32/socket.c:1986:24: error: invalid application of 'sizeof' to an incomplete type 'struct sockaddr_ipx'
