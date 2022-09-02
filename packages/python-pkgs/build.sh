@@ -713,6 +713,13 @@ termux_step_pre_configure() {
 		import re, json
 		# json may include triple single quotation  ex) asgiref
 		j = json.load(open("$( get_pypi_json -f $PYTHON_PKG )"))
+		
+		def match_markers(line):
+		 from pip._internal.req.constructors import parse_req_from_line
+		 from pip._internal.req.req_install import InstallRequirement
+		 parts = parse_req_from_line(line, None)
+		 r = InstallRequirement(parts.requirement, None, link=parts.link, markers=parts.markers, extras=parts.extras)
+		 return [r.name, r.match_markers()]
 
 		implementation_name = "cpython"
 		implementation_version = "$_PYTHON_FULL_VERSION"
@@ -731,15 +738,9 @@ termux_step_pre_configure() {
 		no_need = "dataclasses typing backports.zoneinfo".split()
 
 		for require in j["info"]["requires_dist"] or []:
-		 ok = True
-		 if ";" in require:
-		  require, condition = [i.strip() for i in require.split(";", 1)]
-		  # condition = re.sub("extra\s*==", "True or ", condition)  # ignore extra
-		  exec(f"if not ({condition}): ok=False")
-		 require = re.split("=|<|>|\(|!", require)[0].strip()
-		 require = require.split("[", 1)[0]
-		 if ok and ( require.lower() not in no_need ):
-		  requires += [require]
+		 [name, ok] = match_markers(condition)
+		 if ok and ( name.lower() not in no_need ):
+		  requires += [name]
 
 		print(" ".join(sorted(set(requires))))
 		PYTHON
