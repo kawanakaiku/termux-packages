@@ -53,7 +53,7 @@ termux_step_host_build() {
 	)
 	
 	# ld.lld: error: unknown argument '--no-wchar-size-warning'
-	sed -i -E 's|^.*--no-wchar-size-warning.*$|;|' "${i}" tools/winebuild/utils.c tools/winegcc/winegcc.c
+	sed -i -E 's|^.*--no-wchar-size-warning.*$|;|' tools/winebuild/utils.c tools/winegcc/winegcc.c
 
 	"$TERMUX_PKG_SRCDIR/configure" ${TERMUX_PKG_EXTRA_HOSTBUILD_CONFIGURE_ARGS}
 	make -j "$TERMUX_MAKE_PROCESSES" __tooldeps__
