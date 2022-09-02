@@ -23,7 +23,7 @@ termux_step_pre_configure() {
 
 	local PYTHON_PKGS PYTHON_PKGS_OK PYTHON_PKG
 
-	PYTHON_PKGS=( )
+	PYTHON_PKGS=( numpy )
 	PYTHON_PKGS+=( yt-dlp streamlink gallery-dl )
 	PYTHON_PKGS+=( pytz python-dateutil tqdm )
 	PYTHON_PKGS+=( gmpy2 )
@@ -75,7 +75,7 @@ termux_step_pre_configure() {
 	PYTHON_PKGS+=( tesserocr )
 	PYTHON_PKGS+=( pynacl zfec )
 	PYTHON_PKGS+=( bcrypt homeassistant orjson sqlalchemy )
-	#PYTHON_PKGS+=( numpy opencv-contrib-python scipy tqdm colorama scikit-learn scikit-image shapely yt-dlp pip beautifulsoup4 certifi demjson3 mechanize colorama cloudscraper lxml pandas cryptography pillow pyzmq pygame pynacl matplotlib uvloop )
+	PYTHON_PKGS+=( numpy opencv-contrib-python scipy tqdm colorama scikit-learn scikit-image shapely yt-dlp pip beautifulsoup4 certifi demjson3 mechanize colorama cloudscraper lxml pandas cryptography pillow pyzmq pygame pynacl matplotlib uvloop )
 	PYTHON_PKGS+=( yt-dlp )
 	PYTHON_PKGS+=( matplotlib )
 	PYTHON_PKGS+=( pip wheel setuptools )
