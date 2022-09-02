@@ -43,6 +43,7 @@ TERMUX_PKG_EXTRA_CONFIGURE_ARGS="
 --with-xslt
 --disable-tests
 enable_wineandroid_drv=no
+LIBS=-landroid-shmem
 "
 
 termux_step_host_build() {
@@ -87,7 +88,8 @@ termux_step_pre_configure() {
 			# ld: error: undefined symbol: libandroid_shmat
 			# ld: error: undefined symbol: libandroid_shmctl
 			# ld: error: undefined symbol: libandroid_shmdt
-			LDFLAGS+=" -landroid-shmem"
+			#LDFLAGS+=" -landroid-shmem"
+			# add LIBS=-landroid-shmem
 			;;
 
 		7.16 )
