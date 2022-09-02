@@ -51,6 +51,9 @@ termux_step_host_build() {
 		sudo apt-get update
 		sudo apt-get install -y --no-install-recommends libfreetype-dev
 	)
+	
+	# ld.lld: error: unknown argument '--no-wchar-size-warning'
+	sed -i -E 's|,?--no-wchar-size-warning||' "${i}" tools/winebuild/utils.c tools/winegcc/winegcc.c
 
 	"$TERMUX_PKG_SRCDIR/configure" ${TERMUX_PKG_EXTRA_HOSTBUILD_CONFIGURE_ARGS}
 	make -j "$TERMUX_MAKE_PROCESSES" __tooldeps__
