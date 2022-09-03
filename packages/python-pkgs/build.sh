@@ -84,8 +84,8 @@ termux_step_pre_configure() {
 	PYTHON_PKGS+=( ipython notebook )
 	
 	PYTHON_PKGS=( notebook )
-	PYTHON_PKGS=( torch )
 	PYTHON_PKGS=( pyopenjtalk )
+	PYTHON_PKGS=( torch )
 	
 	PYTHON_PKGS_OK=( )
 	
@@ -403,6 +403,7 @@ termux_step_pre_configure() {
 			gmpy2 ) printf 'libgmp libmpc libmpfr' ;;
 			numpy ) printf 'libopenblas' ;;
 			scipy ) printf 'libopenblas' ;;
+			torch ) printf 'libopenblas' ;;
 			pynacl ) printf 'libsodium' ;;
 			pyzmq ) printf 'libzmq' ;;
 			yt-dlp ) printf 'ffmpeg' ;;
@@ -452,6 +453,11 @@ termux_step_pre_configure() {
 				# Could NOT find PythonLibs (missing: PYTHON_LIBRARIES) (found version "3.10.6")
 				# Could NOT find pybind11 (missing: pybind11_DIR)
 				#export CMAKE_ARGS="-DCMAKE_SYSTEM_LIBRARY_PATH=${TERMUX_PREFIX}/lib -DPYTHON_INCLUDE_DIRS=${TERMUX_PREFIX}/include -DPYTHON_LIBRARIES=${TERMUX_PREFIX}/lib -Dpybind11_DIR=${TERMUX_PREFIX}/lib/python${_PYTHON_VERSION}/site-packages/pybind11 -Dpybind11_INCLUDE_DIRS=${TERMUX_PREFIX}/lib/python${_PYTHON_VERSION}/site-packages/pybind11/include"
+				;;
+			torch )
+				export OpenBLAS_HOME=$TERMUX_PREFIX
+				export USE_CUDA=0 USE_CUDNN=0 USE_NUMPY=1
+				export MAX_JOBS=$TERMUX_MAKE_PROCESSES
 				;;
 		esac
 	}
@@ -668,6 +674,8 @@ termux_step_pre_configure() {
 			torch )
 				# from setup.py
 				build-pip install pyyaml
+				# pass cmake args
+				sed -i -e "s|self.run(build_args,|self.run(build_args + '$( cat ${TERMUX_COMMON_CACHEDIR}/tmp_cmake_args | tr "\n" "@" )'.split('@'),|" tools/setup_helpers/cmake.py
 				;;
 		esac
 	}
