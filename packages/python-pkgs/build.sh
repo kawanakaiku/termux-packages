@@ -481,10 +481,10 @@ termux_step_pre_configure() {
 			sed -i -z -E 's|install_requires=|install_requires=[] and |' setup.py
 		fi
 		if [ -f requirements-dev.txt ]; then
-			build-pip -r install requirements-dev.txt
+			build-pip install -r requirements-dev.txt
 		fi
 		if [ -f requirements.txt ]; then
-			build-pip -r install requirements.txt
+			build-pip install -r requirements.txt
 		fi
 		if [ -f *.egg-info/requires.txt ]; then
 			# ex) pandas
