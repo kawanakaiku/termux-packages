@@ -460,7 +460,7 @@ termux_step_pre_configure() {
 				export MAX_JOBS=$TERMUX_MAKE_PROCESSES
 				# with patched tools/setup_helpers/cmake.py
 				export cmake_args="
-				$( cat ${TERMUX_COMMON_CACHEDIR}/tmp_cmake_args )
+				$( grep -v -e '-DCMAKE_MAKE_PROGRAM=' ${TERMUX_COMMON_CACHEDIR}/tmp_cmake_args )
 				-DUSE_VULKAN=OFF
 				"
 				#-DANDROID_NDK=${NDK}
