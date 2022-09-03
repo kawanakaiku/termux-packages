@@ -403,7 +403,7 @@ termux_step_pre_configure() {
 			gmpy2 ) printf 'libgmp libmpc libmpfr' ;;
 			numpy ) printf 'libopenblas' ;;
 			scipy ) printf 'libopenblas' ;;
-			torch ) printf 'libopenblas libzmq ffmpeg libglog liblmdb leveldb gflags fftw openmpi libtbb librocksdb zstd libtbb' ;;
+			torch ) printf 'libopenblas libzmq ffmpeg liblmdb leveldb gflags fftw openmpi libtbb librocksdb zstd libtbb' ;;
 			pynacl ) printf 'libsodium' ;;
 			pyzmq ) printf 'libzmq' ;;
 			yt-dlp ) printf 'ffmpeg' ;;
@@ -468,7 +468,6 @@ termux_step_pre_configure() {
 				BLAS=OpenBLAS
 				USE_ZMQ=1
 				USE_FFMPEG=1
-				USE_GLOG=1
 				USE_LMDB=1
 				USE_LEVELDB=1
 				USE_GFLAGS=1
