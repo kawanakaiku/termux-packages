@@ -890,7 +890,7 @@ termux_step_pre_configure() {
 			(
 				cd $PYTHON_PKG
 				manage_exports
-				cross-pip -v install --upgrade --force-reinstall --no-deps --no-binary :all: --prefix $TERMUX_PREFIX --no-build-isolation --no-cache-dir --compile $(for opt in $( manage-opts ); do echo "--install-option=$opt"; done ) .
+				cross-pip -v install --upgrade --force-reinstall --no-deps --no-binary :all: --prefix $TERMUX_PREFIX --no-build-isolation --no-cache-dir --compile $(for opt in $( manage-opts ); do echo "--install-option=$opt"; done ) . || ( echo finding -ltorch_python ; find -name '*torch_python*' ; exit 1 )
 				#python setup.py install --prefix $TERMUX_PREFIX  # creates egg
 			)
 			TERMUX_FILES_LIST_AFTER="$( cd $TERMUX_PREFIX && find . -type f,l | sort )"
