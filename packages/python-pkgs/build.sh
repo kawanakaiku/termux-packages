@@ -463,7 +463,7 @@ termux_step_pre_configure() {
 				#-DANDROID_NDK=${NDK}
 				#-DANDROID_NDK_HOST_SYSTEM_NAME=linux-x86_64
 				# /home/builder/.termux-build/_cache/ninja-1.10.2/ninja: invalid option -- 'D'
-				export USE_NINJA=0 CMAKE_CROSSCOMPILING=True USE_VULKAN=OFF
+				export USE_NINJA=0 CMAKE_CROSSCOMPILING=ON USE_VULKAN=OFF
 				;;
 		esac
 	}
