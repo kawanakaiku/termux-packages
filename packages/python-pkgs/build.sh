@@ -403,7 +403,7 @@ termux_step_pre_configure() {
 			gmpy2 ) printf 'libgmp libmpc libmpfr' ;;
 			numpy ) printf 'libopenblas' ;;
 			scipy ) printf 'libopenblas' ;;
-			torch ) printf 'libopenblas' ;;
+			torch ) printf 'libopenblas libzmq ffmpeg libglog liblmdb leveldb gflags fftw openmpi libtbb librocksdb zstd libtbb' ;;
 			pynacl ) printf 'libsodium' ;;
 			pyzmq ) printf 'libzmq' ;;
 			yt-dlp ) printf 'ffmpeg' ;;
@@ -464,6 +464,20 @@ termux_step_pre_configure() {
 				USE_CUDA=0
 				USE_CUDNN=0
 				USE_NUMPY=1
+				USE_BLAS=1
+				BLAS=OpenBLAS
+				USE_ZMQ=1
+				USE_FFMPEG=1
+				USE_GLOG=1
+				USE_LMDB=1
+				USE_LEVELDB=1
+				USE_GFLAGS=1
+				USE_FFTW=1
+				USE_OPENMP=1
+				USE_TBB=1
+				USE_ROCKSDB=1
+				USE_ZSTD=1
+				USE_TBB=1
 				BUILD_TEST=0
 				MAX_JOBS=$TERMUX_MAKE_PROCESSES
 				"
