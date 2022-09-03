@@ -464,6 +464,7 @@ termux_step_pre_configure() {
 				USE_CUDA=0
 				USE_CUDNN=0
 				USE_NUMPY=1
+				BUILD_TEST=0
 				MAX_JOBS=$TERMUX_MAKE_PROCESSES
 				"
 				#-DANDROID_NDK=${NDK}
