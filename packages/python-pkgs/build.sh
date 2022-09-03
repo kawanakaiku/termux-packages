@@ -459,11 +459,14 @@ termux_step_pre_configure() {
 				export USE_CUDA=0 USE_CUDNN=0 USE_NUMPY=1
 				export MAX_JOBS=$TERMUX_MAKE_PROCESSES
 				# with patched tools/setup_helpers/cmake.py
-				#export cmake_args="$( grep -v -e '-DCMAKE_MAKE_PROGRAM=' ${TERMUX_COMMON_CACHEDIR}/tmp_cmake_args )"
+				export cmake_args="
+				$( sed -e 's|^-D||' ${TERMUX_COMMON_CACHEDIR}/tmp_cmake_args )
+				USE_VULKAN=0
+				"
 				#-DANDROID_NDK=${NDK}
 				#-DANDROID_NDK_HOST_SYSTEM_NAME=linux-x86_64
 				# /home/builder/.termux-build/_cache/ninja-1.10.2/ninja: invalid option -- 'D'
-				export USE_NINJA=0 CMAKE_CROSSCOMPILING=1 USE_VULKAN=0
+				#export USE_NINJA=0 CMAKE_CROSSCOMPILING=1 USE_VULKAN=0
 				;;
 		esac
 	}
@@ -682,6 +685,7 @@ termux_step_pre_configure() {
 				build-pip install pyyaml
 				# pass cmake args
 				#sed -i -e "s| + args| + args + [i.strip() for i in os.getenv('cmake_args').split(os.linesep)]|" tools/setup_helpers/cmake.py
+				sed -i -e 's/**build_options,/**build_options | {i: j for i, j in [i.strip().split("=", 1) for i in os.getenv("cmake_args").split(os.linesep) if "=" in i]},/' tools/setup_helpers/cmake.py
 				# /home/builder/.termux-build/_cache/ninja-1.10.2/ninja: invalid option -- 'D'
 				#sed -i -e 's|CMAKE_ONLY = False|CMAKE_ONLY = True|' cmake/VulkanDependencies.cmake
 				# CMake Error at cmake/VulkanDependencies.cmake:7 (message):
