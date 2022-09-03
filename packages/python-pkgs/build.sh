@@ -689,6 +689,9 @@ termux_step_pre_configure() {
 			tensorflow )
 				git clone https://github.com/tensorflow/tensorflow.git --depth=1 --branch=v${TERMUX_SUBPKG_VERSION}
 				return ;;
+			torch )
+				git clone https://github.com/pytorch/pytorch.git --depth=1 --branch=v${TERMUX_SUBPKG_VERSION}
+				return ;;
 		esac
 		
 		json="$( get_pypi_json $PYTHON_PKG | jq -r '[.releases[.info.version][] | select(.packagetype=="sdist")][0]' )"
