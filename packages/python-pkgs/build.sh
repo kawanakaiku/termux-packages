@@ -680,7 +680,7 @@ termux_step_pre_configure() {
 				# from setup.py
 				build-pip install pyyaml
 				# pass cmake args
-				sed -i -e "s| + args| + args + [i.strip() for i in os.getenv('cmake_args').split('\n')]|" tools/setup_helpers/cmake.py
+				sed -i -e "s| + args| + args + [i.strip() for i in os.getenv('cmake_args').split('\\n')]|" tools/setup_helpers/cmake.py
 				# CMake Error at cmake/VulkanDependencies.cmake:7 (message):
     				# USE_VULKAN requires ANDROID_NDK set.
 				#sed -i -e 's|if(ANDROID)|if(FALSE)|' cmake/VulkanDependencies.cmake
