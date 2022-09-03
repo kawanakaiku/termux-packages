@@ -464,6 +464,8 @@ termux_step_pre_configure() {
 				USE_VULKAN=0
 				USE_CUDA=0
 				USE_CUDNN=0
+				USE_MKLDNN=0
+				USE_DISTRIBUTED=0
 				USE_NUMPY=1
 				USE_BLAS=1
 				OpenBLAS_INCLUDE_DIR=${TERMUX_PREFIX}/include
