@@ -739,7 +739,7 @@ termux_step_pre_configure() {
 				# fatal: unable to access 'https://gitlab.com/libeigen/eigen.git/': The requested URL returned error: 503
 				# GitLab: We are performing a scheduled maintenance
 				wget -nv \
-					https://github.com/pytorch/pytorch/releases/download/v${TERMUX_SUBPKG_VERSION}/pytorch-v${TERMUX_SUBPKG_VERSION}.tar.gz
+					https://github.com/pytorch/pytorch/releases/download/v${TERMUX_SUBPKG_VERSION}/pytorch-v${TERMUX_SUBPKG_VERSION}.tar.gz \
 					-O pytorch-v${TERMUX_SUBPKG_VERSION}.tar.gz
 				mv pytorch-v${TERMUX_SUBPKG_VERSION} $PYTHON_PKG
 				return ;;
