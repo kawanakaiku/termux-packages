@@ -455,18 +455,23 @@ termux_step_pre_configure() {
 				#export CMAKE_ARGS="-DCMAKE_SYSTEM_LIBRARY_PATH=${TERMUX_PREFIX}/lib -DPYTHON_INCLUDE_DIRS=${TERMUX_PREFIX}/include -DPYTHON_LIBRARIES=${TERMUX_PREFIX}/lib -Dpybind11_DIR=${TERMUX_PREFIX}/lib/python${_PYTHON_VERSION}/site-packages/pybind11 -Dpybind11_INCLUDE_DIRS=${TERMUX_PREFIX}/lib/python${_PYTHON_VERSION}/site-packages/pybind11/include"
 				;;
 			torch )
-				export OpenBLAS_HOME=$TERMUX_PREFIX
-				export USE_CUDA=0 USE_CUDNN=0 USE_NUMPY=1
 				export MAX_JOBS=$TERMUX_MAKE_PROCESSES
+				export OpenBLAS_HOME=$TERMUX_PREFIX
 				# with patched tools/setup_helpers/cmake.py
 				export cmake_args="
 				$( sed -e 's|^-D||' ${TERMUX_COMMON_CACHEDIR}/tmp_cmake_args )
 				USE_VULKAN=0
+				USE_CUDA=0
+				USE_CUDNN=0
+				USE_NUMPY=1
+				MAX_JOBS=$TERMUX_MAKE_PROCESSES
 				"
 				#-DANDROID_NDK=${NDK}
 				#-DANDROID_NDK_HOST_SYSTEM_NAME=linux-x86_64
 				# /home/builder/.termux-build/_cache/ninja-1.10.2/ninja: invalid option -- 'D'
 				#export USE_NINJA=0 CMAKE_CROSSCOMPILING=1 USE_VULKAN=0
+				# use_numpy
+				sed -i -e "s|np.get_include()|'${TERMUX_PREFIX}/lib/python${_PYTHON_VERSION}/site-packages/numpy/core/include'|" tools/setup_helpers/numpy_.py
 				;;
 		esac
 	}
