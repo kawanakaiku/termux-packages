@@ -741,6 +741,7 @@ termux_step_pre_configure() {
 				wget -nv \
 					https://github.com/pytorch/pytorch/releases/download/v${TERMUX_SUBPKG_VERSION}/pytorch-v${TERMUX_SUBPKG_VERSION}.tar.gz \
 					-O pytorch-v${TERMUX_SUBPKG_VERSION}.tar.gz
+				tar xf pytorch-v${TERMUX_SUBPKG_VERSION}.tar.gz
 				mv pytorch-v${TERMUX_SUBPKG_VERSION} $PYTHON_PKG
 				return ;;
 		esac
