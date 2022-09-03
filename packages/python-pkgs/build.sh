@@ -461,9 +461,9 @@ termux_step_pre_configure() {
 				# with patched tools/setup_helpers/cmake.py
 				export cmake_args="
 				$( cat ${TERMUX_COMMON_CACHEDIR}/tmp_cmake_args )
-				-DANDROID_NDK=${NDK}
-				-DANDROID_NDK_HOST_SYSTEM_NAME=linux-x86_64
 				"
+				#-DANDROID_NDK=${NDK}
+				#-DANDROID_NDK_HOST_SYSTEM_NAME=linux-x86_64
 				;;
 		esac
 	}
@@ -684,7 +684,8 @@ termux_step_pre_configure() {
 				sed -i -e "s| + args| + args + [i.strip() for i in os.getenv('cmake_args').split(os.linesep)]|" tools/setup_helpers/cmake.py
 				# CMake Error at cmake/VulkanDependencies.cmake:7 (message):
     				# USE_VULKAN requires ANDROID_NDK set.
-				#sed -i -e 's|if(ANDROID)|if(FALSE)|' cmake/VulkanDependencies.cmake
+				# No SOURCES given to target: VulkanWrapper
+				sed -i -e 's|if(ANDROID)|if(FALSE)|' cmake/VulkanDependencies.cmake
 				;;
 		esac
 	}
