@@ -462,6 +462,7 @@ termux_step_pre_configure() {
 				export cmake_args="
 				$( cat ${TERMUX_COMMON_CACHEDIR}/tmp_cmake_args )
 				-DANDROID_NDK=${NDK}
+				-DANDROID_NDK_HOST_SYSTEM_NAME=linux-x86_64
 				"
 				;;
 		esac
