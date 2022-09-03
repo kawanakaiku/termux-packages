@@ -84,8 +84,8 @@ termux_step_pre_configure() {
 	PYTHON_PKGS+=( ipython notebook )
 	
 	PYTHON_PKGS=( notebook )
-	PYTHON_PKGS=( torch )
 	PYTHON_PKGS=( pyopenjtalk )
+	PYTHON_PKGS=( torch )
 	
 	PYTHON_PKGS_OK=( )
 	
