@@ -403,7 +403,7 @@ termux_step_pre_configure() {
 			gmpy2 ) printf 'libgmp libmpc libmpfr' ;;
 			numpy ) printf 'libopenblas' ;;
 			scipy ) printf 'libopenblas' ;;
-			torch ) printf 'libopenblas libzmq ffmpeg liblmdb leveldb gflags fftw openmpi libtbb librocksdb zstd libtbb' ;;
+			torch ) printf 'libopenblas libzmq ffmpeg liblmdb leveldb gflags fftw openmpi libtbb librocksdb libtbb' ;;
 			pynacl ) printf 'libsodium' ;;
 			pyzmq ) printf 'libzmq' ;;
 			yt-dlp ) printf 'ffmpeg' ;;
@@ -458,6 +458,7 @@ termux_step_pre_configure() {
 				export MAX_JOBS=$TERMUX_MAKE_PROCESSES
 				export OpenBLAS_HOME=$TERMUX_PREFIX
 				# with patched tools/setup_helpers/cmake.py
+				# no zstd: error: unknown type name 'ZSTD_dictMode_e'
 				export cmake_args="
 				$( sed -e 's|^-D||' ${TERMUX_COMMON_CACHEDIR}/tmp_cmake_args )
 				USE_VULKAN=0
@@ -478,7 +479,6 @@ termux_step_pre_configure() {
 				USE_TBB=1
 				USE_SYSTEM_TBB=1
 				USE_ROCKSDB=1
-				USE_ZSTD=1
 				BUILD_TEST=0
 				MAX_JOBS=$TERMUX_MAKE_PROCESSES
 				"
