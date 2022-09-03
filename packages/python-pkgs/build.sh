@@ -480,6 +480,12 @@ termux_step_pre_configure() {
 			sed -i -z -E 's|setup_requires=|setup_requires=[] and |' setup.py
 			sed -i -z -E 's|install_requires=|install_requires=[] and |' setup.py
 		fi
+		if [ -f requirements-dev.txt ]; then
+			build-pip -r install requirements-dev.txt
+		fi
+		if [ -f requirements.txt ]; then
+			build-pip -r install requirements.txt
+		fi
 		if [ -f *.egg-info/requires.txt ]; then
 			# ex) pandas
 			rm *.egg-info/requires.txt
@@ -659,6 +665,10 @@ termux_step_pre_configure() {
 				# from setup.py
 				build-pip install numpy cython
 				;;
+			torch )
+				# from setup.py
+				build-pip install pyyaml
+				;;
 		esac
 	}
 	
@@ -723,6 +733,9 @@ termux_step_pre_configure() {
 			pyopenjtalk )
 				# from setup.py
 				printf 'numpy, cython, six, tqdm' ;;
+			torch )
+				# from requirements.txt
+				grep -v '^#' requirements.txt ;;
 		esac
 		)
 		echo "$REQUIRES "
