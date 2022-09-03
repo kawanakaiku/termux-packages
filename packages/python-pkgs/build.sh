@@ -84,8 +84,8 @@ termux_step_pre_configure() {
 	PYTHON_PKGS+=( ipython notebook )
 	
 	PYTHON_PKGS=( notebook )
-	PYTHON_PKGS=( pyopenjtalk )
 	PYTHON_PKGS=( torch )
+	PYTHON_PKGS=( pyopenjtalk )
 	
 	PYTHON_PKGS_OK=( )
 	
@@ -732,7 +732,7 @@ termux_step_pre_configure() {
 			homeassistant ) printf 'sqlalchemy' ;;
 			pyopenjtalk )
 				# from setup.py
-				printf 'numpy, cython, six, tqdm' ;;
+				printf 'numpy cython six tqdm' ;;
 			torch )
 				# from requirements.txt
 				grep -v '^#' requirements.txt ;;
