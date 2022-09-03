@@ -675,7 +675,7 @@ termux_step_pre_configure() {
 				# from setup.py
 				build-pip install pyyaml
 				# pass cmake args
-				sed -i -e "s|self.run(build_args,|self.run(build_args + '$( cat ${TERMUX_COMMON_CACHEDIR}/tmp_cmake_args | tr "\n" "@" )'.split('@'),|" tools/setup_helpers/cmake.py
+				sed -i -e "s| + args| + args + '$( cat ${TERMUX_COMMON_CACHEDIR}/tmp_cmake_args | tr "\n" "@" )'.split('@')|" tools/setup_helpers/cmake.py
 				;;
 		esac
 	}
