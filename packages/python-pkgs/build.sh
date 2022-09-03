@@ -84,8 +84,8 @@ termux_step_pre_configure() {
 	PYTHON_PKGS+=( ipython notebook )
 	
 	PYTHON_PKGS=( notebook )
-	PYTHON_PKGS=( pyopenjtalk )
 	PYTHON_PKGS=( torch )
+	PYTHON_PKGS=( pyopenjtalk )
 	
 	PYTHON_PKGS_OK=( )
 	
@@ -655,6 +655,10 @@ termux_step_pre_configure() {
 				# set use_redirect_file False as default since external browser cannot load file
 				sed -i -e 's|use_redirect_file = Bool(True|use_redirect_file = Bool(False|' notebook/notebookapp.py
 				;;
+			pyopenjtalk )
+				# from setup.py
+				build-pip install numpy cython
+				;;
 		esac
 	}
 	
@@ -716,6 +720,9 @@ termux_step_pre_configure() {
 		case $PYTHON_PKG in
 			matplotlib ) printf 'cycler kiwisolver' ;;
 			homeassistant ) printf 'sqlalchemy' ;;
+			pyopenjtalk )
+				# from setup.py
+				printf 'numpy, cython, six, tqdm' ;;
 		esac
 		)
 		echo "$REQUIRES "
