@@ -458,6 +458,11 @@ termux_step_pre_configure() {
 				export OpenBLAS_HOME=$TERMUX_PREFIX
 				export USE_CUDA=0 USE_CUDNN=0 USE_NUMPY=1
 				export MAX_JOBS=$TERMUX_MAKE_PROCESSES
+				# with patched tools/setup_helpers/cmake.py
+				export cmake_args="
+				$( cat ${TERMUX_COMMON_CACHEDIR}/tmp_cmake_args )
+				ANDROID_NDK=${NDK}
+				"
 				;;
 		esac
 	}
@@ -675,10 +680,10 @@ termux_step_pre_configure() {
 				# from setup.py
 				build-pip install pyyaml
 				# pass cmake args
-				sed -i -e "s| + args| + args + '$( cat ${TERMUX_COMMON_CACHEDIR}/tmp_cmake_args | tr "\n" "@" )'.split('@')|" tools/setup_helpers/cmake.py
+				sed -i -e "s| + args| + args + [i.strip() for i in os.getenv('cmake_args').split('\n')]|" tools/setup_helpers/cmake.py
 				# CMake Error at cmake/VulkanDependencies.cmake:7 (message):
     				# USE_VULKAN requires ANDROID_NDK set.
-				sed -i -e 's|if(ANDROID)|if(FALSE)|' cmake/VulkanDependencies.cmake
+				#sed -i -e 's|if(ANDROID)|if(FALSE)|' cmake/VulkanDependencies.cmake
 				;;
 		esac
 	}
