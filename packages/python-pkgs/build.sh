@@ -733,7 +733,7 @@ termux_step_pre_configure() {
 				git clone https://github.com/tensorflow/tensorflow.git --depth=1 --branch=v${TERMUX_SUBPKG_VERSION} $PYTHON_PKG
 				return ;;
 			torch )
-				git clone https://github.com/pytorch/pytorch.git --depth=1 --branch=v${TERMUX_SUBPKG_VERSION} $PYTHON_PKG
+				git clone https://github.com/pytorch/pytorch.git --depth=1 --recursive --branch=v${TERMUX_SUBPKG_VERSION} $PYTHON_PKG
 				return ;;
 		esac
 		
