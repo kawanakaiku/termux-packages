@@ -732,8 +732,16 @@ termux_step_pre_configure() {
 			tensorflow )
 				git clone https://github.com/tensorflow/tensorflow.git --depth=1 --branch=v${TERMUX_SUBPKG_VERSION} $PYTHON_PKG
 				return ;;
-			torch )
+			_torch )
 				git clone https://github.com/pytorch/pytorch.git --depth=1 --recursive --branch=v${TERMUX_SUBPKG_VERSION} $PYTHON_PKG
+				return ;;
+			torch )
+				# fatal: unable to access 'https://gitlab.com/libeigen/eigen.git/': The requested URL returned error: 503
+				# GitLab: We are performing a scheduled maintenance
+				wget -nv \
+					https://github.com/pytorch/pytorch/releases/download/v${TERMUX_SUBPKG_VERSION}/pytorch-v${TERMUX_SUBPKG_VERSION}.tar.gz
+					-O pytorch-v${TERMUX_SUBPKG_VERSION}.tar.gz
+				mv pytorch-v${TERMUX_SUBPKG_VERSION} $PYTHON_PKG
 				return ;;
 		esac
 		
