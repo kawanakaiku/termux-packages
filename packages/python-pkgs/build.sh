@@ -683,6 +683,8 @@ termux_step_pre_configure() {
 				build-pip install pyyaml
 				# pass cmake args
 				sed -i -e "s| + args| + args + [i.strip() for i in os.getenv('cmake_args').split(os.linesep)]|" tools/setup_helpers/cmake.py
+				# /home/builder/.termux-build/_cache/ninja-1.10.2/ninja: invalid option -- 'D'
+				sed -i -e 's|CMAKE_ONLY = False|CMAKE_ONLY = True|' cmake/VulkanDependencies.cmake
 				# CMake Error at cmake/VulkanDependencies.cmake:7 (message):
     				# USE_VULKAN requires ANDROID_NDK set.
 				# No SOURCES given to target: VulkanWrapper
