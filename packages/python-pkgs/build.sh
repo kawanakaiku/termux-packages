@@ -461,7 +461,7 @@ termux_step_pre_configure() {
 				# with patched tools/setup_helpers/cmake.py
 				export cmake_args="
 				$( cat ${TERMUX_COMMON_CACHEDIR}/tmp_cmake_args )
-				ANDROID_NDK=${NDK}
+				-DANDROID_NDK=${NDK}
 				"
 				;;
 		esac
