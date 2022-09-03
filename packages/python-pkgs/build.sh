@@ -476,10 +476,9 @@ termux_step_pre_configure() {
 				USE_FFTW=1
 				USE_OPENMP=1
 				USE_TBB=1
+				USE_SYSTEM_TBB=1
 				USE_ROCKSDB=1
 				USE_ZSTD=1
-				USE_TBB=1
-				USE_SYSTEM_LIBS=1
 				BUILD_TEST=0
 				MAX_JOBS=$TERMUX_MAKE_PROCESSES
 				"
