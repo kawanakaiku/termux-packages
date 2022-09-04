@@ -470,6 +470,8 @@ termux_step_pre_configure() {
 				USE_NUMPY=1
 				USE_BLAS=1
 				BLAS=OpenBLAS
+				OpenBLAS_INCLUDE_DIR=${TERMUX_PREFIX}/include
+				OpenBLAS_LIB=${TERMUX_PREFIX}/lib
 				USE_ZMQ=1
 				USE_FFMPEG=1
 				USE_LMDB=1
@@ -483,6 +485,7 @@ termux_step_pre_configure() {
 				BUILD_TEST=0
 				BUILD_PYTHON=1
 				MAX_JOBS=$TERMUX_MAKE_PROCESSES
+				NATIVE_BUILD_DIR=${PWD}/build-native
 				"
 				#-DANDROID_NDK=${NDK}
 				#-DANDROID_NDK_HOST_SYSTEM_NAME=linux-x86_64
