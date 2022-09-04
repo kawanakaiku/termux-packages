@@ -879,10 +879,6 @@ termux_step_pre_configure() {
 			echo "Cross Compiling $PYTHON_PKG ..."
 
 			get_pip_src $PYTHON_PKG
-
-			PYTHON_PKG_REQUIRES=( $( get_requires $PYTHON_PKG ) )
-			echo "PYTHON_PKG_REQUIRES='${PYTHON_PKG_REQUIRES[*]}'"
-			PYTHON_PKGS+=( "${PYTHON_PKG_REQUIRES[@]}" )
 			TERMUX_SUBPKG_DESCRIPTION="$( get_pypi_json $PYTHON_PKG | jq -r '.info.summary' | sed -e 's|"|\\"|g' )"
 			if [ "$TERMUX_SUBPKG_DESCRIPTION" == "" ]; then
 				# this may be empty  ex) traitlets==5.3.0
@@ -892,6 +888,12 @@ termux_step_pre_configure() {
 			TERMUX_SUBPKG_DEPENDS=( python $( to_pkgname "${PYTHON_PKG_REQUIRES[@]}" ) $( manage_depends $PYTHON_PKG ) )
 			TERMUX_SUBPKG_DEPENDS=( $( printf '%s\n' "${TERMUX_SUBPKG_DEPENDS[*]}" | sort | uniq ) )
 			TERMUX_SUBPKG_DEPENDS="$( echo "${TERMUX_SUBPKG_DEPENDS[*]}" | sed -e 's| |, |g' )"
+			
+			get_pip_src $PYTHON_PKG
+
+			PYTHON_PKG_REQUIRES=( $( get_requires $PYTHON_PKG ) )
+			echo "PYTHON_PKG_REQUIRES='${PYTHON_PKG_REQUIRES[*]}'"
+			PYTHON_PKGS+=( "${PYTHON_PKG_REQUIRES[@]}" )
 
 			pushd $PYTHON_PKG
 			patch_src
