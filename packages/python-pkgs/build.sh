@@ -730,6 +730,8 @@ termux_step_pre_configure() {
 					xargs -n 1 sed -i \
 					-e 's/\([^A-Za-z0-9_]ANDROID\)\([^A-Za-z0-9_]\)/\1_NO_TERMUX\2/g' \
 					-e 's/\([^A-Za-z0-9_]ANDROID\)$/\1_NO_TERMUX/g'
+				# sleef
+				( sudo apt update; sudo apt install -y libsleef3 )
 				;;
 		esac
 	}
