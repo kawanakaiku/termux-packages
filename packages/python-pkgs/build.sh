@@ -493,6 +493,8 @@ termux_step_pre_configure() {
 				#-DANDROID_NDK_HOST_SYSTEM_NAME=linux-x86_64
 				# /home/builder/.termux-build/_cache/ninja-1.10.2/ninja: invalid option -- 'D'
 				#export USE_NINJA=0 CMAKE_CROSSCOMPILING=1 USE_VULKAN=0
+				# ld: error: undefined symbol: __android_log_write
+				export LDFLAGS+=" -llog"
 				;;
 		esac
 	}
