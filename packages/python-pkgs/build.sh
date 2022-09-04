@@ -17,9 +17,13 @@ TERMUX_PKG_NO_STATICSPLIT=true
 _PYTHON_VERSION=$(. $TERMUX_SCRIPTDIR/packages/python/build.sh; echo $_MAJOR_VERSION)
 _PYTHON_FULL_VERSION=$(. $TERMUX_SCRIPTDIR/packages/python/build.sh; echo $TERMUX_PKG_VERSION)
 
+termux_step_patch_package() {
+	: # disbaling since python pkg patch
+}
+
 termux_step_pre_configure() {
 
-	_IFS="$IFS"
+	#_IFS="$IFS"
 
 	local PYTHON_PKGS PYTHON_PKGS_OK PYTHON_PKG
 
@@ -555,8 +559,8 @@ termux_step_pre_configure() {
 			perl -i -pe "s|\Qself.__dict__.update(options)\E|self.__dict__.update(options); self.include_path = ['${TERMUX_PREFIX}/lib/python${_PYTHON_VERSION}/site-packages'] + self.include_path|" ${_CROSSENV_PREFIX}/build/lib/python${_PYTHON_VERSION}/site-packages/Cython/Compiler/Main.py
 		fi
 		
-		if [ -f $TERMUX_PKG_BUILDER_DIR/${PYTHON_PKG}.patch ]; then
-			cat $TERMUX_PKG_BUILDER_DIR/${PYTHON_PKG}.patch | patch --silent -p1
+		if [ -f $TERMUX_PKG_BUILDER_DIR/${PYTHON_PKG}.patch_python ]; then
+			cat $TERMUX_PKG_BUILDER_DIR/${PYTHON_PKG}.patch_python | patch --silent -p1
 		fi
 		
 		case $PYTHON_PKG in
