@@ -719,9 +719,14 @@ termux_step_pre_configure() {
 				cross_build numpy
 				sed -i -e "s|np.get_include()|'${TERMUX_PREFIX}/lib/python${_PYTHON_VERSION}/site-packages/numpy/core/include'|" tools/setup_helpers/numpy_.py
 				# avoid disabling BUILD_PYTHON
-				sed -i -e 's|ANDROID OR IOS|FALSE|' CMakeLists.txt
+				#sed -i -e 's|ANDROID OR IOS|FALSE|' CMakeLists.txt
 				# No target "protobuf::protoc"
-				_termux_setup_protobuf
+				#_termux_setup_protobuf
+				# from packages/opencv/build.sh
+				find . -name CMakeLists.txt -o -name '*.cmake' | \
+					xargs -n 1 sed -i \
+					-e 's/\([^A-Za-z0-9_]ANDROID\)\([^A-Za-z0-9_]\)/\1_NO_TERMUX\2/g' \
+					-e 's/\([^A-Za-z0-9_]ANDROID\)$/\1_NO_TERMUX/g'
 				;;
 		esac
 	}
