@@ -878,7 +878,6 @@ termux_step_pre_configure() {
 
 			echo "Cross Compiling $PYTHON_PKG ..."
 
-			get_pip_src $PYTHON_PKG
 			TERMUX_SUBPKG_DESCRIPTION="$( get_pypi_json $PYTHON_PKG | jq -r '.info.summary' | sed -e 's|"|\\"|g' )"
 			if [ "$TERMUX_SUBPKG_DESCRIPTION" == "" ]; then
 				# this may be empty  ex) traitlets==5.3.0
