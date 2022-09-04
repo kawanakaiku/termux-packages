@@ -483,6 +483,7 @@ termux_step_pre_configure() {
 				USE_SYSTEM_TBB=1
 				USE_ROCKSDB=1
 				BUILD_TEST=0
+				BUILD_PYTHON=1
 				MAX_JOBS=$TERMUX_MAKE_PROCESSES
 				"
 				#-DANDROID_NDK=${NDK}
