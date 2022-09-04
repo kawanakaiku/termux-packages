@@ -496,6 +496,7 @@ termux_step_pre_configure() {
 				NATIVE_BUILD_DIR=${PWD}/sleef-host
 				PROTOBUF_PROTOC_EXECUTABLE=$(which protoc)
 				CAFFE2_CUSTOM_PROTOC_EXECUTABLE=$(which protoc)
+				OPENMP_FLAG=-fopenmp -static-openmp
 				"
 				#-DANDROID_NDK=${NDK}
 				#-DANDROID_NDK_HOST_SYSTEM_NAME=linux-x86_64
