@@ -482,6 +482,7 @@ termux_step_pre_configure() {
 				USE_TBB=1
 				USE_SYSTEM_TBB=1
 				USE_ROCKSDB=1
+				USE_SYSTEM_SLEEF=ON
 				BUILD_TEST=0
 				BUILD_PYTHON=1
 				MAX_JOBS=$TERMUX_MAKE_PROCESSES
