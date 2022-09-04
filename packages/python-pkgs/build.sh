@@ -403,7 +403,7 @@ termux_step_pre_configure() {
 			gmpy2 ) printf 'libgmp libmpc libmpfr' ;;
 			numpy ) printf 'libopenblas' ;;
 			scipy ) printf 'libopenblas' ;;
-			torch ) printf 'libopenblas libzmq ffmpeg liblmdb leveldb gflags fftw openmpi libtbb librocksdb libtbb' ;;
+			torch ) printf 'libprotobuf libopenblas libzmq ffmpeg liblmdb leveldb gflags fftw openmpi libtbb librocksdb libtbb' ;;
 			pynacl ) printf 'libsodium' ;;
 			pyzmq ) printf 'libzmq' ;;
 			yt-dlp ) printf 'ffmpeg' ;;
@@ -716,9 +716,12 @@ termux_step_pre_configure() {
 				# No SOURCES given to target: VulkanWrapper
 				sed -i -e 's|if(ANDROID)|if(FALSE)|' cmake/VulkanDependencies.cmake
 				# use_numpy
+				cross_build numpy
 				sed -i -e "s|np.get_include()|'${TERMUX_PREFIX}/lib/python${_PYTHON_VERSION}/site-packages/numpy/core/include'|" tools/setup_helpers/numpy_.py
 				# avoid disabling BUILD_PYTHON
 				sed -i -e 's|ANDROID OR IOS|FALSE|' CMakeLists.txt
+				# No target "protobuf::protoc"
+				_termux_setup_protobuf
 				;;
 		esac
 	}
