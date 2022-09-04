@@ -460,7 +460,7 @@ termux_step_pre_configure() {
 				# with patched tools/setup_helpers/cmake.py
 				# no zstd: error: unknown type name 'ZSTD_dictMode_e'
 				export cmake_args="
-				$( sed -e 's|^-D||' ${TERMUX_COMMON_CACHEDIR}/tmp_cmake_args | grep -v -e '^CMAKE_MAKE_PROGRAM' )
+				$( sed -e 's|^-D||' ${TERMUX_COMMON_CACHEDIR}/tmp_cmake_args | grep -v -e '^CMAKE_MAKE_PROGRAM' -e '^CMAKE_FIND_ROOT_PATH' )
 				USE_VULKAN=0
 				USE_CUDA=0
 				USE_CUDNN=0
@@ -732,7 +732,6 @@ termux_step_pre_configure() {
 				# No target "protobuf::protoc"
 				_termux_setup_protobuf
 				mkdir -p torch/bin; ln -sf $(which protobuf) torch/bin
-				ln -sf $(which protobuf) /data/data/com.termux/files/usr/bin
 				
 				# from packages/opencv/build.sh
 				find . -name CMakeLists.txt -o -name '*.cmake' | \
