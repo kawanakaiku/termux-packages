@@ -559,9 +559,18 @@ termux_step_pre_configure() {
 			perl -i -pe "s|\Qself.__dict__.update(options)\E|self.__dict__.update(options); self.include_path = ['${TERMUX_PREFIX}/lib/python${_PYTHON_VERSION}/site-packages'] + self.include_path|" ${_CROSSENV_PREFIX}/build/lib/python${_PYTHON_VERSION}/site-packages/Cython/Compiler/Main.py
 		fi
 		
-		if [ -f $TERMUX_PKG_BUILDER_DIR/${PYTHON_PKG}.patch_python ]; then
-			cat $TERMUX_PKG_BUILDER_DIR/${PYTHON_PKG}.patch_python | patch --silent -p1
-		fi
+		local f
+		for f in $TERMUX_PKG_BUILDER_DIR/${PYTHON_PKG}.patch_python; do
+			if [ -f "$f" ]; then
+				sed \
+				-e "s%\@TERMUX_APP_PACKAGE\@%${TERMUX_APP_PACKAGE}%g" \
+				-e "s%\@TERMUX_BASE_DIR\@%${TERMUX_BASE_DIR}%g" \
+				-e "s%\@TERMUX_CACHE_DIR\@%${TERMUX_CACHE_DIR}%g" \
+				-e "s%\@TERMUX_HOME\@%${TERMUX_ANDROID_HOME}%g" \
+				-e "s%\@TERMUX_PREFIX\@%${TERMUX_PREFIX}%g" \
+				"$f" | patch --silent -p1
+			fi
+		done
 		
 		case $PYTHON_PKG in
 			setuptools )
