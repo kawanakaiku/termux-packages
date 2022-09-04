@@ -486,7 +486,6 @@ termux_step_pre_configure() {
 				BUILD_TEST=0
 				BUILD_PYTHON=1
 				MAX_JOBS=$TERMUX_MAKE_PROCESSES
-				NATIVE_BUILD_DIR=${PWD}/build-native
 				ANDROID_NO_TERMUX=OFF
 				"
 				#-DANDROID_NDK=${NDK}
@@ -731,7 +730,7 @@ termux_step_pre_configure() {
 					-e 's/\([^A-Za-z0-9_]ANDROID\)\([^A-Za-z0-9_]\)/\1_NO_TERMUX\2/g' \
 					-e 's/\([^A-Za-z0-9_]ANDROID\)$/\1_NO_TERMUX/g'
 				# sleef
-				( unset sudo; sudo apt update; sudo apt install -y libsleef3 )
+				( unset sudo; sudo apt update; sudo apt install -y mkalias )
 				;;
 		esac
 	}
