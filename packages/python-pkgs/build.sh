@@ -488,6 +488,7 @@ termux_step_pre_configure() {
 				MAX_JOBS=$TERMUX_MAKE_PROCESSES
 				ANDROID_NO_TERMUX=OFF
 				NATIVE_BUILD_DIR=${PWD}/sleef-host
+				PROTOBUF_PROTOC_EXECUTABLE=$(which protoc)
 				"
 				#-DANDROID_NDK=${NDK}
 				#-DANDROID_NDK_HOST_SYSTEM_NAME=linux-x86_64
@@ -726,7 +727,7 @@ termux_step_pre_configure() {
 				# avoid disabling BUILD_PYTHON
 				#sed -i -e 's|ANDROID OR IOS|FALSE|' CMakeLists.txt
 				# No target "protobuf::protoc"
-				#_termux_setup_protobuf
+				_termux_setup_protobuf
 				# from packages/opencv/build.sh
 				find . -name CMakeLists.txt -o -name '*.cmake' | \
 					xargs -n 1 sed -i \
