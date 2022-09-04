@@ -469,8 +469,6 @@ termux_step_pre_configure() {
 				USE_NINJA=0
 				USE_NUMPY=1
 				USE_BLAS=1
-				OpenBLAS_INCLUDE_DIR=${TERMUX_PREFIX}/include
-				OpenBLAS_LIB=${TERMUX_PREFIX}/lib
 				BLAS=OpenBLAS
 				USE_ZMQ=1
 				USE_FFMPEG=1
