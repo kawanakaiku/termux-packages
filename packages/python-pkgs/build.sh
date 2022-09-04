@@ -486,6 +486,7 @@ termux_step_pre_configure() {
 				BUILD_PYTHON=1
 				MAX_JOBS=$TERMUX_MAKE_PROCESSES
 				NATIVE_BUILD_DIR=${PWD}/build-native
+				ANDROID_NO_TERMUX=OFF
 				"
 				#-DANDROID_NDK=${NDK}
 				#-DANDROID_NDK_HOST_SYSTEM_NAME=linux-x86_64
