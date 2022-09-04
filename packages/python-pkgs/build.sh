@@ -490,8 +490,6 @@ termux_step_pre_configure() {
 				#-DANDROID_NDK_HOST_SYSTEM_NAME=linux-x86_64
 				# /home/builder/.termux-build/_cache/ninja-1.10.2/ninja: invalid option -- 'D'
 				#export USE_NINJA=0 CMAKE_CROSSCOMPILING=1 USE_VULKAN=0
-				# use_numpy
-				sed -i -e "s|np.get_include()|'${TERMUX_PREFIX}/lib/python${_PYTHON_VERSION}/site-packages/numpy/core/include'|" tools/setup_helpers/numpy_.py
 				;;
 		esac
 	}
@@ -717,6 +715,10 @@ termux_step_pre_configure() {
     				# USE_VULKAN requires ANDROID_NDK set.
 				# No SOURCES given to target: VulkanWrapper
 				sed -i -e 's|if(ANDROID)|if(FALSE)|' cmake/VulkanDependencies.cmake
+				# use_numpy
+				sed -i -e "s|np.get_include()|'${TERMUX_PREFIX}/lib/python${_PYTHON_VERSION}/site-packages/numpy/core/include'|" tools/setup_helpers/numpy_.py
+				# avoid disabling BUILD_PYTHON
+				sed -i -e 's|ANDROID OR IOS|FALSE|' CMakeLists.txt
 				;;
 		esac
 	}
