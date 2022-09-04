@@ -735,8 +735,8 @@ termux_step_pre_configure() {
 					src=${PWD}/third_party/sleef
 					dir=${PWD}/sleef-host
 					mkdir $dir; cd $dir
-					env --ignore-environment cmake $src
-					env --ignore-environment make -j$TERMUX_MAKE_PROCESSES
+					env --ignore-environment "$(which cmake)" $src
+					env --ignore-environment "$(which make)" -j$TERMUX_MAKE_PROCESSES
 				)
 				;;
 		esac
