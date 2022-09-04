@@ -900,6 +900,17 @@ termux_step_pre_configure() {
 		$print_filename && echo $file || cat $file
 	}
 	
+	post_compile() {
+                case $PYTHON_PKG in
+                        torch )
+				local libdir=${TERMUX_PREFIX}/lib/python${_PYTHON_VERSION}/site-packages/torch/lib
+				mkdir $libdir
+				echo "$TERMUX_SUBPKG_INCLUDE" | grep -E '${TERMUX_PREFIX}/lib/[^/]+\.so$' | xargs -I@ ln -sf @ $libdir
+				TERMUX_SUBPKG_INCLUDE=$(echo "$TERMUX_SUBPKG_INCLUDE" ; echo $libdir)
+				;;
+                esac
+	}
+	
 	cross_build() {
 		local PYTHON_PKG PYTHON_PKG_REQUIRES
 		local TERMUX_SUBPKG_DESCRIPTION TERMUX_SUBPKG_DEPENDS TERMUX_SUBPKG_INCLUDE TERMUX_SUBPKG_PLATFORM_INDEPENDENT TERMUX_SUBPKG_VERSION 
@@ -941,7 +952,7 @@ termux_step_pre_configure() {
 			(
 				cd $PYTHON_PKG
 				manage_exports
-				cross-pip -v install --upgrade --force-reinstall --no-deps --no-binary :all: --prefix $TERMUX_PREFIX --no-build-isolation --no-cache-dir --compile $(for opt in $( manage-opts ); do echo "--install-option=$opt"; done ) . || ( echo finding -ltorch_python ; find / -name '*torch_python*' 2>/dev/null ; exit 1 )
+				cross-pip -v install --upgrade --force-reinstall --no-deps --no-binary :all: --prefix $TERMUX_PREFIX --no-build-isolation --no-cache-dir --compile $(for opt in $( manage-opts ); do echo "--install-option=$opt"; done ) .
 				#python setup.py install --prefix $TERMUX_PREFIX  # creates egg
 			)
 			TERMUX_FILES_LIST_AFTER="$( cd $TERMUX_PREFIX && find . -type f,l | sort )"
@@ -952,6 +963,8 @@ termux_step_pre_configure() {
 				# /home/builder/.termux-build/python-pkgs/src/python-crossenv-prefix/cross/bin/pip: not found
 				cross-python -m pip install --upgrade --force-reinstall pip
 			fi
+			
+			post_compile
 
 			if [ "$TERMUX_SUBPKG_INCLUDE" == "" ]; then
 				echo "no file added while installing $PYTHON_PKG"
