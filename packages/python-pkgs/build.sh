@@ -726,11 +726,14 @@ termux_step_pre_configure() {
 				# use_numpy
 				cross_build numpy
 				sed -i -e "s|np.get_include()|'${TERMUX_PREFIX}/lib/python${_PYTHON_VERSION}/site-packages/numpy/core/include'|" tools/setup_helpers/numpy_.py
+				# /bin/sh: 1: /data/data/com.termux/files/usr/bin/protoc-3.21.5.0: Exec format error
+				disable_pkgs_files protobuf
 				# avoid disabling BUILD_PYTHON
 				#sed -i -e 's|ANDROID OR IOS|FALSE|' CMakeLists.txt
 				# No target "protobuf::protoc"
 				_termux_setup_protobuf
 				mkdir -p torch/bin; ln -s $(which protobuf) torch/bin
+				
 				# from packages/opencv/build.sh
 				find . -name CMakeLists.txt -o -name '*.cmake' | \
 					xargs -n 1 sed -i \
