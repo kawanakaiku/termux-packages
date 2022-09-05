@@ -908,7 +908,7 @@ termux_step_pre_configure() {
 				mkdir -p $libdir
 				echo "$TERMUX_SUBPKG_INCLUDE" | grep -E '^\./lib/[^/]+\.so$' |
 				while read f; do
-					f="$(readlink -f "$f")"
+					f="$(cd $TERMUX_PREFIX && readlink -f "$f")"
 					ln -sf "$f" $libdir
 				done
 				TERMUX_SUBPKG_INCLUDE="$(echo "$TERMUX_SUBPKG_INCLUDE" ; echo $libdir)"
