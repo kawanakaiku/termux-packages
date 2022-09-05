@@ -13,7 +13,6 @@ TERMUX_PKG_BUILD_DEPENDS="python"
 TERMUX_PKG_BUILD_IN_SRC=true
 TERMUX_PKG_SKIP_SRC_EXTRACT=true
 TERMUX_PKG_NO_STATICSPLIT=true
-TERMUX_DEBUG_BUILD=true
 
 _PYTHON_VERSION=$(. $TERMUX_SCRIPTDIR/packages/python/build.sh; echo $_MAJOR_VERSION)
 _PYTHON_FULL_VERSION=$(. $TERMUX_SCRIPTDIR/packages/python/build.sh; echo $TERMUX_PKG_VERSION)
@@ -408,7 +407,8 @@ termux_step_pre_configure() {
 			gmpy2 ) printf 'libgmp libmpc libmpfr' ;;
 			numpy ) printf 'libopenblas' ;;
 			scipy ) printf 'libopenblas' ;;
-			torch ) printf 'libprotobuf libopenblas libzmq ffmpeg liblmdb leveldb gflags fftw libtbb librocksdb' ;;
+			_torch ) printf 'libprotobuf libopenblas libzmq ffmpeg liblmdb leveldb gflags fftw libtbb librocksdb' ;;
+			torch ) printf 'libprotobuf' ;;
 			pynacl ) printf 'libsodium' ;;
 			pyzmq ) printf 'libzmq' ;;
 			yt-dlp ) printf 'ffmpeg' ;;
@@ -472,7 +472,7 @@ termux_step_pre_configure() {
 				USE_MKLDNN=0
 				USE_DISTRIBUTED=0
 				USE_NINJA=0
-				USE_NUMPY=0
+				USE_NUMPY=1
 				USE_BLAS=0
 				BLAS=OpenBLAS
 				OpenBLAS_INCLUDE_DIR=${TERMUX_PREFIX}/include
