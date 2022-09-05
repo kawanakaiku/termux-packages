@@ -408,7 +408,7 @@ termux_step_pre_configure() {
 			numpy ) printf 'libopenblas' ;;
 			scipy ) printf 'libopenblas' ;;
 			_torch ) printf 'libprotobuf libopenblas libzmq ffmpeg liblmdb leveldb gflags fftw libtbb librocksdb' ;;
-			torch ) printf 'libopenblas' ;;
+			torch ) printf 'libprotobuf libopenblas' ;;
 			pynacl ) printf 'libsodium' ;;
 			pyzmq ) printf 'libzmq' ;;
 			yt-dlp ) printf 'ffmpeg' ;;
@@ -490,19 +490,23 @@ termux_step_pre_configure() {
 				USE_SYSTEM_SLEEF=0
 				BUILD_TEST=0
 				BUILD_PYTHON=1
-				__BUILD_CUSTOM_PROTOBUF=0
-				__CAFFE2_LINK_LOCAL_PROTOBUF=1
+				BUILD_CUSTOM_PROTOBUF=0
+				CAFFE2_LINK_LOCAL_PROTOBUF=1
 				MAX_JOBS=$TERMUX_MAKE_PROCESSES
 				ANDROID_NO_TERMUX=OFF
 				NATIVE_BUILD_DIR=${PWD}/sleef-host
-				__PROTOBUF_PROTOC_EXECUTABLE=$(which protoc)
+				PROTOBUF_PROTOC_EXECUTABLE=$(which protoc)
 				CAFFE2_CUSTOM_PROTOC_EXECUTABLE=$(which protoc)
 				OPENMP_FLAG=-fopenmp -static-openmp
 				"
 				# on x86_64
 				# /home/builder/.termux-build/python-pkgs/src/torch/third_party/fbgemm/third_party/asmjit/src/asmjit/core/../core/operand.h:910:79: error: use of bitwise '&' with boolean operands [-Werror,-Wbitwise-instead-of-logical]
-				cmake_args+="USE_FBGEMM=0
+				cmake_args+="INTERN_BUILD_MOBILE=1
+				BUILD_CAFFE2_MOBILE=1
 				"
+				# test
+				cmake_args+="USE_FBGEMM=0
+                                "
 				#-DANDROID_NDK=${NDK}
 				#-DANDROID_NDK_HOST_SYSTEM_NAME=linux-x86_64
 				# /home/builder/.termux-build/_cache/ninja-1.10.2/ninja: invalid option -- 'D'
