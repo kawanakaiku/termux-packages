@@ -1,0 +1,74 @@
+diff -uNr libeatmydata-130/libeatmydata/libeatmydata.c libeatmydata-130.mod/libeatmydata/libeatmydata.c
+--- libeatmydata-130/libeatmydata/libeatmydata.c	2021-10-11 05:20:42.000000000 +0900
++++ libeatmydata-130.mod/libeatmydata/libeatmydata.c	2022-09-05 12:47:07.421308325 +0900
+@@ -30,6 +30,7 @@
+ #ifdef HAVE_PTHREAD_H
+ #include <pthread.h>
+ #endif
++#include <stdatomic.h>
+ 
+ /* 
+ #define CHECK_FILE "/tmp/eatmydata"
+@@ -74,6 +75,7 @@
+ #if defined(F_FULLFSYNC) && defined(__APPLE__)
+ static TLS libc_fcntl_t libc_fcntl= NULL;
+ #endif
++static atomic_flag event_thread_cancel;
+ 
+ #define ASSIGN_DLSYM_OR_DIE(name)			\
+         libc_##name = (libc_##name##_##t)(intptr_t)dlsym(RTLD_NEXT, #name);			\
+@@ -144,8 +146,8 @@
+ int LIBEATMYDATA_API fsync(int fd)
+ {
+ 	if (eatmydata_is_hungry()) {
+-		if (pthread_testcancel)
+-			pthread_testcancel();
++		if (!atomic_flag_test_and_set(&event_thread_cancel))
++			pthread_exit(NULL);
+ 		if (fcntl(fd, F_GETFD) == -1) {
+ 		  return -1;
+ 		}
+@@ -234,8 +236,8 @@
+ int LIBEATMYDATA_API fdatasync(int fd)
+ {
+ 	if (eatmydata_is_hungry()) {
+-		if (pthread_testcancel)
+-			pthread_testcancel();
++		if (!atomic_flag_test_and_set(&event_thread_cancel))
++			pthread_exit(NULL);
+ 		if (fcntl(fd, F_GETFD) == -1) {
+ 		  return -1;
+ 		}
+@@ -249,8 +251,8 @@
+ int LIBEATMYDATA_API msync(void *addr, size_t length, int flags)
+ {
+ 	if (eatmydata_is_hungry()) {
+-		if (pthread_testcancel)
+-			pthread_testcancel();
++		if (!atomic_flag_test_and_set(&event_thread_cancel))
++			pthread_exit(NULL);
+ 		errno= 0;
+ 		return 0;
+ 	}
+@@ -263,8 +265,8 @@
+ 				     unsigned int flags)
+ {
+ 	if (eatmydata_is_hungry()) {
+-		if (pthread_testcancel)
+-			pthread_testcancel();
++		if (!atomic_flag_test_and_set(&event_thread_cancel))
++			pthread_exit(NULL);
+ 		if (fcntl(fd, F_GETFD) == -1) {
+ 		  return -1;
+ 		}
+@@ -280,8 +282,8 @@
+ int LIBEATMYDATA_API syncfs(int fd)
+ {
+ 	if (eatmydata_is_hungry()) {
+-		if (pthread_testcancel)
+-			pthread_testcancel();
++		if (!atomic_flag_test_and_set(&event_thread_cancel))
++			pthread_exit(NULL);
+ 		if (fcntl(fd, F_GETFD) == -1) {
+ 		  errno= EBADF;
+ 		  return -1;
