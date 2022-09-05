@@ -408,7 +408,7 @@ termux_step_pre_configure() {
 			numpy ) printf 'libopenblas' ;;
 			scipy ) printf 'libopenblas' ;;
 			_torch ) printf 'libprotobuf libopenblas libzmq ffmpeg liblmdb leveldb gflags fftw libtbb librocksdb' ;;
-			torch ) printf 'libprotobuf' ;;
+			torch ) printf 'libopenblas' ;;
 			pynacl ) printf 'libsodium' ;;
 			pyzmq ) printf 'libzmq' ;;
 			yt-dlp ) printf 'ffmpeg' ;;
@@ -465,7 +465,7 @@ termux_step_pre_configure() {
 				# with patched tools/setup_helpers/cmake.py
 				# no zstd: error: unknown type name 'ZSTD_dictMode_e'
 				export cmake_args="
-				$( sed -e 's|^-D||' ${TERMUX_COMMON_CACHEDIR}/tmp_cmake_args | grep -v -e '^CMAKE_MAKE_PROGRAM' -e '^CMAKE_FIND_ROOT_PATH' )
+				$( sed -e 's|^-D||' ${TERMUX_COMMON_CACHEDIR}/tmp_cmake_args | grep -v -e '^CMAKE_MAKE_PROGRAM' -e '^CMAKE_INSTALL_LIBDIR' )
 				USE_VULKAN=0
 				USE_CUDA=0
 				USE_CUDNN=0
@@ -473,7 +473,7 @@ termux_step_pre_configure() {
 				USE_DISTRIBUTED=0
 				USE_NINJA=0
 				USE_NUMPY=1
-				USE_BLAS=0
+				USE_BLAS=1
 				BLAS=OpenBLAS
 				OpenBLAS_INCLUDE_DIR=${TERMUX_PREFIX}/include
 				OpenBLAS_LIB=${TERMUX_PREFIX}/lib
@@ -490,12 +490,12 @@ termux_step_pre_configure() {
 				USE_SYSTEM_SLEEF=0
 				BUILD_TEST=0
 				BUILD_PYTHON=1
-				BUILD_CUSTOM_PROTOBUF=0
-				CAFFE2_LINK_LOCAL_PROTOBUF=1
+				__BUILD_CUSTOM_PROTOBUF=0
+				__CAFFE2_LINK_LOCAL_PROTOBUF=1
 				MAX_JOBS=$TERMUX_MAKE_PROCESSES
 				ANDROID_NO_TERMUX=OFF
 				NATIVE_BUILD_DIR=${PWD}/sleef-host
-				PROTOBUF_PROTOC_EXECUTABLE=$(which protoc)
+				__PROTOBUF_PROTOC_EXECUTABLE=$(which protoc)
 				CAFFE2_CUSTOM_PROTOC_EXECUTABLE=$(which protoc)
 				OPENMP_FLAG=-fopenmp -static-openmp
 				"
@@ -907,7 +907,7 @@ termux_step_pre_configure() {
 	
 	post_compile() {
                 case $PYTHON_PKG in
-                        torch )
+                        _torch )
 				# OSError: dlopen failed: library "/data/data/com.termux/files/usr/lib/python3.10/dist-packages/torch/lib/libtorch_global_deps.so" not found
 				local libdir=./lib/python${_PYTHON_VERSION}/site-packages/torch/lib
 				echo "$TERMUX_SUBPKG_INCLUDE" | grep -E '^\./lib/[^/]+\.so$' |
