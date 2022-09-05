@@ -903,10 +903,15 @@ termux_step_pre_configure() {
 	post_compile() {
                 case $PYTHON_PKG in
                         torch )
-				local libdir=${TERMUX_PREFIX}/lib/python${_PYTHON_VERSION}/site-packages/torch/lib
-				mkdir $libdir
-				echo "$TERMUX_SUBPKG_INCLUDE" | grep -E '${TERMUX_PREFIX}/lib/[^/]+\.so$' | xargs -I@ ln -sf @ $libdir
-				TERMUX_SUBPKG_INCLUDE=$(echo "$TERMUX_SUBPKG_INCLUDE" ; echo $libdir)
+				# OSError: dlopen failed: library "/data/data/com.termux/files/usr/lib/python3.10/dist-packages/torch/lib/libtorch_global_deps.so" not found
+				local libdir=./lib/python${_PYTHON_VERSION}/site-packages/torch/lib
+				mkdir -p $libdir
+				echo "$TERMUX_SUBPKG_INCLUDE" | grep -E '^\./lib/[^/]+\.so$' |
+				while read f; do
+					f="$(readlink -f "$f")"
+					ln -sf "$f" $libdir
+				done
+				TERMUX_SUBPKG_INCLUDE="$(echo "$TERMUX_SUBPKG_INCLUDE" ; echo $libdir)"
 				;;
                 esac
 	}
@@ -959,12 +964,12 @@ termux_step_pre_configure() {
 			
 			TERMUX_SUBPKG_INCLUDE="$( comm -13 <( echo "$TERMUX_FILES_LIST_BEFORE" ) <( echo "$TERMUX_FILES_LIST_AFTER" ) )"
 			
+			post_compile
+			
 			if [ "$PYTHON_PKG" = "pip" ]; then
 				# /home/builder/.termux-build/python-pkgs/src/python-crossenv-prefix/cross/bin/pip: not found
 				cross-python -m pip install --upgrade --force-reinstall pip
 			fi
-			
-			post_compile
 
 			if [ "$TERMUX_SUBPKG_INCLUDE" == "" ]; then
 				echo "no file added while installing $PYTHON_PKG"
