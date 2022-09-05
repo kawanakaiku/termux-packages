@@ -504,6 +504,7 @@ termux_step_pre_configure() {
 				cmake_args+="INTERN_BUILD_MOBILE=1
 				BUILD_CAFFE2=1
 				BUILD_CAFFE2_MOBILE=1
+				UNIX=1
 				"
 				# test
 				cmake_args+="USE_FBGEMM=0
