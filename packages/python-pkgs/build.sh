@@ -502,6 +502,7 @@ termux_step_pre_configure() {
 				# on x86_64
 				# /home/builder/.termux-build/python-pkgs/src/torch/third_party/fbgemm/third_party/asmjit/src/asmjit/core/../core/operand.h:910:79: error: use of bitwise '&' with boolean operands [-Werror,-Wbitwise-instead-of-logical]
 				cmake_args+="INTERN_BUILD_MOBILE=1
+				BUILD_CAFFE2=1
 				BUILD_CAFFE2_MOBILE=1
 				"
 				# test
