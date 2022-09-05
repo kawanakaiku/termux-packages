@@ -407,7 +407,7 @@ termux_step_pre_configure() {
 			gmpy2 ) printf 'libgmp libmpc libmpfr' ;;
 			numpy ) printf 'libopenblas' ;;
 			scipy ) printf 'libopenblas' ;;
-			torch ) printf 'libprotobuf libopenblas libzmq ffmpeg liblmdb leveldb gflags fftw openmpi libtbb librocksdb libtbb' ;;
+			torch ) printf 'libprotobuf libopenblas libzmq ffmpeg liblmdb leveldb gflags fftw libtbb librocksdb' ;;
 			pynacl ) printf 'libsodium' ;;
 			pyzmq ) printf 'libzmq' ;;
 			yt-dlp ) printf 'ffmpeg' ;;
@@ -482,7 +482,7 @@ termux_step_pre_configure() {
 				USE_LEVELDB=1
 				USE_GFLAGS=1
 				USE_FFTW=1
-				USE_OPENMP=1
+				USE_OPENMP=0
 				USE_TBB=1
 				USE_SYSTEM_TBB=1
 				USE_ROCKSDB=1
@@ -905,10 +905,11 @@ termux_step_pre_configure() {
                         torch )
 				# OSError: dlopen failed: library "/data/data/com.termux/files/usr/lib/python3.10/dist-packages/torch/lib/libtorch_global_deps.so" not found
 				local libdir=./lib/python${_PYTHON_VERSION}/site-packages/torch/lib
-				mkdir -p $libdir
 				echo "$TERMUX_SUBPKG_INCLUDE" | grep -E '^\./lib/[^/]+\.so$' |
 				while read f; do
-					f="$(cd $TERMUX_PREFIX && readlink -f "$f")"
+					cd $TERMUX_PREFIX
+					mkdir -p $libdir
+					f="$(readlink -f "$f")"
 					ln -sf "$f" $libdir
 				done
 				TERMUX_SUBPKG_INCLUDE="$(echo "$TERMUX_SUBPKG_INCLUDE" ; echo $libdir)"
