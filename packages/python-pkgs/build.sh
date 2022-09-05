@@ -498,6 +498,10 @@ termux_step_pre_configure() {
 				CAFFE2_CUSTOM_PROTOC_EXECUTABLE=$(which protoc)
 				OPENMP_FLAG=-fopenmp -static-openmp
 				"
+				# on x86_64
+				# /home/builder/.termux-build/python-pkgs/src/torch/third_party/fbgemm/third_party/asmjit/src/asmjit/core/../core/operand.h:910:79: error: use of bitwise '&' with boolean operands [-Werror,-Wbitwise-instead-of-logical]
+				cmake_args+="USE_FBGEMM=0
+				"
 				#-DANDROID_NDK=${NDK}
 				#-DANDROID_NDK_HOST_SYSTEM_NAME=linux-x86_64
 				# /home/builder/.termux-build/_cache/ninja-1.10.2/ninja: invalid option -- 'D'
