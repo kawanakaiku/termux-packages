@@ -23,6 +23,15 @@ termux_step_patch_package() {
 
 termux_step_pre_configure() {
 
+	echo "CFLAGS='${CFLAGS}'"
+	echo "CXXFLAGS='${CXXFLAGS}'"
+	echo "CPPFLAGS='${CPPFLAGS}'"
+	echo "LDFLAGS='${LDFLAGS}'"
+	echo "LIBS='${LIBS}'"
+	
+	echo executing env
+	env
+
 	#_IFS="$IFS"
 
 	local PYTHON_PKGS PYTHON_PKGS_OK PYTHON_PKG
@@ -89,7 +98,8 @@ termux_step_pre_configure() {
 	
 	PYTHON_PKGS=( notebook )
 	PYTHON_PKGS=( pyopenjtalk )
-	PYTHON_PKGS=( torch )
+	#PYTHON_PKGS=( torch )
+	PYTHON_PKGS=( )
 	
 	PYTHON_PKGS_OK=( )
 	
