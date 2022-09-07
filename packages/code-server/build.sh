@@ -64,7 +64,7 @@ termux_step_make_install() {
 	chmod +x ${sh}
 }
 
-_termux_step_post_make_install() {
+termux_step_post_make_install() {
 	rm ${TERMUX_PREFIX}/bin/node-pre-gyp
 	
 	(
