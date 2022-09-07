@@ -4,7 +4,7 @@ TERMUX_PKG_LICENSE="MIT"
 TERMUX_PKG_MAINTAINER="kawanakaiku"
 TERMUX_PKG_VERSION=4.6.1
 TERMUX_PKG_SRCURL=https://github.com/coder/code-server.git
-TERMUX_PKG_DEPENDS="nodejs-lts"
+TERMUX_PKG_DEPENDS="nodejs"
 #TERMUX_PKG_BUILD_DEPENDS="yarn"
 
 termux_step_get_source() {
@@ -50,7 +50,7 @@ termux_step_make_install() {
         # node-pre-gyp not found
         npm install --global node-pre-gyp
 	
-	export FORCE_NODE_VERSION=16
+	export FORCE_NODE_VERSION=18
 	npm install \
 		--prefix ${TERMUX_PREFIX}/share/code-server/node_modules \
 		code-server@${TERMUX_PKG_VERSION}
