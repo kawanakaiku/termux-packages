@@ -5,7 +5,7 @@ TERMUX_PKG_MAINTAINER="kawanakaiku"
 TERMUX_PKG_VERSION=4.6.1
 TERMUX_PKG_SRCURL=https://github.com/coder/code-server.git
 TERMUX_PKG_DEPENDS="nodejs"
-TERMUX_PKG_BUILD_DEPENDS="yarn"
+#TERMUX_PKG_BUILD_DEPENDS="yarn"
 
 termux_step_get_source() {
 	mkdir -p "$TERMUX_PKG_SRCDIR"
@@ -48,10 +48,10 @@ _termux_step_make_install() {
 
 termux_step_make_install() {
         # node-pre-gyp not found
-        yarn global add node-pre-gyp
+        npm install --global node-pre-gyp
 	
-	yarn add \
-		--modules-folder ${TERMUX_PREFIX}/share/code-server/node_modules \
+	npm install \
+		--prefix ${TERMUX_PREFIX}/share/code-server/node_modules \
 		code-server@${TERMUX_PKG_VERSION}
 		
 	local sh=${TERMUX_PREFIX}/bin/code-server
