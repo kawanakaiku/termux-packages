@@ -40,7 +40,7 @@ _termux_step_pre_configure() {
 
 _termux_step_make_install() {
 	export LINK="$CXX"
-	yarn add --modules-folder ${TERMUX_PREFIX}/share/code-server/node_modules \
+	yarn --verbose add --modules-folder ${TERMUX_PREFIX}/share/code-server/node_modules \
 		code-server@${TERMUX_PKG_VERSION}
 		
 	ln -s ${TERMUX_PREFIX}/share/code-server/node_modules/.bin/code-server ${TERMUX_PREFIX}/bin/code-server
