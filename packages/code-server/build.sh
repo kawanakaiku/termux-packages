@@ -2,7 +2,7 @@ TERMUX_PKG_HOMEPAGE=https://coder.com/
 TERMUX_PKG_DESCRIPTION="VS Code in the browser"
 TERMUX_PKG_LICENSE="MIT"
 TERMUX_PKG_MAINTAINER="kawanakaiku"
-TERMUX_PKG_VERSION=4.6.0
+TERMUX_PKG_VERSION=4.6.1
 TERMUX_PKG_SRCURL=https://github.com/coder/code-server.git
 TERMUX_PKG_DEPENDS="nodejs"
 TERMUX_PKG_BUILD_DEPENDS="yarn"
@@ -11,7 +11,7 @@ termux_step_get_source() {
 	mkdir -p "$TERMUX_PKG_SRCDIR"
 }
 
-termux_step_pre_configure() {
+_termux_step_pre_configure() {
 	termux_setup_nodejs
 	
 	local bin=$TERMUX_PKG_BUILDDIR/_bin
@@ -38,7 +38,7 @@ termux_step_pre_configure() {
 	PATH="$bin:$PATH"
 }
 
-termux_step_make_install() {
+_termux_step_make_install() {
 	export LINK="$CXX"
 	yarn add --modules-folder ${TERMUX_PREFIX}/share/code-server/node_modules \
 		code-server@${TERMUX_PKG_VERSION}
@@ -46,7 +46,20 @@ termux_step_make_install() {
 	ln -s ${TERMUX_PREFIX}/share/code-server/node_modules/.bin/code-server ${TERMUX_PREFIX}/bin/code-server
 }
 
-termux_step_post_make_install() {
+termux_step_make_install() {
+	yarn add \
+		--modules-folder ${TERMUX_PREFIX}/share/code-server/node_modules \
+		code-server@${TERMUX_PKG_VERSION}
+		
+	local sh=${TERMUX_PREFIX}/bin/code-server
+	cat <<-SH > ${sh}
+	#!${TERMUX_PREFIX}/bin/sh
+	exec ${TERMUX_PREFIX}/share/code-server/node_modules/.bin/code-server --auth none --disable-telemetry "$@"
+	SH
+	chmod +x ${sh}
+}
+
+_termux_step_post_make_install() {
 	rm ${TERMUX_PREFIX}/bin/node-pre-gyp
 	
 	(
