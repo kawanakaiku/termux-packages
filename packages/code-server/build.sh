@@ -47,6 +47,9 @@ _termux_step_make_install() {
 }
 
 termux_step_make_install() {
+        # node-pre-gyp not found
+        yarn global add node-pre-gyp
+	
 	yarn add \
 		--modules-folder ${TERMUX_PREFIX}/share/code-server/node_modules \
 		code-server@${TERMUX_PKG_VERSION}
