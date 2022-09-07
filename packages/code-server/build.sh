@@ -66,6 +66,7 @@ termux_step_make_install() {
 
 termux_step_post_make_install() {
 	rm ${TERMUX_PREFIX}/bin/node-pre-gyp
+	rm -r ${TERMUX_PREFIX}/lib/node_modules
 	
 	(
 		# no hard links
