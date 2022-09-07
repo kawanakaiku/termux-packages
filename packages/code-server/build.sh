@@ -53,6 +53,7 @@ termux_step_make_install() {
 	export FORCE_NODE_VERSION=18
 	npm install \
 		--prefix ${TERMUX_PREFIX}/share/code-server/node_modules \
+		--unsafe-perm \
 		code-server@${TERMUX_PKG_VERSION}
 		
 	local sh=${TERMUX_PREFIX}/bin/code-server
