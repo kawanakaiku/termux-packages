@@ -52,14 +52,14 @@ termux_step_make_install() {
 	
 	export FORCE_NODE_VERSION=18
 	npm install \
-		--prefix ${TERMUX_PREFIX}/share/code-server/node_modules \
+		--prefix ${TERMUX_PREFIX}/share/code-server \
 		--unsafe-perm \
 		code-server@${TERMUX_PKG_VERSION}
 		
 	local sh=${TERMUX_PREFIX}/bin/code-server
 	cat <<-SH > ${sh}
 	#!${TERMUX_PREFIX}/bin/sh
-	exec ${TERMUX_PREFIX}/share/code-server/node_modules/.bin/code-server --auth none --disable-telemetry "$@"
+	exec ${TERMUX_PREFIX}/share/code-server/node_modules/.bin/code-server --auth none --disable-telemetry "\$@"
 	SH
 	chmod +x ${sh}
 }
