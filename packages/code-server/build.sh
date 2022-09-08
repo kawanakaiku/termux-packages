@@ -61,7 +61,7 @@ termux_step_make_install() {
 	COMMENT
 	
 	# disable sourceMap
-	sed -i -e 's|compilerOptions.sourceMap|false|' ${TERMUX_PREFIX}/lib/node_modules/typescript/lib/*.js
+	#sed -i -e 's|compilerOptions.sourceMap|false|' ${TERMUX_PREFIX}/lib/node_modules/typescript/lib/*.js
 	
 	export FORCE_NODE_VERSION=16
 	export GENERATE_SOURCEMAP=false
