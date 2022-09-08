@@ -62,6 +62,12 @@ termux_step_make_install() {
 	mv ${TERMUX_PREFIX}/share/code-server{,.bak}
 	mv ${TERMUX_PREFIX}/share/code-server.bak/node_modules/code-server ${TERMUX_PREFIX}/share
 	rm -r ${TERMUX_PREFIX}/share/code-server.bak
+	
+	# @vscode/ripgrep@1.14.2 postinstall
+	# Error: Unknown platform: android
+	local dir=${TERMUX_PREFIX}/share/code-server/lib/vscode/node_modules/@vscode/ripgrep/bin
+	mkdir -p ${dir}
+	ln -sf ${TERMUX_PREFIX}/bin/rg ${dir}
 		
 	local sh=${TERMUX_PREFIX}/bin/code-server
 	cat <<-SH > ${sh}
