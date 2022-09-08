@@ -51,9 +51,12 @@ termux_step_make_install() {
         npm install --global --force --no-save node-pre-gyp
 	
 	# set platform to linux
-	sed -i \
-		-e 's|options.target_platform|"linux"|' \
-		${TERMUX_PREFIX}/lib/node_modules/node-pre-gyp/lib/util/versioning.js
+	# https://stackoverflow.com/questions/54374379/how-to-lie-to-program-about-process-platform
+	cat <<-SH  > ${TERMUX_PREFIX}/bin/npm
+	#!${TERMUX_PREFIX}/bin/env node
+	Object.defineProperty(process, 'platform', { value: 'linux' })
+	require('../lib/cli.js')(process)
+	SH
 	
 	export FORCE_NODE_VERSION=16
 	export GENERATE_SOURCEMAP=false
