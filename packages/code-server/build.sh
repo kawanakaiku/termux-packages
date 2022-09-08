@@ -50,7 +50,7 @@ termux_step_make_install() {
         # node-pre-gyp not found
         npm install --global --force --no-save node-pre-gyp
 	
-	if [ "$TERMUX_PACKAGE_VERSION" = "4.5.2" ]; then
+	if [ "$TERMUX_PKG_VERSION" = "4.5.2" ]; then
 		npm install --global --force --no-save node-addon-api
 	fi
 	
