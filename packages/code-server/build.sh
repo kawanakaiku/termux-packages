@@ -2,7 +2,7 @@ TERMUX_PKG_HOMEPAGE=https://coder.com/
 TERMUX_PKG_DESCRIPTION="VS Code in the browser"
 TERMUX_PKG_LICENSE="MIT"
 TERMUX_PKG_MAINTAINER="kawanakaiku"
-TERMUX_PKG_VERSION=4.5.2
+TERMUX_PKG_VERSION=4.6.1
 TERMUX_PKG_SRCURL=https://github.com/coder/code-server.git
 TERMUX_PKG_DEPENDS="nodejs-lts, libsecret"
 #TERMUX_PKG_BUILD_DEPENDS="yarn"
@@ -65,7 +65,9 @@ termux_step_make_install() {
 	COMMENT
 	
 	# disable sourceMap
-	#sed -i -e 's|compilerOptions.sourceMap|false|' ${TERMUX_PREFIX}/lib/node_modules/typescript/lib/*.js
+        npm install --global --force --no-save typescript
+	echo ${TERMUX_PREFIX}/lib/node_modules/typescript/lib/*.js
+	sed -i -e 's|compilerOptions.sourceMap|false|' ${TERMUX_PREFIX}/lib/node_modules/typescript/lib/*.js
 	
 	export FORCE_NODE_VERSION=16
 	export GENERATE_SOURCEMAP=false
@@ -90,7 +92,7 @@ termux_step_make_install() {
 	
 	# terminal not working
 	# https://github.com/coder/code-server/issues/5496
-	#sed -i -e 's|switch(process.platform)|switch("linux")|' ${TERMUX_PREFIX}/share/code-server/lib/vscode/out/vs/platform/terminal/node/ptyHostMain.js
+	sed -i -e 's|switch(process.platform)|switch("linux")|' ${TERMUX_PREFIX}/share/code-server/lib/vscode/out/vs/platform/terminal/node/ptyHostMain.js
 		
 	local sh=${TERMUX_PREFIX}/bin/code-server
 	cat <<-SH > ${sh}
