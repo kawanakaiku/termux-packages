@@ -50,6 +50,11 @@ termux_step_make_install() {
         # node-pre-gyp not found
         npm install --global --force --no-save node-pre-gyp
 	
+	# set platform to linux
+	sed -i \
+		-e 's|options.target_platform|"linux"|' \
+		${TERMUX_PREFIX}/lib/node_modules/node-pre-gyp/lib/util/versioning.js
+	
 	export FORCE_NODE_VERSION=16
 	npm install --force --no-save \
 		--prefix ${TERMUX_PREFIX}/share/code-server \
