@@ -48,18 +48,20 @@ _termux_step_make_install() {
 
 termux_step_make_install() {
         # node-pre-gyp not found
-        npm install --global node-pre-gyp
+        npm install --global --force node-pre-gyp
 	
 	export FORCE_NODE_VERSION=16
-	npm install \
+	npm install --force \
 		--prefix ${TERMUX_PREFIX}/share/code-server \
 		--unsafe-perm \
 		code-server@${TERMUX_PKG_VERSION}
 		
+	npm cache clean --force
+		
 	local sh=${TERMUX_PREFIX}/bin/code-server
 	cat <<-SH > ${sh}
 	#!${TERMUX_PREFIX}/bin/sh
-	exec ${TERMUX_PREFIX}/share/code-server/node_modules/.bin/code-server --auth none --disable-telemetry "\$@"
+	exec ${TERMUX_PREFIX}/share/code-server/node_modules/.bin/code-server --auth none --disable-telemetry --disable-update-check "\$@"
 	SH
 	chmod +x ${sh}
 }
