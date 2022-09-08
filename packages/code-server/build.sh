@@ -52,11 +52,16 @@ termux_step_make_install() {
 	
 	# set platform to linux
 	# https://stackoverflow.com/questions/54374379/how-to-lie-to-program-about-process-platform
+	<<'COMMENT'
 	cat <<-SH  > ${TERMUX_PREFIX}/bin/npm
 	#!${TERMUX_PREFIX}/bin/env node
 	Object.defineProperty(process, 'platform', { value: 'linux' })
 	require('../lib/cli.js')(process)
 	SH
+	COMMENT
+	
+	# disable sourceMap
+	sed -i -e 's|compilerOptions.sourceMap|false|' ${TERMUX_PREFIX}/lib/node_modules/typescript/lib/*.js
 	
 	export FORCE_NODE_VERSION=16
 	export GENERATE_SOURCEMAP=false
@@ -64,7 +69,6 @@ termux_step_make_install() {
 		--prefix ${TERMUX_PREFIX}/share/code-server \
 		--unsafe-perm \
 		--legacy-peer-deps --omit=dev \
-		--production \
 		code-server@${TERMUX_PKG_VERSION}
 		
 	npm cache clean --force
