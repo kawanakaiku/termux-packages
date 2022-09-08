@@ -50,6 +50,10 @@ termux_step_make_install() {
         # node-pre-gyp not found
         npm install --global --force --no-save node-pre-gyp
 	
+	if [ "$TERMUX_PACKAGE_VERSION" = "4.5.2" ]; then
+		npm install --global --force --no-save node-addon-api
+	fi
+	
 	# set platform to linux
 	# https://stackoverflow.com/questions/54374379/how-to-lie-to-program-about-process-platform
 	<<-'COMMENT'
