@@ -56,6 +56,7 @@ termux_step_make_install() {
 		${TERMUX_PREFIX}/lib/node_modules/node-pre-gyp/lib/util/versioning.js
 	
 	export FORCE_NODE_VERSION=16
+	export GENERATE_SOURCEMAP=false
 	npm install --force --no-save \
 		--prefix ${TERMUX_PREFIX}/share/code-server \
 		--unsafe-perm \
@@ -73,6 +74,10 @@ termux_step_make_install() {
 	local dir=${TERMUX_PREFIX}/share/code-server/lib/vscode/node_modules/@vscode/ripgrep/bin
 	mkdir -p ${dir}
 	ln -sf ${TERMUX_PREFIX}/bin/rg ${dir}
+	
+	# terminal not working
+	# https://github.com/coder/code-server/issues/5496
+	sed -i -e 's|switch(process.platform)|switch("linux")|' ${TERMUX_PREFIX}/share/code-server/lib/vscode/out/vs/platform/terminal/node/ptyHostMain.js
 		
 	local sh=${TERMUX_PREFIX}/bin/code-server
 	cat <<-SH > ${sh}
