@@ -2,7 +2,7 @@ TERMUX_PKG_HOMEPAGE=https://coder.com/
 TERMUX_PKG_DESCRIPTION="VS Code in the browser"
 TERMUX_PKG_LICENSE="MIT"
 TERMUX_PKG_MAINTAINER="kawanakaiku"
-TERMUX_PKG_VERSION=4.6.1
+TERMUX_PKG_VERSION=4.5
 TERMUX_PKG_SRCURL=https://github.com/coder/code-server.git
 TERMUX_PKG_DEPENDS="nodejs-lts, libsecret"
 #TERMUX_PKG_BUILD_DEPENDS="yarn"
@@ -52,7 +52,7 @@ termux_step_make_install() {
 	
 	# set platform to linux
 	# https://stackoverflow.com/questions/54374379/how-to-lie-to-program-about-process-platform
-	<<'COMMENT'
+	<<-'COMMENT'
 	cat <<-SH  > ${TERMUX_PREFIX}/bin/npm
 	#!${TERMUX_PREFIX}/bin/env node
 	Object.defineProperty(process, 'platform', { value: 'linux' })
