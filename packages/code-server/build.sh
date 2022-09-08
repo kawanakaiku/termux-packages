@@ -60,7 +60,7 @@ termux_step_make_install() {
 	
 	# shorter path
 	mv ${TERMUX_PREFIX}/share/code-server{,.bak}
-	mv ${TERMUX_PREFIX}/share/code-server/node_modules/code-server ${TERMUX_PREFIX}/share
+	mv ${TERMUX_PREFIX}/share/code-server.bak/node_modules/code-server ${TERMUX_PREFIX}/share
 	rm -r ${TERMUX_PREFIX}/share/code-server.bak
 		
 	local sh=${TERMUX_PREFIX}/bin/code-server
