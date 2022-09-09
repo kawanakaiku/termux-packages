@@ -13,7 +13,6 @@ PYTHON_CFLAGS=-I${TERMUX_PREFIX}/include/python${_PYTHON_VERSION}
 PYTHON_LIBS=-lpython${_PYTHON_VERSION}
 --with-jdk-home=${JAVA_HOME}
 JAVAINC=-I${TERMUX_PREFIX}/opt/openjdk/include
-PKG_CONFIG_PATH=${TERMUX_PREFIX}/lib/pkgconfig
 "
 
 termux_step_get_source() {
@@ -24,6 +23,7 @@ termux_step_pre_configure() {
 	# hostbuild
 	export CC_FOR_BUILD=/usr/bin/gcc
 	export CXX_FOR_BUILD=/usr/bin/g++
+	export PKG_CONFIG_PATH=${TERMUX_PREFIX}/lib/pkgconfig
 	# patch configure
 	sed -i -e 's|unset CC CXX SYSBASE CFLAGS|unset CC CXX SYSBASE CFLAGS CXXFLAGS LDFLAGS|' configure.ac
 	sed -i -e 's%linux-gnu\*|k\*bsd\*-gnu\*|linux-musl\*%linux-gnu*|k*bsd*-gnu*|linux-musl*|linux-android*%' configure.ac
