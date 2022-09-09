@@ -45,6 +45,6 @@ termux_step_pre_configure() {
 	
 	# nss.pc does not exist (3.78-1)
 	TERMUX_PKG_EXTRA_CONFIGURE_ARGS+="
-	export NSS_LIBS="-L/data/data/com.termux/files/usr/lib -lnss3 -lnssutil3 -lsmime3 -lssl3"
+	NSS_LIBS=-L${TERMUX_PREFIX}/lib
 	"
 }
