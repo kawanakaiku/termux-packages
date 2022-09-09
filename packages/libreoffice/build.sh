@@ -11,6 +11,7 @@ _PYTHON_VERSION=$(. $TERMUX_SCRIPTDIR/packages/python/build.sh; echo $_MAJOR_VER
 TERMUX_PKG_EXTRA_CONFIGURE_ARGS="
 PYTHON_CFLAGS=-I${TERMUX_PREFIX}/include/python${_PYTHON_VERSION}
 PYTHON_LIBS=-lpython${_PYTHON_VERSION}
+--with-jdk-home=${JAVA_HOME}
 JAVAINC=-I${TERMUX_PREFIX}/opt/openjdk/include
 "
 
