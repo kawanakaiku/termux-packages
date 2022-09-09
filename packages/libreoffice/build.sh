@@ -11,5 +11,6 @@ termux_step_get_source() {
 }
 
 termux_step_pre_configure() {
-	./autogen.sh
+	aclocal -I $TERMUX_PKG_SRCDIR/m4
+	autoconf -I $TERMUX_PKG_SRCDIR
 }
