@@ -60,7 +60,9 @@ termux_step_pre_configure() {
 	"
 	
 	# configure: error: could not find function 'com_err' required for Kerberos 5
+	# configure: error: could not find function 'gss_init_sec_context' required for GSSAPI
 	TERMUX_PKG_EXTRA_CONFIGURE_ARGS+="
 	--with-krb5=no
+        --with-gssapi=no
 	"
 }
