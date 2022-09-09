@@ -42,4 +42,7 @@ termux_step_pre_configure() {
 	#CXXFLAGS="${CXXFLAGS/-Oz/-Os}"
 	# gcc: error: unrecognized command-line option ‘-static-openmp’
 	#LDFLAGS="${LDFLAGS/-static-openmp/ }"
+	
+	# nss.pc does not exist (3.78-1)
+	export NSS_LIBS="-L/data/data/com.termux/files/usr/lib -lnss3 -lnssutil3 -lsmime3 -lssl3"
 }
