@@ -9,6 +9,7 @@ TERMUX_PKG_DEPENDS="at-spi2-atk, avahi, boost, brotli, cups, dbus, dconf, fontco
 TERMUX_PKG_EXTRA_CONFIGURE_ARGS="
 --with-android-ndk=$NDK
 --with-android-sdk=$ANDROID_HOME
+--with-theme=colibre
 "
 
 termux_step_get_source() {
