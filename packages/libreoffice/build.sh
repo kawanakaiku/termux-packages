@@ -20,13 +20,20 @@ termux_step_get_source() {
 }
 
 termux_step_pre_configure() {
-	# hostbuild
+	# for hostbuild
 	export CC_FOR_BUILD=/usr/bin/gcc
 	export CXX_FOR_BUILD=/usr/bin/g++
 	export PKG_CONFIG_PATH=${TERMUX_PREFIX}/lib/pkgconfig
+	
+	export CC="${CC} ${CFLAGS}"
+	export CXX="${CXX} ${CXXFLAGS}"
+	export LD="${LD} ${LDFLAGS}"
+	unset CFLAGS CXXFLAGS LDFLAGS
+	
 	# patch configure
 	sed -i -e 's|unset CC CXX SYSBASE CFLAGS|unset CC CXX SYSBASE CFLAGS CXXFLAGS LDFLAGS|' configure.ac
 	sed -i -e 's%linux-gnu\*|k\*bsd\*-gnu\*|linux-musl\*%linux-gnu*|k*bsd*-gnu*|linux-musl*|linux-android*%' configure.ac
+
 	# install host dependencies
 	(
 	unset sudo
@@ -41,7 +48,7 @@ termux_step_pre_configure() {
 	#CFLAGS="${CFLAGS/-Oz/-Os}"
 	#CXXFLAGS="${CXXFLAGS/-Oz/-Os}"
 	# gcc: error: unrecognized command-line option ‘-static-openmp’
-	#LDFLAGS="${LDFLAGS/-static-openmp/ }"
+	#LDFLAGS="${LDFLAGS/-static-openmp/}"
 	
 	# nss.pc does not exist (3.78-1)
 	export NSS_CFLAGS="-I${TERMUX_PREFIX}/include/nspr"
