@@ -48,5 +48,5 @@ termux_step_pre_configure() {
 	export NSS_CFLAGS="-I${TERMUX_PREFIX}/include/nspr"
 	export NSS_LIBS="-L${TERMUX_PREFIX}/lib -lnss3 -lnssutil3 -lsmime3 -lssl3"
 	
-	export LDFLAGS+=" -I${TERMUX_PREFIX}/include"
+	export CXXFLAGS+=" -I${TERMUX_PREFIX}/include"
 }
