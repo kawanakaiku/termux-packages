@@ -28,7 +28,7 @@ termux_step_pre_configure() {
 	export CC="${CC} ${CFLAGS}"
 	export CXX="${CXX} ${CXXFLAGS}"
 	export LD="${LD} ${LDFLAGS}"
-	unset CFLAGS CXXFLAGS LDFLAGS
+	unset CFLAGS CXXFLAGS CPPFLAGS LDFLAGS
 	
 	# patch configure
 	sed -i -e 's|unset CC CXX SYSBASE CFLAGS|unset CC CXX SYSBASE CFLAGS CXXFLAGS LDFLAGS|' configure.ac
@@ -40,6 +40,10 @@ termux_step_pre_configure() {
 	sudo apt-get update
 	sudo apt-get install -y --no-install-recommends git build-essential zip ccache junit4 libkrb5-dev nasm graphviz python3 python3-dev qtbase5-dev libkf5coreaddons-dev libkf5i18n-dev libkf5config-dev libkf5windowsystem-dev libkf5kio-dev autoconf libcups2-dev libfontconfig1-dev gperf doxygen libxslt1-dev xsltproc libxml2-utils libxrandr-dev libx11-dev bison flex libgtk-3-dev libgstreamer-plugins-base1.0-dev libgstreamer1.0-dev ant ant-optional libnss3-dev libavahi-client-dev libxt-dev
 	)
+	
+	# configure: error: X Development libraries not found
+	# should be before autoconf
+	export X_EXTRA_LIBS="-lX11-xcb -lX11 -lxcb"
 	
 	aclocal -I $TERMUX_PKG_SRCDIR/m4
 	autoconf -I $TERMUX_PKG_SRCDIR
@@ -65,7 +69,4 @@ termux_step_pre_configure() {
 	--with-krb5=no
         --with-gssapi=no
 	"
-	
-	# configure: error: X Development libraries not found
-	export X_EXTRA_LIBS="-lX11-xcb -lX11 -lxcb"
 }
