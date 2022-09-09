@@ -44,7 +44,6 @@ termux_step_pre_configure() {
 	#LDFLAGS="${LDFLAGS/-static-openmp/ }"
 	
 	# nss.pc does not exist (3.78-1)
-	TERMUX_PKG_EXTRA_CONFIGURE_ARGS+="
-	NSS_LIBS=-L${TERMUX_PREFIX}/lib
-	"
+	export NSS_CFLAGS="-I${TERMUX_PREFIX}/include/nspr"
+	export NSS_LIBS="-L${TERMUX_PREFIX}/lib -lnss3 -lnssutil3 -lsmime3 -lssl3"
 }
