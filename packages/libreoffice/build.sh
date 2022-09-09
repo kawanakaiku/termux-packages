@@ -9,6 +9,7 @@ TERMUX_PKG_DEPENDS="at-spi2-atk, avahi, boost, brotli, cups, dbus, dconf, fontco
 
 _PYTHON_VERSION=$(. $TERMUX_SCRIPTDIR/packages/python/build.sh; echo $_MAJOR_VERSION)
 TERMUX_PKG_EXTRA_CONFIGURE_ARGS="
+
 PYTHON_CFLAGS=-I${TERMUX_PREFIX}/include/python${_PYTHON_VERSION}
 PYTHON_LIBS=-lpython${_PYTHON_VERSION}
 --with-jdk-home=${JAVA_HOME}
@@ -46,4 +47,6 @@ termux_step_pre_configure() {
 	# nss.pc does not exist (3.78-1)
 	export NSS_CFLAGS="-I${TERMUX_PREFIX}/include/nspr"
 	export NSS_LIBS="-L${TERMUX_PREFIX}/lib -lnss3 -lnssutil3 -lsmime3 -lssl3"
+	
+	export CFLAGS+=" -I${TERMUX_PREFIX}/include"
 }
