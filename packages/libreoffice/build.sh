@@ -28,7 +28,7 @@ termux_step_pre_configure() {
 	export CC="${CC} ${CFLAGS}"
 	export CXX="${CXX} ${CXXFLAGS}"
 	export LD="${LD} ${LDFLAGS}"
-	unset CFLAGS CXXFLAGS CPPFLAGS LDFLAGS
+	unset CFLAGS CXXFLAGS LDFLAGS
 	
 	# patch configure
 	sed -i -e 's|unset CC CXX SYSBASE CFLAGS|unset CC CXX SYSBASE CFLAGS CXXFLAGS LDFLAGS|' configure.ac
