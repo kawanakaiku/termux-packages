@@ -16,13 +16,13 @@ termux_step_get_source() {
 }
 
 termux_step_pre_configure() {
-	aclocal -I $TERMUX_PKG_SRCDIR/m4
-	autoconf -I $TERMUX_PKG_SRCDIR
-	
 	# hostbuild
 	export CC_FOR_BUILD=/usr/bin/gcc
 	export CXX_FOR_BUILD=/usr/bin/g++
 	export PKG_CONFIG_FOR_BUILD=/usr/bin/pkg-config
 	# patch configure
 	sed -i -e 's|unset CC CXX SYSBASE CFLAGS|unset CC CXX SYSBASE CFLAGS CXXFLAGS LDFLAGS|' configure.ac
+	
+	aclocal -I $TERMUX_PKG_SRCDIR/m4
+	autoconf -I $TERMUX_PKG_SRCDIR
 }
