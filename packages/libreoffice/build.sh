@@ -67,8 +67,5 @@ termux_step_pre_configure() {
 	"
 	
 	# configure: error: X Development libraries not found
-	#export X_EXTRA_LIBS="-lX11-xcb -lX11 -lxcb"
-	TERMUX_PKG_EXTRA_CONFIGURE_ARGS+="
-	--using-x11=no
-	"
+	sed -i -e 's|LIBS="-lX11 |LIBS="-lX11-xcb -lX11 -lxcb ' configure
 }
