@@ -5,7 +5,7 @@ TERMUX_PKG_MAINTAINER="@kawanakaiku"
 TERMUX_PKG_VERSION=1
 TERMUX_PKG_SRCURL=https://github.com/LibreOffice/core.git
 TERMUX_PKG_BUILD_IN_SRC=true
-TERMUX_PKG_DEPENDS="at-spi2-atk, avahi, boost, brotli, dbus, dconf, fontconfig, freetype, fribidi, gdk-pixbuf, glib, gpgme, gpgmepp, gst-plugins-base, gstreamer, gtk3, harfbuzz, harfbuzz-icu, hunspell, krb5, libassuan, libbsd, libbz2, libcairo, libcap, libdw, libelf, libepoxy, libexpat, libffi, libgcrypt, libgmp, libgnutls, libgpg-error, libgraphite, libgrpc, libhyphen, libice, libicu, libidn2, libjpeg-turbo, libltdl, liblz4, liblzma, libmd, libmhash, libnettle, libnghttp2, libnspr, libnss, liborc, libpixman, libpng, libpsl, libraptor2, librasqal, libsasl, libsm, libssh, libtasn1, libunistring, libuuid, libwayland, libx11, libxau, libxcb, libxcomposite, libxcursor, libxdamage, libxdmcp, libxext, libxfixes, libxi, libxinerama, libxkbcommon, libxml2, libxrandr, libxrender, libxslt, libxt, littlecms, openjpeg, openldap, openssl, p11-kit, pango, pcre, pcre2, python, rtmpdump, util-linux, xmlsec, yajl, zlib, zstd"
+TERMUX_PKG_DEPENDS="at-spi2-atk, avahi, boost, brotli, dbus, dconf, fontconfig, freetype, fribidi, gdk-pixbuf, glib, gpgme, gpgmepp, gst-plugins-base, gstreamer, gtk3, harfbuzz, harfbuzz-icu, hunspell, libassuan, libbsd, libbz2, libcairo, libcap, libdw, libelf, libepoxy, libexpat, libffi, libgcrypt, libgmp, libgnutls, libgpg-error, libgraphite, libgrpc, libhyphen, libice, libicu, libidn2, libjpeg-turbo, libltdl, liblz4, liblzma, libmd, libmhash, libnettle, libnghttp2, libnspr, libnss, liborc, libpixman, libpng, libpsl, libraptor2, librasqal, libsasl, libsm, libssh, libtasn1, libunistring, libuuid, libwayland, libx11, libxau, libxcb, libxcomposite, libxcursor, libxdamage, libxdmcp, libxext, libxfixes, libxi, libxinerama, libxkbcommon, libxml2, libxrandr, libxrender, libxslt, libxt, littlecms, openjpeg, openldap, openssl, p11-kit, pango, pcre, pcre2, python, rtmpdump, util-linux, xmlsec, yajl, zlib, zstd"
 
 _PYTHON_VERSION=$(. $TERMUX_SCRIPTDIR/packages/python/build.sh; echo $_MAJOR_VERSION)
 TERMUX_PKG_EXTRA_CONFIGURE_ARGS="
@@ -57,5 +57,10 @@ termux_step_pre_configure() {
 	# checking for cupsPrintFiles in -lcups... no
 	TERMUX_PKG_EXTRA_CONFIGURE_ARGS+="
 	--enable-cups=no
+	"
+	
+	# configure: error: could not find function 'com_err' required for Kerberos 5
+	TERMUX_PKG_EXTRA_CONFIGURE_ARGS+="
+	--with-krb5=no
 	"
 }
