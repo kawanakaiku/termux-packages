@@ -5,7 +5,7 @@ TERMUX_PKG_MAINTAINER="@kawanakaiku"
 TERMUX_PKG_VERSION=1
 TERMUX_PKG_SRCURL=https://github.com/LibreOffice/core.git
 TERMUX_PKG_BUILD_IN_SRC=true
-TERMUX_PKG_DEPENDS="libandroid-execinfo, libice, libsm, libx11, libxau, libxcomposite, libxcursor, libxdamage, libxdmcp, libxext, libxfixes, libxi, libxinerama, libxrandr, libxrender, libgrpc, libassuan, at-spi2-atk, avahi, util-linux, boost, brotli, libbsd, libbz2, libcairo, libcap, krb5, openssl, cups, dbus, dconf, libdw, libelf, libepoxy, libexpat, libxslt, libffi, fontconfig, freetype, fribidi, libgcrypt, gtk3, gdk-pixbuf, glib, libgmp, libgnutls, libgpg-error, gpgme, gpgmepp, libgraphite, krb5, gst-plugins-base, gstreamer, gst-plugins-base, gstreamer, gst-plugins-base, gtk3, harfbuzz-icu, harfbuzz, libnettle, hunspell, libhyphen, libicu, libidn2, libjpeg-turbo, openldap, littlecms, libltdl, liblz4, liblzma, libmd, libmhash, libnettle, libnghttp2, libnspr, libnss, openjpeg, liborc, p11-kit, pango, pango, pcre, pcre2, libpixman, libnspr, libpng, libpsl, python, libraptor2, librasqal, rtmpdump, libsasl, libnss, libssh, libtasn1, libunistring, libuuid, libwayland, libxcb, libxkbcommon, libxml2, xmlsec, libxslt, yajl, zlib, zstd"
+TERMUX_PKG_DEPENDS="at-spi2-atk, avahi, boost, brotli, cups, dbus, dconf, fontconfig, freetype, fribidi, gdk-pixbuf, glib, gpgme, gpgmepp, gst-plugins-base, gstreamer, gtk3, harfbuzz, harfbuzz-icu, hunspell, krb5, libassuan, libbsd, libbz2, libcairo, libcap, libdw, libelf, libepoxy, libexpat, libffi, libgcrypt, libgmp, libgnutls, libgpg-error, libgraphite, libgrpc, libhyphen, libice, libicu, libidn2, libjpeg-turbo, libltdl, liblz4, liblzma, libmd, libmhash, libnettle, libnghttp2, libnspr, libnss, liborc, libpixman, libpng, libpsl, libraptor2, librasqal, libsasl, libsm, libssh, libtasn1, libunistring, libuuid, libwayland, libx11, libxau, libxcb, libxcomposite, libxcursor, libxdamage, libxdmcp, libxext, libxfixes, libxi, libxinerama, libxkbcommon, libxml2, libxrandr, libxrender, libxslt, littlecms, openjpeg, openldap, openssl, p11-kit, pango, pcre, pcre2, python, rtmpdump, util-linux, xmlsec, yajl, zlib, zstd"
 TERMUX_PKG_EXTRA_CONFIGURE_ARGS="
 --with-android-ndk=$NDK
 --with-android-sdk=$ANDROID_HOME
@@ -22,6 +22,12 @@ termux_step_pre_configure() {
 	export PKG_CONFIG_FOR_BUILD=/usr/bin/pkg-config
 	# patch configure
 	sed -i -e 's|unset CC CXX SYSBASE CFLAGS|unset CC CXX SYSBASE CFLAGS CXXFLAGS LDFLAGS|' configure.ac
+	# install host dependencies
+	(
+	unset sudo
+	sudo apt-get update
+	sudo apt-get install -y --no-install-recommends libfontconfig1-dev
+	)
 	
 	aclocal -I $TERMUX_PKG_SRCDIR/m4
 	autoconf -I $TERMUX_PKG_SRCDIR
