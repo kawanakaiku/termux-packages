@@ -23,6 +23,7 @@ termux_step_pre_configure() {
 	export PKG_CONFIG_FOR_BUILD=/usr/bin/pkg-config
 	# patch configure
 	sed -i -e 's|unset CC CXX SYSBASE CFLAGS|unset CC CXX SYSBASE CFLAGS CXXFLAGS LDFLAGS|' configure.ac
+	sed -i -e 's%linux-gnu\*|k\*bsd\*-gnu\*|linux-musl\*%linux-gnu*|k*bsd*-gnu*|linux-musl*|linux-android*%' configure.ac
 	# install host dependencies
 	(
 	unset sudo
@@ -34,8 +35,8 @@ termux_step_pre_configure() {
 	autoconf -I $TERMUX_PKG_SRCDIR
 	
 	# cc1: error: argument to ‘-O’ should be a non-negative integer, ‘g’, ‘s’ or ‘fast’
-	CFLAGS="${CFLAGS/-Oz/-Os}"
-	CXXFLAGS="${CXXFLAGS/-Oz/-Os}"
+	#CFLAGS="${CFLAGS/-Oz/-Os}"
+	#CXXFLAGS="${CXXFLAGS/-Oz/-Os}"
 	# gcc: error: unrecognized command-line option ‘-static-openmp’
-	LDFLAGS="${LDFLAGS/-static-openmp/ }"
+	#LDFLAGS="${LDFLAGS/-static-openmp/ }"
 }
