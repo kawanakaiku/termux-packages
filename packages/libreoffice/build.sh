@@ -5,6 +5,10 @@ TERMUX_PKG_MAINTAINER="@kawanakaiku"
 TERMUX_PKG_VERSION=1
 TERMUX_PKG_SRCURL=https://github.com/LibreOffice/core.git
 TERMUX_PKG_BUILD_IN_SRC=true
+TERMUX_PKG_EXTRA_CONFIGURE_ARGS="
+--with-android-ndk=$NDK
+--with-android-sdk=$ANDROID_HOME
+"
 
 termux_step_get_source() {
 	git clone --depth=1 --recurse-submodules --shallow-submodules $TERMUX_PKG_SRCURL $TERMUX_PKG_SRCDIR
