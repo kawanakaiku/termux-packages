@@ -22,4 +22,5 @@ termux_step_pre_configure() {
 	# hostbuild
 	export CC_FOR_BUILD=/usr/bin/gcc
 	export CXX_FOR_BUILD=/usr/bin/g++
+	export PKG_CONFIG_FOR_BUILD=/usr/bin/pkg-config
 }
