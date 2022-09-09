@@ -36,4 +36,6 @@ termux_step_pre_configure() {
 	# cc1: error: argument to ‘-O’ should be a non-negative integer, ‘g’, ‘s’ or ‘fast’
 	CFLAGS="${CFLAGS/-Oz/-Os}"
 	CXXFLAGS="${CXXFLAGS/-Oz/-Os}"
+	# gcc: error: unrecognized command-line option ‘-static-openmp’
+	LDFLAGS="${LDFLAGS/-static-openmp/ }"
 }
