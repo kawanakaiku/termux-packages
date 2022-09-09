@@ -65,4 +65,7 @@ termux_step_pre_configure() {
 	--with-krb5=no
         --with-gssapi=no
 	"
+	
+	# configure: error: X Development libraries not found
+	export X_EXTRA_LIBS="-lX11-xcb -lX11 -lxcb"
 }
