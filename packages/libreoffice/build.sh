@@ -4,7 +4,12 @@ TERMUX_PKG_LICENSE="MPL-2.0"
 TERMUX_PKG_MAINTAINER="@kawanakaiku"
 TERMUX_PKG_VERSION=1
 TERMUX_PKG_SRCURL=https://github.com/LibreOffice/core.git
+TERMUX_PKG_BUILD_IN_SRC=true
 
 termux_step_get_source() {
 	git clone --depth=1 --recurse-submodules --shallow-submodules $TERMUX_PKG_SRCURL $TERMUX_PKG_SRCDIR
+}
+
+termux_step_pre_configure() {
+	./autogen.sh
 }
