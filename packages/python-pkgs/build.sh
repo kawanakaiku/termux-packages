@@ -23,11 +23,6 @@ termux_step_patch_package() {
 
 termux_step_pre_configure() {
 
-	echo executing env
-	env
-
-	#_IFS="$IFS"
-
 	local PYTHON_PKGS PYTHON_PKGS_OK PYTHON_PKG
 
 	PYTHON_PKGS=( asgiref numpy )
@@ -89,6 +84,7 @@ termux_step_pre_configure() {
 	PYTHON_PKGS+=( h5py streamlink gallery-dl )
 	#PYTHON_PKGS+=( cmake )  # The C++ compiler does not support C++11 (e.g.  std::unique_ptr).
 	PYTHON_PKGS+=( ipython notebook )
+	PYTHON_PKGS+=( japanize-matplotlib )
 	
 	PYTHON_PKGS=( notebook )
 	PYTHON_PKGS=( pyopenjtalk )
