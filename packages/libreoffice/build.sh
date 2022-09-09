@@ -26,7 +26,7 @@ termux_step_pre_configure() {
 	(
 	unset sudo
 	sudo apt-get update
-	sudo apt-get install -y --no-install-recommends libfontconfig1-dev libxslt1-dev
+	sudo apt-get install -y --no-install-recommends libfontconfig1-dev libxslt1-dev python3-dev
 	)
 	
 	aclocal -I $TERMUX_PKG_SRCDIR/m4
