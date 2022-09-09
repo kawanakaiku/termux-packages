@@ -13,6 +13,7 @@ PYTHON_CFLAGS=-I${TERMUX_PREFIX}/include/python${_PYTHON_VERSION}
 PYTHON_LIBS=-lpython${_PYTHON_VERSION}
 --with-jdk-home=${JAVA_HOME}
 JAVAINC=-I${TERMUX_PREFIX}/opt/openjdk/include
+PKG_CONFIG_PATH=${TERMUX_PREFIX}/lib/pkgconfig
 "
 
 termux_step_get_source() {
