@@ -32,4 +32,8 @@ termux_step_pre_configure() {
 	
 	aclocal -I $TERMUX_PKG_SRCDIR/m4
 	autoconf -I $TERMUX_PKG_SRCDIR
+	
+	# cc1: error: argument to ‘-O’ should be a non-negative integer, ‘g’, ‘s’ or ‘fast’
+	CFLAGS="${CFLAGS/-Oz/-Os}"
+	CXXFLAGS="${CXXFLAGS/-Oz/-Os}"
 }
