@@ -71,4 +71,6 @@ termux_step_pre_configure() {
 	sed -i -e 's|ac_cv_lib_X11_XOpenDisplay=no|ac_cv_lib_X11_XOpenDisplay=yes|g' configure
 	# configure: error: ICE library not found
 	sed -i -e 's|ac_cv_lib_ICE_IceConnectionNumber=no|ac_cv_lib_ICE_IceConnectionNumber=yes|g' configure
+	# configure: error: SM library not found
+	sed -i -e 's|ac_cv_lib_SM_SmcOpenConnection=no|ac_cv_lib_SM_SmcOpenConnection=yes|g' configure
 }
