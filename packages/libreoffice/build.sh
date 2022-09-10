@@ -115,4 +115,6 @@ termux_step_pre_configure() {
 	no_not_found ac_cv_lib_Xrender_XRenderQueryVersion
 	# configure: error: libGL required.
 	no_not_found ac_cv_lib_GL_glBegin
+	# configure: error: jpeg library not found or functional
+	no_not_found ac_cv_lib_jpeg_jpeg_resync_to_restart
 }
