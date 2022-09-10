@@ -77,4 +77,6 @@ termux_step_pre_configure() {
 	no_not_found ac_cv_lib_SM_SmcOpenConnection
 	# configure: error: libXrender not found or functional
 	no_not_found ac_cv_lib_Xrender_XRenderQueryVersion
+	# configure: error: libGL required.
+	no_not_found ac_cv_lib_GL_glBegin
 }
