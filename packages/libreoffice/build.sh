@@ -66,11 +66,15 @@ termux_step_pre_configure() {
         --with-gssapi=no
 	"
 	
+	no_not_found() {
+		sed -i -e "s|$1=no|$1=yes|g" configure
+	}
 	# configure: error: X Development libraries not found
-	#sed -i -e 's|LIBS="-lX11 |LIBS="-lX11-xcb -lX11 -lxcb |' configure
-	sed -i -e 's|ac_cv_lib_X11_XOpenDisplay=no|ac_cv_lib_X11_XOpenDisplay=yes|g' configure
+	no_not_found c_cv_lib_X11_XOpenDisplay
 	# configure: error: ICE library not found
-	sed -i -e 's|ac_cv_lib_ICE_IceConnectionNumber=no|ac_cv_lib_ICE_IceConnectionNumber=yes|g' configure
+	no_not_found ac_cv_lib_ICE_IceConnectionNumber
 	# configure: error: SM library not found
-	sed -i -e 's|ac_cv_lib_SM_SmcOpenConnection=no|ac_cv_lib_SM_SmcOpenConnection=yes|g' configure
+	no_not_found ac_cv_lib_SM_SmcOpenConnection
+	# configure: error: libXrender not found or functional
+	no_not_found ac_cv_lib_Xrender_XRenderQueryVersion
 }
