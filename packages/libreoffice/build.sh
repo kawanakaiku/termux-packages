@@ -3,11 +3,11 @@ TERMUX_PKG_DESCRIPTION="office productivity suite"
 TERMUX_PKG_LICENSE="MPL-2.0"
 TERMUX_PKG_MAINTAINER="@kawanakaiku"
 _COMMIT=3c58a8f3a960df8bc8fd77b461821e42c061c5f0
-TERMUX_PKG_VERSION=7.4.1.2
+TERMUX_PKG_VERSION=2022.09.10
 TERMUX_PKG_SRCURL=https://github.com/LibreOffice/core.git
 TERMUX_PKG_GIT_BRANCH=master
 TERMUX_PKG_BUILD_IN_SRC=true
-TERMUX_PKG_DEPENDS="at-spi2-atk, avahi, boost, brotli, dbus, dconf, fontconfig, freetype, fribidi, gdk-pixbuf, glib, gpgme, gpgmepp, gst-plugins-base, gstreamer, gtk3, harfbuzz, harfbuzz-icu, hunspell, libassuan, libbsd, libbz2, libcairo, libcap, libdw, libelf, libepoxy, libexpat, libffi, libgcrypt, libgmp, libgnutls, libgpg-error, libgraphite, libgrpc, libhyphen, libice, libicu, libidn2, libjpeg-turbo, libltdl, liblz4, liblzma, libmd, libmhash, libnettle, libnghttp2, libnspr, libnss, liborc, libpixman, libpng, libpsl, libraptor2, librasqal, libsasl, libsm, libssh, libtasn1, libunistring, libuuid, libwayland, libx11, libxau, libxcb, libxcomposite, libxcursor, libxdamage, libxdmcp, libxext, libxfixes, libxi, libxinerama, libxkbcommon, libxml2, libxrandr, libxrender, libxslt, libxt, littlecms, mesa, openjpeg, openldap, openssl, p11-kit, pango, pcre, pcre2, python, rtmpdump, util-linux, xmlsec, yajl, zlib, zstd"
+TERMUX_PKG_DEPENDS="at-spi2-atk, avahi, beanshell, boost, brotli, bzip2, dbus, dconf, fontconfig, freetype, fribidi, gdk-pixbuf, glib, gpgme, gpgmepp, gst-plugins-base, gstreamer, gtk3, harfbuzz, harfbuzz-icu, hunspell, libassuan, libatomic-ops, libbsd, libbz2, libcairo, libcap, libcurl, libdw, libelf, libepoxy, libexpat, libffi, libgcrypt, libgmp, libgnutls, libgpg-error, libgraphite, libgrpc, libhyphen, libice, libicu, libidn2, libjpeg-turbo, libltdl, liblz4, liblzma, libmd, libmhash, libnettle, libnghttp2, libnspr, libnss, libiodbc, liborc, libpixman, libpng, libpsl, libraptor2, librasqal, libsasl, libsm, libssh, libtasn1, libtiff, libunistring, libuuid, libwayland, libwebp, libx11, libxau, libxcb, libxcomposite, libxcursor, libxdamage, libxdmcp, libxext, libxfixes, libxi, libxinerama, libxkbcommon, libxml2, libxrandr, libxrender, libxslt, libxt, libzxing-cpp, littlecms, mariadb, mesa, openjpeg, openldap, openssl, p11-kit, pango, pcre, pcre2, poppler, postgresql, python, rtmpdump, util-linux, xmlsec, yajl, zlib, zstd"
 
 _PYTHON_VERSION=$(. $TERMUX_SCRIPTDIR/packages/python/build.sh; echo $_MAJOR_VERSION)
 TERMUX_PKG_EXTRA_CONFIGURE_ARGS="
@@ -17,13 +17,8 @@ PYTHON_LIBS=-lpython${_PYTHON_VERSION}
 JAVAINC=-I${TERMUX_PREFIX}/opt/openjdk/include
 "
 
-_termux_step_get_source() {
+termux_step_get_source() {
 	git clone --depth=1 --recurse-submodules --shallow-submodules $TERMUX_PKG_SRCURL $TERMUX_PKG_SRCDIR
-}
-
-termux_step_post_get_source() {
-	git fetch --unshallow
-	git checkout $_COMMIT
 }
 
 termux_step_pre_configure() {
@@ -71,6 +66,40 @@ termux_step_pre_configure() {
 	TERMUX_PKG_EXTRA_CONFIGURE_ARGS+="
 	--with-krb5=no
         --with-gssapi=no
+	"
+	
+	TERMUX_PKG_EXTRA_CONFIGURE_ARGS+="
+	--with-system-bzip2
+	--with-system-cairo
+	--with-system-epoxy
+	--with-system-zlib
+	--with-system-jpeg
+	--with-system-expat
+	--with-system-libxml
+	--with-system-openldap
+	--with-system-poppler
+	--with-system-openjpeg
+	--with-system-gpgmepp
+	--with-system-mariadb
+	--with-system-postgresql
+	--with-system-beanshell
+	--with-system-odbc
+	--with-system-boost
+	--with-system-hunspell
+	--with-system-zxing
+	--with-system-expat
+	--with-system-xmlsec
+	--with-system-libatomic_ops
+	--with-system-curl
+	--with-system-nss
+	--with-system-icu
+	--with-system-graphite
+	--with-system-harfbuzz
+	--with-system-openssl
+	--with-system-epoxy
+	--with-system-libpng
+	--with-system-libtiff
+	--with-system-libwebp
 	"
 	
 	no_not_found() {
