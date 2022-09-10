@@ -106,7 +106,7 @@ termux_step_pre_configure() {
 		sed -i -e "s|$1=no|$1=yes|g" configure
 	}
 	# configure: error: X Development libraries not found
-	no_not_found c_cv_lib_X11_XOpenDisplay
+	no_not_found ac_cv_lib_X11_XOpenDisplay
 	# configure: error: ICE library not found
 	no_not_found ac_cv_lib_ICE_IceConnectionNumber
 	# configure: error: SM library not found
@@ -118,5 +118,5 @@ termux_step_pre_configure() {
 	# configure: error: jpeg library not found or functional
 	no_not_found ac_cv_lib_jpeg_jpeg_resync_to_restart
 	
-	sed -i -e 's|as_fn_exit \$as_status|echo ignoring as_fn_exit $as_status|' configure
+	sed -i -e 's|as_fn_error \$?|echo ignoring as_fn_error $?|' configure
 }
