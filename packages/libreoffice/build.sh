@@ -117,4 +117,6 @@ termux_step_pre_configure() {
 	no_not_found ac_cv_lib_GL_glBegin
 	# configure: error: jpeg library not found or functional
 	no_not_found ac_cv_lib_jpeg_jpeg_resync_to_restart
+	
+	sed -i -e 's|as_fn_exit \$as_status|echo ignoring as_fn_exit $as_status|' configure
 }
