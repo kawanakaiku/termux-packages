@@ -67,5 +67,6 @@ termux_step_pre_configure() {
 	"
 	
 	# configure: error: X Development libraries not found
-	sed -i -e 's|LIBS="-lX11 |LIBS="-lX11-xcb -lX11 -lxcb |' configure
+	#sed -i -e 's|LIBS="-lX11 |LIBS="-lX11-xcb -lX11 -lxcb |' configure
+	sed -i -e '/XOpenDisplay/d' configure
 }
