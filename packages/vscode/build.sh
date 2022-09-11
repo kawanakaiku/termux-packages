@@ -15,7 +15,7 @@ termux_step_make_install() {
 	
 	touch ${TERMUX_BUILD_TS_FILE}
 	
-	yarn add --production --verbose --prefix ${TERMUX_PREFIX} ${TERMUX_PKG_SRCDIR}
+	yarn add --production --verbose --cwd ${TERMUX_PREFIX} ${TERMUX_PKG_SRCDIR}
 	yarn cache clean
 }
 
