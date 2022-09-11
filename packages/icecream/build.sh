@@ -3,7 +3,7 @@ TERMUX_PKG_DESCRIPTION="Distributed compiler with a central scheduler to share b
 TERMUX_PKG_LICENSE="GPL-2.0"
 TERMUX_PKG_MAINTAINER="@kawanakaiku"
 TERMUX_PKG_VERSION=1.4
-TERMUX_PKG_SRCURL=https://github.com/icecc/icecream.git
+TERMUX_PKG_SRCURL=https://github.com/icecc/icecream/releases/download/${TERMUX_PKG_VERSION}/icecc-${TERMUX_PKG_VERSION}.0.tar.xz
 TERMUX_PKG_BUILD_IN_SRC=true
 TERMUX_PKG_DEPENDS="libcap-ng, zstd, libarchive, liblzo"
 
