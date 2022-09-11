@@ -1,0 +1,48 @@
+diff -uNr icecc-1.4.0/client/util.cpp icecc-1.4.0.mod/client/util.cpp
+--- icecc-1.4.0/client/util.cpp	2022-03-04 04:04:16.000000000 +0900
++++ icecc-1.4.0.mod/client/util.cpp	2022-09-11 12:35:45.322346404 +0900
+@@ -167,7 +167,7 @@
+ {
+     assert(lock_fd == -1);
+ 
+-    string fname = "/tmp/.icecream-";
++    string fname = "@TERMUX_PREFIX@/tmp/.icecream-";
+     struct passwd *pwd = getpwuid(getuid());
+ 
+     if (pwd) {
+diff -uNr icecc-1.4.0/daemon/main.cpp icecc-1.4.0.mod/daemon/main.cpp
+--- icecc-1.4.0/daemon/main.cpp	2022-03-04 04:04:16.000000000 +0900
++++ icecc-1.4.0.mod/daemon/main.cpp	2022-09-11 12:34:23.454209308 +0900
+@@ -517,7 +517,7 @@
+             user_gid = getgid();
+         }
+ 
+-        envbasedir = "/var/tmp/icecc-envs";
++        envbasedir = "@TERMUX_PREFIX@/tmp/icecc-envs";
+         tcp_listen_fd = -1;
+         tcp_listen_local_fd = -1;
+         unix_listen_fd = -1;
+diff -uNr icecc-1.4.0/daemon/serve.cpp icecc-1.4.0.mod/daemon/serve.cpp
+--- icecc-1.4.0/daemon/serve.cpp	2022-03-04 04:04:16.000000000 +0900
++++ icecc-1.4.0.mod/daemon/serve.cpp	2022-09-11 12:35:45.322346404 +0900
+@@ -66,7 +66,7 @@
+ #endif
+ 
+ #ifndef _PATH_TMP
+-#define _PATH_TMP "/tmp"
++#define _PATH_TMP "@TERMUX_PREFIX@/tmp"
+ #endif
+ 
+ using namespace std;
+diff -uNr icecc-1.4.0/services/tempfile.c icecc-1.4.0.mod/services/tempfile.c
+--- icecc-1.4.0/services/tempfile.c	2022-03-04 04:04:16.000000000 +0900
++++ icecc-1.4.0.mod/services/tempfile.c	2022-09-11 12:35:45.322346404 +0900
+@@ -48,7 +48,7 @@
+ #include "exitcode.h"
+ 
+ #ifndef _PATH_TMP
+-#define _PATH_TMP "/tmp"
++#define _PATH_TMP "@TERMUX_PREFIX@/tmp"
+ #endif
+ 
+ 
