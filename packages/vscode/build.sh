@@ -19,6 +19,40 @@ termux_step_make_install() {
 	yarn cache clean
 }
 
+termux_step_post_make_install() {
+	(
+		# no hard links
+		IFS=$'\n'
+		abs_to_rel() {
+			python - <<-PYTHON
+				file_from = "$1".split("/")[1:]
+				file_to = "$2".split("/")[1:]
+				i = 0
+				while i < min(len(file_from), len(file_to)) and file_from[i] == file_to[i]:
+				  i += 1
+				print( "../" * ( len(file_from)  - 1 - i ) + "/".join(file_to[i:]) )
+			PYTHON
+		}
+		cd /
+		for HARDLINK in $(find $TERMUX_PREFIX -type f -links +1 | grep -v '^$')
+		do
+			for FILE in $(find $TERMUX_PREFIX -samefile "$HARDLINK" | grep -v '^$')
+			do
+				if [ "$HARDLINK" != "$FILE" ]
+				then
+					rm "$FILE"
+					# instead symlink
+					echo "running abs_to_rel $FILE $HARDLINK"
+					REL="$( abs_to_rel "$FILE" "$HARDLINK")"
+					echo "REL=$REL"
+					echo "symlinking $REL $FILE"
+					ln -s "$REL" "$FILE"
+				fi
+			done
+		done
+	)
+}
+
 termux_step_install_license() {
 	:
 }
