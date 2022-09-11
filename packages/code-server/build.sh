@@ -4,7 +4,7 @@ TERMUX_PKG_LICENSE="MIT"
 TERMUX_PKG_MAINTAINER="kawanakaiku"
 TERMUX_PKG_VERSION=4.7.0
 TERMUX_PKG_SRCURL=https://github.com/coder/code-server.git
-TERMUX_PKG_DEPENDS="nodejs-lts, libsecret"
+TERMUX_PKG_DEPENDS="nodejs-lts, libsecret, ripgrep"
 #TERMUX_PKG_BUILD_DEPENDS="yarn"
 
 termux_step_get_source() {
