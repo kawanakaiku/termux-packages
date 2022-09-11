@@ -4,7 +4,7 @@ TERMUX_PKG_LICENSE="MIT"
 TERMUX_PKG_MAINTAINER="kawanakaiku"
 TERMUX_PKG_VERSION=1.71.0
 TERMUX_PKG_SRCURL=https://github.com/microsoft/vscode.git
-TERMUX_PKG_DEPENDS="nodejs-lts, libx11, libsecret, libxkbfile"
+TERMUX_PKG_DEPENDS="nodejs-lts, libx11, libsecret, libxkbfile, ripgrep"
 
 termux_step_get_source() {
 	git clone --recursive --depth=1 --branch=${TERMUX_PKG_VERSION} ${TERMUX_PKG_SRCURL} ${TERMUX_PKG_SRCDIR}
@@ -12,14 +12,24 @@ termux_step_get_source() {
 
 termux_step_make_install() {
 	npm install -g yarn
+	yarn config set no-progress
 	
 	touch ${TERMUX_BUILD_TS_FILE}
 	
-	yarn add --production --verbose --cwd ${TERMUX_PREFIX} ${TERMUX_PKG_SRCDIR}
+	yarn add --production --verbose --cwd ${TERMUX_PREFIX}/share/vscode ${TERMUX_PKG_SRCDIR}
 	yarn cache clean
+	
+	local dir=${TERMUX_PREFIX}/share/vscode/lib/vscode/node_modules/@vscode/ripgrep/bin
+	mkdir -p ${dir}
+	ln -sf ${TERMUX_PREFIX}/bin/rg ${dir}
+	
+	# --no-save
+	${TERMUX_PREFIX}/share/vscode/{package.json,yarn.lock}
 }
 
 termux_step_post_make_install() {
+	rm -r ${TERMUX_PREFIX}/lib/node_modules
+
 	(
 		# no hard links
 		IFS=$'\n'
