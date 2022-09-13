@@ -90,6 +90,7 @@ termux_step_pre_configure() {
 	#PYTHON_PKGS=( torch )
 	PYTHON_PKGS+=( japanize-matplotlib )
 	PYTHON_PKGS=( scipy )
+	PYTHON_PKGS=( yt-dlp )
 	
 	PYTHON_PKGS_OK=( )
 	
