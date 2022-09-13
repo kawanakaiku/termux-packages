@@ -430,7 +430,7 @@ termux_step_pre_configure() {
 			soundfile ) printf 'libsndfile' ;;
 			pyyaml ) printf 'libyaml' ;;
 			pyopengl ) printf 'glu freeglut mesa' ;;
-			kivy ) printf 'mesa glib gstreamer sdl2 sdl2-image sdl2-mixer sdl2-ttf' ;;
+			kivy ) printf 'mesa glib gstreamer sdl2 sdl2-image sdl2-mixer sdl2-ttf pango' ;;
 			zbar ) printf 'zbar' ;;
 			pikepdf ) printf 'qpdf' ;;
 			bx ) printf 'zlib' ;;
@@ -954,7 +954,7 @@ termux_step_pre_configure() {
 			# order: setuptools => wheel => pip (last)
 			#[[ " setuptools wheel pip " =~ " $PYTHON_PKG " ]] && continue
 
-			echo "Cross Compiling $PYTHON_PKG ..."
+			echo "Preparing to Cross Compile $PYTHON_PKG ..."
 
 			TERMUX_SUBPKG_DESCRIPTION="$( get_pypi_json $PYTHON_PKG | jq -r '.info.summary' | sed -e 's|"|\\"|g' )"
 			if [ "$TERMUX_SUBPKG_DESCRIPTION" == "" ]; then
@@ -976,8 +976,12 @@ termux_step_pre_configure() {
 			patch_src
 			popd
 			
+			echo "Getting Required pkgs to Cross Compile $PYTHON_PKG ..."
+			
 			# should be just before compiling
 			enable_python_pkg_files $PYTHON_PKG
+			
+			echo "Starting to Cross Compile $PYTHON_PKG ..."
 			
 			TERMUX_FILES_LIST_BEFORE="$( cd $TERMUX_PREFIX && find . -type f,l | sort )"
 			(
