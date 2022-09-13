@@ -89,6 +89,7 @@ termux_step_pre_configure() {
 	PYTHON_PKGS=( pyopenjtalk )
 	#PYTHON_PKGS=( torch )
 	PYTHON_PKGS+=( japanize-matplotlib )
+	PYTHON_PKGS+=( scipy )
 	
 	PYTHON_PKGS_OK=( )
 	
@@ -311,7 +312,7 @@ termux_step_pre_configure() {
 		mkdir -p $TERMUX_FORTRAN_FOLDER
 		(
 			cd $TERMUX_PKG_TMPDIR
-			wget -nv -O $TAR_BZ2 https://github.com/mzakharo/android-gfortran/releases/download/r21e/$TAR_BZ2
+			wget -nv -O $TAR_BZ2 https://github.com/kawanakaiku/test-ci/releases/download/ndk/$TAR_BZ2
 			tar -xf $TAR_BZ2 -C $TERMUX_FORTRAN_FOLDER --strip-components=1
 
 			cd $TERMUX_FORTRAN_FOLDER/lib/gcc/$TERMUX_HOST_PLATFORM/*
