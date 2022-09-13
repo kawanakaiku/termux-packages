@@ -93,7 +93,7 @@ termux_step_pre_configure() {
 	PYTHON_PKGS+=( yt-dlp )
 	PYTHON_PKGS+=( seaborn )
 	PYTHON_PKGS+=( ipython )
-	PYTHON_PKGS+=( opencv-contrib-python )
+	PYTHON_PKGS=( opencv-contrib-python )
 	
 	PYTHON_PKGS_OK=( )
 	
@@ -439,7 +439,7 @@ termux_step_pre_configure() {
 			tesserocr ) printf 'tesseract leptonica' ;;
 			shapely ) printf 'libgeos' ;;
 			pillow ) printf 'freetype libimagequant libjpeg-turbo littlecms openjpeg libraqm libtiff libwebp libxcb zlib' ;;
-			opencv-contrib-python ) printf 'libjpeg-turbo libpng libprotobuf libtiff libwebp openjpeg openjpeg-tools zlib' ;;
+			opencv-contrib-python ) printf 'libjpeg-turbo libpng libprotobuf libtiff libwebp openjpeg openjpeg-tools zlib gtk3 harfbuzz gstreamer gst-plugins-base' ;;
 		esac
 	}
 	
