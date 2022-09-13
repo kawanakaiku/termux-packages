@@ -596,6 +596,8 @@ termux_step_pre_configure() {
 				termux_download http://www.qhull.org/download/qhull-2020-src-8.0.2.tgz qhull-2020-src-8.0.2.tgz b5c2d7eb833278881b952c8a52d20179eab87766b00b865000469a45c1838b7e
 				mkdir -p build
 				tar xf qhull-2020-src-8.0.2.tgz -C build
+				# version is 0.0.0
+				sed -i -e "s|^setup\(|setup(version='$(cd lib/matplotlib; python -c "from _version import version; print(version)")',|"
 				;;
 			pyaudio )
 				sed -i -e "s|'/usr/local/include', '/usr/include'|'$TERMUX_PREFIX/include'|" setup.py
@@ -846,7 +848,7 @@ termux_step_pre_configure() {
 		
 		local REQUIRES=$(
 		case $PYTHON_PKG in
-			matplotlib ) printf 'cycler kiwisolver' ;;
+			matplotlib ) printf 'cycler fonttools kiwisolver numpy packaging pillow pyparsing python-dateutil' ;;
 			japanize-matplotlib ) printf 'matplotlib' ;;
 			homeassistant ) printf 'sqlalchemy' ;;
 			pyopenjtalk )
