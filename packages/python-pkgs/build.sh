@@ -89,11 +89,11 @@ termux_step_pre_configure() {
 	#PYTHON_PKGS=( torch )
 	#PYTHON_PKGS=( pip wheel setuptools )
 	PYTHON_PKGS=( japanize-matplotlib )
-	PYTHON_PKGS+=( scipy )
 	PYTHON_PKGS+=( yt-dlp )
 	PYTHON_PKGS+=( seaborn )
 	PYTHON_PKGS+=( ipython )
 	PYTHON_PKGS+=( opencv-contrib-python )
+	PYTHON_PKGS=( scipy )
 	
 	PYTHON_PKGS_OK=( )
 	
