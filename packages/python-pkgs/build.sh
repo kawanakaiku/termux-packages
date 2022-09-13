@@ -216,7 +216,7 @@ termux_step_pre_configure() {
 		for PKG do
 			if grep -q "^$PKG$" <<< "$PKGS_ENABLE"; then
 				echo "disabling $PKG"
-				get_pkg_files $PKG | xargs -I@ mv /@ /@.disabling
+				get_pkg_files $PKG | xargs -I@ mv /@ /@.disabling || true
 				PKGS_ENABLE="$( echo "$PKGS_ENABLE" | grep -v "^$PKG$" )"
 				PKGS_DISABLE="$( echo "$PKGS_DISABLE" ; echo "$PKG" )"
 			fi
