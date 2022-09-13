@@ -93,7 +93,7 @@ termux_step_pre_configure() {
 	PYTHON_PKGS+=( yt-dlp )
 	PYTHON_PKGS+=( seaborn )
 	PYTHON_PKGS+=( ipython )
-	PYTHON_PKGS=( opencv-contrib-python )
+	PYTHON_PKGS+=( opencv-contrib-python )
 	
 	PYTHON_PKGS_OK=( )
 	
