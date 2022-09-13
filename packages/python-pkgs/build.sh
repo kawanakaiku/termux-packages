@@ -847,7 +847,7 @@ termux_step_pre_configure() {
 		local REQUIRES=$(
 		case $PYTHON_PKG in
 			matplotlib ) printf 'cycler kiwisolver' ;;
-			japanize_matplotlib ) printf 'matplotlib' ;;
+			japanize-matplotlib ) printf 'matplotlib' ;;
 			homeassistant ) printf 'sqlalchemy' ;;
 			pyopenjtalk )
 				# from setup.py
