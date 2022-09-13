@@ -312,7 +312,7 @@ termux_step_pre_configure() {
 		mkdir -p $TERMUX_FORTRAN_FOLDER
 		(
 			cd $TERMUX_PKG_TMPDIR
-			wget -nv -O $TAR_BZ2 https://github.com/kawanakaiku/test-ci/releases/download/ndk/$TAR_XZ
+			wget -nv -O $TAR_XZ https://github.com/kawanakaiku/test-ci/releases/download/ndk/$TAR_XZ
 			tar -xf $TAR_XZ -C $TERMUX_FORTRAN_FOLDER --strip-components=1
 
 			cd $TERMUX_FORTRAN_FOLDER/lib/gcc/$TERMUX_HOST_PLATFORM/*
