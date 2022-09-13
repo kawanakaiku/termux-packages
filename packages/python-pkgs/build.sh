@@ -80,7 +80,6 @@ termux_step_pre_configure() {
 	PYTHON_PKGS+=( numpy opencv-contrib-python scipy tqdm colorama scikit-learn scikit-image shapely yt-dlp pip beautifulsoup4 certifi demjson3 mechanize colorama cloudscraper lxml pandas cryptography pillow pyzmq pygame pynacl matplotlib uvloop )
 	PYTHON_PKGS+=( yt-dlp )
 	PYTHON_PKGS+=( matplotlib )
-	PYTHON_PKGS+=( pip wheel setuptools )
 	PYTHON_PKGS+=( h5py streamlink gallery-dl )
 	#PYTHON_PKGS+=( cmake )  # The C++ compiler does not support C++11 (e.g.  std::unique_ptr).
 	PYTHON_PKGS+=( notebook )
@@ -88,11 +87,12 @@ termux_step_pre_configure() {
 	PYTHON_PKGS+=( notebook )
 	PYTHON_PKGS+=( pyopenjtalk )
 	#PYTHON_PKGS=( torch )
+	PYTHON_PKGS=( pip wheel setuptools )
 	PYTHON_PKGS+=( japanize-matplotlib )
-	PYTHON_PKGS=( scipy )
+	PYTHON_PKGS+=( scipy )
 	PYTHON_PKGS+=( yt-dlp )
-	PYTHON_PKGS=( seaborn )
-	PYTHON_PKGS=( ipython )
+	PYTHON_PKGS+=( seaborn )
+	PYTHON_PKGS+=( ipython )
 	
 	PYTHON_PKGS_OK=( )
 	
@@ -954,15 +954,15 @@ termux_step_pre_configure() {
 				TERMUX_SUBPKG_DESCRIPTION="Python package $PYTHON_PKG"
 			fi
 			TERMUX_SUBPKG_VERSION="$( get_pypi_json $PYTHON_PKG | jq -r '.info.version' )"
-			TERMUX_SUBPKG_DEPENDS=( python $( to_pkgname "${PYTHON_PKG_REQUIRES[@]}" ) $( manage_depends $PYTHON_PKG ) )
-			TERMUX_SUBPKG_DEPENDS=( $( printf '%s\n' "${TERMUX_SUBPKG_DEPENDS[*]}" | sort | uniq ) )
-			TERMUX_SUBPKG_DEPENDS="$( echo "${TERMUX_SUBPKG_DEPENDS[*]}" | sed -e 's| |, |g' )"
 			
 			get_pip_src $PYTHON_PKG
-
+			
 			PYTHON_PKG_REQUIRES=( $( get_requires $PYTHON_PKG ) )
 			echo "PYTHON_PKG_REQUIRES='${PYTHON_PKG_REQUIRES[*]}'"
 			PYTHON_PKGS+=( "${PYTHON_PKG_REQUIRES[@]}" )
+			TERMUX_SUBPKG_DEPENDS=( python $( to_pkgname "${PYTHON_PKG_REQUIRES[@]}" ) $( manage_depends $PYTHON_PKG ) )
+			TERMUX_SUBPKG_DEPENDS=( $( printf '%s\n' "${TERMUX_SUBPKG_DEPENDS[*]}" | sort | uniq ) )
+			TERMUX_SUBPKG_DEPENDS="$( echo "${TERMUX_SUBPKG_DEPENDS[*]}" | sed -e 's| |, |g' )"
 
 			pushd $PYTHON_PKG
 			patch_src
