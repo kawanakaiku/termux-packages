@@ -308,12 +308,12 @@ termux_step_pre_configure() {
 			i686 ) ARCH=x86 ;;
 			* ) ARCH=$TERMUX_ARCH ;;
 		esac
-		local TAR_BZ2=gcc-$ARCH-linux-x86_64.tar.bz2
+		local TAR_XZ=gcc-$ARCH-linux-x86_64.tar.xz
 		mkdir -p $TERMUX_FORTRAN_FOLDER
 		(
 			cd $TERMUX_PKG_TMPDIR
-			wget -nv -O $TAR_BZ2 https://github.com/kawanakaiku/test-ci/releases/download/ndk/$TAR_BZ2
-			tar -xf $TAR_BZ2 -C $TERMUX_FORTRAN_FOLDER --strip-components=1
+			wget -nv -O $TAR_BZ2 https://github.com/kawanakaiku/test-ci/releases/download/ndk/$TAR_XZ
+			tar -xf $TAR_XZ -C $TERMUX_FORTRAN_FOLDER --strip-components=1
 
 			cd $TERMUX_FORTRAN_FOLDER/lib/gcc/$TERMUX_HOST_PLATFORM/*
 			for i in $TERMUX_STANDALONE_TOOLCHAIN/sysroot/usr/lib/$TERMUX_HOST_PLATFORM/$TERMUX_PKG_API_LEVEL/*; do
