@@ -89,7 +89,7 @@ termux_step_pre_configure() {
 	PYTHON_PKGS=( pyopenjtalk )
 	#PYTHON_PKGS=( torch )
 	PYTHON_PKGS+=( japanize-matplotlib )
-	PYTHON_PKGS+=( scipy )
+	PYTHON_PKGS=( scipy )
 	
 	PYTHON_PKGS_OK=( )
 	
