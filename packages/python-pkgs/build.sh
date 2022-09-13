@@ -193,7 +193,12 @@ termux_step_pre_configure() {
 		for PKG do
 			if grep -q "^$PKG$" <<< "$PKGS_DISABLE"; then
 				echo "enabling $PKG"
-				get_pkg_files $PKG | xargs -I@ mv /@.disabling /@
+				
+				# fails after buidling opencv-contrib-python
+				# mv: cannot stat '/./data/data/com.termux/files/usr/include/KHR/khrplatform.h': No such file or directory
+				# mv: cannot stat '/./data/data/com.termux/files/usr/include/GL/glext.h': No such file or directory
+				get_pkg_files $PKG | xargs -I@ mv /@.disabling /@ || true
+				
 				PKGS_ENABLE="$( echo "$PKGS_ENABLE" ; echo "$PKG" )"
 				PKGS_DISABLE="$( echo "$PKGS_DISABLE" | grep -v "^$PKG$" )"
 			elif ! grep -q "^$PKG$" <<< "$PKGS_ENABLE"; then
