@@ -32,7 +32,7 @@ termux_step_pre_configure() {
 	PYTHON_PKGS+=( beautifulsoup4 certifi demjson3 mechanize colorama cloudscraper )
 	PYTHON_PKGS+=( cffi )
 	PYTHON_PKGS+=( h5py )
-	#PYTHON_PKGS+=( jupyter )  conflicts with jupyter-core
+	#PYTHON_PKGS+=( jupyter )
 	#PYTHON_PKGS+=( biopython )
 	PYTHON_PKGS+=( matplotlib )
 	PYTHON_PKGS+=( pytest )
@@ -948,6 +948,9 @@ termux_step_pre_configure() {
 		local TERMUX_FILES_LIST_BEFORE TERMUX_FILES_LIST_AFTER
 
 		for PYTHON_PKG in "$@"; do
+		
+			# nbformat requires jupyter_core
+			PYTHON_PKG=${PYTHON_PKG//_/-}
 
 			[[ " ${PYTHON_PKGS_OK[*]} " =~ " $PYTHON_PKG " ]] && continue
 			
