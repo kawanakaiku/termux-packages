@@ -25,7 +25,7 @@ termux_step_pre_configure() {
 
 	local PYTHON_PKGS PYTHON_PKGS_OK PYTHON_PKG
 
-	PYTHON_PKGS=( pip asgiref numpy )
+	PYTHON_PKGS=( pyopengl pip asgiref numpy )
 	PYTHON_PKGS+=( yt-dlp streamlink gallery-dl )
 	PYTHON_PKGS+=( pytz python-dateutil tqdm )
 	PYTHON_PKGS+=( gmpy2 )
@@ -88,13 +88,13 @@ termux_step_pre_configure() {
 	PYTHON_PKGS+=( pyopenjtalk )
 	#PYTHON_PKGS=( torch )
 	#PYTHON_PKGS=( pip wheel setuptools )
-	PYTHON_PKGS=( japanize-matplotlib )
+	PYTHON_PKGS+=( japanize-matplotlib )
 	PYTHON_PKGS+=( yt-dlp )
 	PYTHON_PKGS+=( seaborn )
 	PYTHON_PKGS+=( ipython )
 	PYTHON_PKGS+=( opencv-contrib-python )
 	PYTHON_PKGS+=( scipy )
-	PYTHON_PKGS=( pycairo )
+	PYTHON_PKGS+=( pycairo )
 	
 	PYTHON_PKGS_OK=( )
 	
