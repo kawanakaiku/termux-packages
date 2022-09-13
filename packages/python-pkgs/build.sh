@@ -597,7 +597,7 @@ termux_step_pre_configure() {
 				mkdir -p build
 				tar xf qhull-2020-src-8.0.2.tgz -C build
 				# version is 0.0.0
-				sed -i -e "s|^setup(|setup(version='$(cd lib/matplotlib; python -c "from _version import version; print(version)")',|"
+				sed -i -e "s|^setup(|setup(version='$(cd lib/matplotlib; python -c "from _version import version; print(version)")',|" setup.py
 				;;
 			pyaudio )
 				sed -i -e "s|'/usr/local/include', '/usr/include'|'$TERMUX_PREFIX/include'|" setup.py
