@@ -439,7 +439,7 @@ termux_step_pre_configure() {
 			tesserocr ) printf 'tesseract leptonica' ;;
 			shapely ) printf 'libgeos' ;;
 			pillow ) printf 'freetype libimagequant libjpeg-turbo littlecms openjpeg libraqm libtiff libwebp libxcb zlib' ;;
-			opencv-contrib-python ) printf 'libjpeg-turbo libpng libprotobuf libtiff libwebp openjpeg openjpeg-tools zlib gtk2 gtk3 harfbuzz gstreamer gst-plugins-base' ;;
+			opencv-contrib-python ) printf 'libjpeg-turbo libpng libprotobuf libtiff libwebp openjpeg openjpeg-tools zlib gtk3 harfbuzz gst-plugins-base' ;;
 		esac
 	}
 	
