@@ -1,0 +1,28 @@
+diff -uNr psutil-5.9.2/psutil/_psutil_linux.c psutil-5.9.2.mod/psutil/_psutil_linux.c
+--- psutil-5.9.2/psutil/_psutil_linux.c	2022-09-02 19:06:38.000000000 +0900
++++ psutil-5.9.2.mod/psutil/_psutil_linux.c	2022-09-14 19:43:26.957767468 +0900
+@@ -417,7 +417,6 @@
+     int sock = 0;
+     int ret;
+     int duplex;
+-    __u32 uint_speed;
+     int speed;
+     struct ifreq ifr;
+     struct ethtool_cmd ethcmd;
+@@ -439,15 +438,7 @@
+ 
+     if (ret != -1) {
+         duplex = ethcmd.duplex;
+-        // speed is returned from ethtool as a __u32 ranging from 0 to INT_MAX
+-        // or SPEED_UNKNOWN (-1)
+-        uint_speed = ethtool_cmd_speed(&ethcmd);
+-        if (uint_speed == (__u32)SPEED_UNKNOWN || uint_speed > INT_MAX) {
+-            speed = 0;
+-        }
+-        else {
+-            speed = (int)uint_speed;
+-        }
++        speed = ethcmd.speed;
+     }
+     else {
+         if ((errno == EOPNOTSUPP) || (errno == EINVAL)) {
