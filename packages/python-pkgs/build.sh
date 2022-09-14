@@ -96,8 +96,9 @@ termux_step_pre_configure() {
 	PYTHON_PKGS+=( scipy )
 	PYTHON_PKGS+=( pycairo )
 	PYTHON_PKGS=( platformdirs )
+	PYTHON_PKGS=( platformdirs )
 	
-	PYTHON_PKGS_OK=( )
+	PYTHON_PKGS_OK=( psutil )
 	
 	# for accurate dependency
 	
@@ -584,8 +585,9 @@ termux_step_pre_configure() {
 		fi
 		
 		local f
-		for f in $TERMUX_PKG_BUILDER_DIR/${PYTHON_PKG}.patch_python; do
+		for f in $TERMUX_PKG_BUILDER_DIR/${PYTHON_PKG}_*.patch_python; do
 			if [ -f "$f" ]; then
+				echo "Applying patch $f"
 				sed \
 				-e "s%\@TERMUX_APP_PACKAGE\@%${TERMUX_APP_PACKAGE}%g" \
 				-e "s%\@TERMUX_BASE_DIR\@%${TERMUX_BASE_DIR}%g" \
