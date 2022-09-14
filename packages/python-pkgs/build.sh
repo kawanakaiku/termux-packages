@@ -948,9 +948,6 @@ termux_step_pre_configure() {
 		local TERMUX_FILES_LIST_BEFORE TERMUX_FILES_LIST_AFTER
 
 		for PYTHON_PKG in "$@"; do
-		
-			# nbformat requires jupyter_core
-			PYTHON_PKG=${PYTHON_PKG//_/-}
 
 			[[ " ${PYTHON_PKGS_OK[*]} " =~ " $PYTHON_PKG " ]] && continue
 			
@@ -969,6 +966,7 @@ termux_step_pre_configure() {
 			get_pip_src $PYTHON_PKG
 			
 			PYTHON_PKG_REQUIRES=( $( get_requires $PYTHON_PKG ) )
+			PYTHON_PKG_REQUIRES=( $( for pkg in ${PYTHON_PKG_REQUIRES[@]}; do echo ${pkg//_/-}; done ) )  # nbformat requires jupyter_core
 			echo "PYTHON_PKG_REQUIRES='${PYTHON_PKG_REQUIRES[*]}'"
 			PYTHON_PKGS+=( "${PYTHON_PKG_REQUIRES[@]}" )
 			TERMUX_SUBPKG_DEPENDS=( python $( to_pkgname "${PYTHON_PKG_REQUIRES[@]}" ) $( manage_depends $PYTHON_PKG ) )
