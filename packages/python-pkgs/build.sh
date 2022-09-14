@@ -25,7 +25,8 @@ termux_step_pre_configure() {
 
 	local PYTHON_PKGS PYTHON_PKGS_OK PYTHON_PKG
 
-	PYTHON_PKGS=( pyopengl pip asgiref numpy )
+	PYTHON_PKGS=(  )
+	PYTHON_PKGS+=( pyopengl pip asgiref numpy )
 	PYTHON_PKGS+=( yt-dlp streamlink gallery-dl )
 	PYTHON_PKGS+=( pytz python-dateutil tqdm )
 	PYTHON_PKGS+=( gmpy2 )
@@ -96,9 +97,9 @@ termux_step_pre_configure() {
 	PYTHON_PKGS+=( scipy )
 	PYTHON_PKGS+=( pycairo )
 	PYTHON_PKGS=( platformdirs )
-	PYTHON_PKGS=( platformdirs )
+	PYTHON_PKGS=( psutil )
 	
-	PYTHON_PKGS_OK=( psutil )
+	PYTHON_PKGS_OK=(  )
 	
 	# for accurate dependency
 	
