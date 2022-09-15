@@ -21,7 +21,7 @@ termux_step_pre_configure() {
 	unset RUSTFLAGS
 }
 
-termux_step_pre_configure() {
+termux_step_configure() {
 	python3 $TERMUX_PKG_SRCDIR/configure.py \
 		--host=x86_64-pc-linux-gnu \
 		--target=$TERMUX_HOST_PLATFORM \
