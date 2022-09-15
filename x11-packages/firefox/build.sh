@@ -20,5 +20,5 @@ termux_step_post_get_source() {
 	SH
 	chmod +x configure
 	
-	sed -i -e '/android-ndk.configure/d' build/moz.configure/toolchain.configure
+	#sed -i -e '/android-ndk.configure/d' build/moz.configure/toolchain.configure
 }
