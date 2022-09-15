@@ -11,6 +11,7 @@ TERMUX_PKG_EXTRA_CONFIGURE_ARGS="
 --host=x86_64-pc-linux-gnu
 --target=$TERMUX_HOST_PLATFORM
 --with-android-ndk=$NDK
+--with-android-toolchain=$TERMUX_STANDALONE_TOOLCHAIN
 "
 
 termux_step_post_get_source() {
