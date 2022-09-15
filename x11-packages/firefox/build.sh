@@ -26,4 +26,5 @@ termux_step_pre_configure() {
 	--with-android-ndk=$NDK
 	--with-android-toolchain=$TERMUX_STANDALONE_TOOLCHAIN
 	"
+	unset RUSTFLAGS
 }
