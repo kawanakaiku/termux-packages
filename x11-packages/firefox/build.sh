@@ -15,6 +15,7 @@ termux_step_post_get_source() {
 	chmod +x configure
 	
 	sed -i -e '/android-ndk.configure/d' build/moz.configure/toolchain.configure
+	sed -i -e '/extra_toolchain_flags,/d' build/moz.configure/compilers-util.configure
 }
 
 termux_step_pre_configure() {
