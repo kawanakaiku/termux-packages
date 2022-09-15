@@ -10,8 +10,6 @@ TERMUX_PKG_DEPENDS="at-spi2-atk, libcairo, dbus, dbus-glib, libffi, fontconfig, 
 TERMUX_PKG_EXTRA_CONFIGURE_ARGS="
 --host=x86_64-pc-linux-gnu
 --target=$TERMUX_HOST_PLATFORM
---with-android-ndk=$NDK
---with-android-toolchain=$TERMUX_STANDALONE_TOOLCHAIN
 "
 
 termux_step_post_get_source() {
@@ -21,4 +19,11 @@ termux_step_post_get_source() {
 	chmod +x configure
 	
 	#sed -i -e '/android-ndk.configure/d' build/moz.configure/toolchain.configure
+}
+
+termux_step_pre_configure() {
+	TERMUX_PKG_EXTRA_CONFIGURE_ARGS="
+	--with-android-ndk=$NDK
+	--with-android-toolchain=$TERMUX_STANDALONE_TOOLCHAIN
+	"
 }
