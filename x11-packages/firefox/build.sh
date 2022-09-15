@@ -9,13 +9,8 @@ TERMUX_PKG_DEPENDS="at-spi2-atk, libcairo, dbus, dbus-glib, libffi, fontconfig, 
 #TERMUX_PKG_BUILD_IN_SRC=true
 
 termux_step_post_get_source() {
-	cat <<-'SH' >configure
-	exec python3 $(dirname $0)/configure.py "$@"
-	SH
-	chmod +x configure
-	
 	sed -i -e '/android-ndk.configure/d' build/moz.configure/toolchain.configure
-	sed -i -e '/extra_toolchain_flags,/d' -e '/stlport_cppflags,/d' build/moz.configure/compilers-util.configure build/moz.configure/compilers-util.configure
+	sed -i -e '/extra_toolchain_flags,/d' -e '/stlport_cppflags,/d' build/moz.configure/compilers-util.configure build/moz.configure/toolchain.configure
 }
 
 termux_step_pre_configure() {
