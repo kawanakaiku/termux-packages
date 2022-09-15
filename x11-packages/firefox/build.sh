@@ -18,4 +18,6 @@ termux_step_post_get_source() {
 	exec python3 $(dirname $0)/configure.py "$@"
 	SH
 	chmod +x configure
+	
+	sed -i -e '/android-ndk.configure/d' build/moz.configure/toolchain.configure
 }
