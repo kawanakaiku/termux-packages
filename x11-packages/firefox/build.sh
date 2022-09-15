@@ -10,7 +10,7 @@ TERMUX_PKG_DEPENDS="at-spi2-atk, libcairo, dbus, dbus-glib, libffi, fontconfig, 
 
 termux_step_post_get_source() {
 	sed -i -e '/android-ndk.configure/d' build/moz.configure/toolchain.configure
-	sed -i -e '/extra_toolchain_flags,/d' -e '/stlport_cppflags,/d' build/moz.configure/compilers-util.configure build/moz.configure/toolchain.configure
+	sed -i -e '/extra_toolchain_flags,$/d' -e '/stlport_cppflags,$/d' -e '/android_platform,$/d' build/moz.configure/compilers-util.configure build/moz.configure/toolchain.configure
 }
 
 termux_step_pre_configure() {
