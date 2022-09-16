@@ -25,5 +25,5 @@ termux_step_configure() {
 		--host=x86_64-pc-linux-gnu \
 		--target=$TERMUX_HOST_PLATFORM \
 		--prefix=$TERMUX_PREFIX \
-		--disable-alsa
+		--enable-audio-backends=aaudio+opensl
 }
