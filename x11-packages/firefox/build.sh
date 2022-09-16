@@ -19,7 +19,7 @@ termux_step_pre_configure() {
 	sed -i -e 's|canonical_os = "Android"|canonical_os = "GNU"|' build/moz.configure/init.configure
 	
 	sed -i -e 's|die(|print("preventing to die:",|' toolkit/moz.configure
-	sed -i -e 's|default=audio_backends_default,|default=("aaudio","opensl",),|' toolkit/moz.configure
+	#sed -i -e 's|default=audio_backends_default,|default=("aaudio","opensl",),|' toolkit/moz.configure
 	sed -i -e 's|default=crashreporter_default,|default=False,|' toolkit/moz.configure
 }
 
@@ -29,5 +29,6 @@ termux_step_configure() {
 	python3 $TERMUX_PKG_SRCDIR/configure.py \
 		--host=x86_64-pc-linux-gnu \
 		--target=$TERMUX_HOST_PLATFORM \
-		--prefix=$TERMUX_PREFIX
+		--prefix=$TERMUX_PREFIX \
+		--enable-audio-backends=aaudio,opensl
 }
