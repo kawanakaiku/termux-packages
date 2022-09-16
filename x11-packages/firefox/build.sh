@@ -15,7 +15,11 @@ termux_step_pre_configure() {
 	#sed -i -e 's|"Android"|"_NO_TERMUX_"|g' $( grep -rl --include '*.configure' -e '"Android"' "$TERMUX_PKG_SRCDIR" )
 	#sed -i -e 's|\([^_]\)target.os == "Android"|\1False|g' -e 's|\([^_]\)target.os != "Android"|\1True|g' $( grep -rl --include '*.configure' -e '"Android"' "$TERMUX_PKG_SRCDIR" )
 	#sed -i -e '/=arm_option_defaults\./d' build/moz.configure/arm.configure
+	
 	sed -i -e 's|canonical_os = "Android"|canonical_os = "GNU"|' build/moz.configure/init.configure
+	
+	sed -i -e 's|die(|print("preventing to die:",|' toolkit/moz.configure
+	sed -i -e 's|default=crashreporter_default,|default=False,|' toolkit/moz.configure
 }
 
 termux_step_configure() {
@@ -25,5 +29,5 @@ termux_step_configure() {
 		--host=x86_64-pc-linux-gnu \
 		--target=$TERMUX_HOST_PLATFORM \
 		--prefix=$TERMUX_PREFIX \
-		--enable-audio-backends=aaudio
+		--enable-audio-backends=aaudio,open
 }
