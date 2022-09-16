@@ -19,7 +19,13 @@ termux_step_pre_configure() {
 	sed -i -e 's|canonical_os = "Android"|canonical_os = "GNU"|' build/moz.configure/init.configure
 	
 	sed -i -e 's|die(|log.error("preventing to die: ",|' toolkit/moz.configure
-	#sed -i -e 's|default=audio_backends_default,|default=("aaudio","opensl",),|' toolkit/moz.configure
+	
+	sed -i -e 's|default=enable_minify_default,|default=("properties", "js"),|' toolkit/moz.configure
+	sed -i -e 's|default=mozilla_official,|default=False,|' toolkit/moz.configure
+	sed -i -e 's|default=webspeech,|default=False,|' toolkit/moz.configure
+	sed -i -e 's|default=geckodriver_default,|default=False,|' toolkit/moz.configure
+	sed -i -e 's|default=default_wasm_sandboxing_libraries,|default=(),|' toolkit/moz.configure
+	sed -i -e 's|default=target_is_android,|default=False,|' toolkit/moz.configure
 	sed -i -e 's|default=crashreporter_default,|default=False,|' toolkit/moz.configure
 	sed -i -e 's|default=sandbox_default,|default=False,|' toolkit/moz.configure
 }
@@ -31,5 +37,6 @@ termux_step_configure() {
 		--host=x86_64-pc-linux-gnu \
 		--target=$TERMUX_HOST_PLATFORM \
 		--prefix=$TERMUX_PREFIX \
-		--enable-audio-backends=aaudio,opensl
+		--enable-audio-backends=aaudio,opensl \
+		--enable-alsa=False
 }
