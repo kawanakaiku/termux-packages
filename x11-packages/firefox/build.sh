@@ -8,13 +8,17 @@ TERMUX_PKG_SHA256=2fca320b537741ee0307c3a4e8535e8782a299049691aa3571e15707d3582f
 TERMUX_PKG_DEPENDS="at-spi2-atk, libcairo, dbus, dbus-glib, libffi, fontconfig, freetype, gdk-pixbuf, glib, gtk3, harfbuzz, pango, libx11, libxcb, libxcomposite, libxcursor, libxdamage, libxext, libxfixes, libxi, libxrandr, libxrender, libxtst"
 #TERMUX_PKG_BUILD_IN_SRC=true
 
-termux_step_post_get_source() {
+_termux_step_post_get_source() {
 	sed -i -e '/android-ndk.configure/d' build/moz.configure/toolchain.configure
 	sed -i -e '/extra_toolchain_flags,$/d' -e '/stlport_cppflags,$/d' -e '/android_platform,$/d' build/moz.configure/compilers-util.configure build/moz.configure/toolchain.configure
 }
 
 termux_step_pre_configure() {
 	unset RUSTFLAGS
+	
+	find "$TERMUX_PKG_SRCDIR" -name '*.configure' | \
+		xargs -n 1 sed -i \
+		-e 's|\([^_]\)target\.os|\1"Linux"|g'
 }
 
 termux_step_configure() {
