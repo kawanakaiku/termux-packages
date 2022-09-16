@@ -37,10 +37,11 @@ termux_step_pre_configure() {
 	sed -i -e 's|default=sandbox_default,|default=False,|' toolkit/moz.configure  # 3026
 	
 	termux_setup_rust
+	sed -i -e "s|find_candidate(candidates)|'$CARGO_TARGET_NAME'|" build/moz.configure/rust.configure
 }
 
 termux_step_configure() {
-	#unset RUSTFLAGS
+	unset RUSTFLAGS
 	export PKG_CONFIG=$TERMUX_STANDALONE_TOOLCHAIN/bin/pkg-config
 		
 	python3 $TERMUX_PKG_SRCDIR/configure.py \
