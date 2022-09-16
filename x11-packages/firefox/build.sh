@@ -47,7 +47,7 @@ termux_step_pre_configure() {
 	export PKG_CONFIG=$TERMUX_STANDALONE_TOOLCHAIN/bin/pkg-config
 	
 	sed -i -e 's|if sysroot.path:|if False:|' build/moz.configure/toolchain.configure
-	sed -i -e 's|flags = flags or \[\]|flags = flags or []; flags = flags + os.getenv("CFLAGS").split() + os.getenv("CXXFLAGS").split() + os.getenv("LDFLAGS").split()]|' build/moz.configure/util.configure
+	sed -i -e 's|flags = flags or \[\]|flags = flags or []; flags = flags + os.getenv("CFLAGS").split() + os.getenv("CXXFLAGS").split() + os.getenv("LDFLAGS").split()|' build/moz.configure/util.configure
 }
 
 termux_step_configure() {
