@@ -16,7 +16,7 @@ _termux_step_post_get_source() {
 termux_step_pre_configure() {
 	unset RUSTFLAGS
 	
-	sed -i '1s|^|target.os="Linux"\n|' build/moz.configure/init.configure
+	sed -i 's/\(target = help_host_target | real_target\)/\1\ntarget.os = "Linux"/' build/moz.configure/init.configure
 	#xargs -n 1 sed -i -e 's|"Android"|"_NO_TERMUX_Android"|g' $( grep -rl --include '*.configure' -e '"Android"' "$TERMUX_PKG_SRCDIR" )
 	#sed -i -e '/=arm_option_defaults\./d' build/moz.configure/arm.configure
 }
