@@ -18,6 +18,7 @@ termux_step_pre_configure() {
 	
 	find "$TERMUX_PKG_SRCDIR" -type f -name '*.configure' | \
 		xargs -n 1 sed -i \
+		-e '/@depends(target\.os)/d' \
 		-e 's|\([^_]\)target\.os|\1"Linux"|g'
 }
 
