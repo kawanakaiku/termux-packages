@@ -40,10 +40,11 @@ termux_step_pre_configure() {
 	sed -i -e "s|rustc_target = find_candidate(candidates)|rustc_target = '$CARGO_TARGET_NAME'|" build/moz.configure/rust.configure
 	sed -i -e '/RUSTFLAGS/d' build/moz.configure/rust.configure
 	#unset RUSTFLAGS
+	cargo install --target x86_64-unknown-linux-gnu cbindgen
+	
+	termux_setup_nodejs
 	
 	export PKG_CONFIG=$TERMUX_STANDALONE_TOOLCHAIN/bin/pkg-config
-	
-	cargo install --target x86_64-unknown-linux-gnu cbindgen
 }
 
 termux_step_configure() {
