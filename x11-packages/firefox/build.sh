@@ -45,6 +45,10 @@ termux_step_pre_configure() {
 	termux_setup_nodejs
 	
 	export PKG_CONFIG=$TERMUX_STANDALONE_TOOLCHAIN/bin/pkg-config
+	
+	export CC="$(which $CC) $CFLAGS"
+	export CXX="$(which $CXX) $CXXFLAGS"
+	export LD="$(which $LD) $LDFLAGS"
 }
 
 termux_step_configure() {
