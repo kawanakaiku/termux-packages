@@ -48,7 +48,7 @@ termux_step_pre_configure() {
 	
 	sed -i -e 's|if sysroot.path:|if False:|' build/moz.configure/toolchain.configure
 	sed -i -e 's|flags = flags or \[\]|flags = flags or []; flags = flags + os.getenv("CFLAGS", "").split() + os.getenv("CXXFLAGS", "").split() + os.getenv("LDFLAGS", "").split()|' build/moz.configure/util.configure
-	sed -i -e 's|if not android_sysroot:|if True:|' build/moz.configure/android-ndk.configure
+	sed -i -e 's|\$target|__no_termux__|' build/autoconf/android.m4
 }
 
 termux_step_configure() {
