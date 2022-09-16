@@ -11,9 +11,10 @@ TERMUX_PKG_SHA256=2fca320b537741ee0307c3a4e8535e8782a299049691aa3571e15707d3582f
 termux_step_pre_configure() {
 	unset RUSTFLAGS
 	
+	sed -i -e 's|"Android",|"_NO_TERMUX_Android",|'
 	#sed -i 's/\(target = help_host_target | real_target\)/\1\ntarget.os = "Linux"/' build/moz.configure/init.configure
-	xargs -n 1 sed -i -e 's|"Android"|"_NO_TERMUX_Android"|g' build/moz.configure/toolchain.configure
-	#xargs -n 1 sed -i -e 's|"Android"|"_NO_TERMUX_Android"|g' $( grep -rl --include '*.configure' -e '"Android"' "$TERMUX_PKG_SRCDIR" )
+	#xargs -n 1 sed -i -e 's|"Android"|"_NO_TERMUX_Android"|g' build/moz.configure/toolchain.configure
+	xargs -n 1 sed -i -e 's|"Android"|"_NO_TERMUX_Android"|g' $( grep -rl --include '*.configure' -e '"Android"' "$TERMUX_PKG_SRCDIR" )
 	#sed -i -e '/=arm_option_defaults\./d' build/moz.configure/arm.configure
 }
 
