@@ -20,21 +20,25 @@ termux_step_pre_configure() {
 	
 	sed -i -e 's|die(|log.error("preventing to die: ",|' toolkit/moz.configure
 	
-	#sed -i -e 's|default=enable_minify_default,|default=("properties", "js"),|' toolkit/moz.configure
-	#sed -i -e 's|default=mozilla_official,|default=False,|' toolkit/moz.configure
-	#sed -i -e 's|default=webspeech,|default=False,|' toolkit/moz.configure
-	#sed -i -e 's|default=geckodriver_default,|default=False,|' toolkit/moz.configure
-	#sed -i -e 's|default=default_wasm_sandboxing_libraries,|default=(),|' toolkit/moz.configure
-	#sed -i -e 's|default=target_is_android,|default=False,|' toolkit/moz.configure
-	#sed -i -e 's|default=crashreporter_default,|default=False,|' toolkit/moz.configure
-	#sed -i -e 's|default=sandbox_default,|default=False,|' toolkit/moz.configure
+	sed -i -e 's|default=dmd_default,|default=False,|' toolkit/moz.configure  # 152
+	sed -i -e 's|is_android and not debug and not is_nightly|True|' toolkit/moz.configure  # 863
+	sed -i -e 's|default=mozilla_official,|default=False,|' toolkit/moz.configure  # 959
+	sed -i -e 's|reporting and is_nightly|False|' toolkit/moz.configure  # 971
+	sed -i -e 's|default=webspeech,|default=False,|' toolkit/moz.configure  # 1096
+	sed -i -e 's|return milestone\.is_nightly|return False|' toolkit/moz.configure  # 1113 1677
+	sed -i -e 's|default=geckodriver_default,|default=False,|' toolkit/moz.configure  # 1259
+	sed -i -e 's|if debug:|if False:|' toolkit/moz.configure  # 1810 1831
+	sed -i -e 's|if milestone\.is_nightly:|if False:|' toolkit/moz.configure  # 2538 2552
+	sed -i -e 's|default=target_is_android,|default=False,|' toolkit/moz.configure  # 2683
+	sed -i -e 's|default=crashreporter_default,|default=False,|' toolkit/moz.configure  # 2844
+	sed -i -e 's|default=moz_debug,|default=False,|' toolkit/moz.configure  # 2978
+	sed -i -e 's|default=sandbox_default,|default=False,|' toolkit/moz.configure  # 3026
 }
 
 termux_step_configure() {
 	unset RUSTFLAGS
 	export PKG_CONFIG=$TERMUX_STANDALONE_TOOLCHAIN/bin/pkg-config
 	export \
-		MOZ_TELEMETRY_REPORTING=False \
 		MOZ_REQUIRE_SIGNING=False \
 		MOZ_LINKER=True
 		
@@ -42,21 +46,8 @@ termux_step_configure() {
 		--host=x86_64-pc-linux-gnu \
 		--target=$TERMUX_HOST_PLATFORM \
 		--prefix=$TERMUX_PREFIX \
-		\
-		--enable-dmd=False \
+		 \
 		--enable-audio-backends=aaudio,opensl \
-		--enable-alsa=False \
 		--enable-minify=properties,js \
-		--enable-webspeechtestbackend=False \
-		--enable-skia-pdf=True \
-		--enable-geckodriver=False \
-		--allow-addon-sideload=True \
-		--enable-extensions-webidl-bindings=True \
-		--enable-reflow-perf=False \
-		--enable-layout-debugger=False \
-		--with-wasm-sandboxed-libraries= \
-		--enable-mobile-optimize=True \
-		--enable-crashreporter=False \
-		--enable-logrefcnt=False \
-		--enable-sandbox=False
+		--with-wasm-sandboxed-libraries=
 }
