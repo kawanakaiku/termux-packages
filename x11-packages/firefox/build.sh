@@ -38,12 +38,13 @@ termux_step_pre_configure() {
 	
 	termux_setup_rust
 	sed -i -e "s|find_candidate(candidates)|'$CARGO_TARGET_NAME'|" build/moz.configure/rust.configure
+	sed -i -e '/RUSTFLAGS/d' build/moz.configure/rust.configure
+	#unset RUSTFLAGS
+	
+	export PKG_CONFIG=$TERMUX_STANDALONE_TOOLCHAIN/bin/pkg-config
 }
 
 termux_step_configure() {
-	unset RUSTFLAGS
-	export PKG_CONFIG=$TERMUX_STANDALONE_TOOLCHAIN/bin/pkg-config
-		
 	python3 $TERMUX_PKG_SRCDIR/configure.py \
 		--host=x86_64-pc-linux-gnu \
 		--target=$TERMUX_HOST_PLATFORM \
