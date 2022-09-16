@@ -43,7 +43,7 @@ termux_step_pre_configure() {
 	
 	export PKG_CONFIG=$TERMUX_STANDALONE_TOOLCHAIN/bin/pkg-config
 	
-	cargo install cbindgen
+	cargo install --target x86_64-unknown-linux-gnu cbindgen
 }
 
 termux_step_configure() {
