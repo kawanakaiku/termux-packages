@@ -18,7 +18,7 @@ termux_step_pre_configure() {
 	
 	sed -i -e 's|canonical_os = "Android"|canonical_os = "GNU"|' build/moz.configure/init.configure
 	
-	sed -i -e 's|die(|log.error("preventing to die: ",|' toolkit/moz.configure
+	sed -i -e 's|die(|log.error("preventing to die: ",|' toolkit/moz.configure build/moz.configure/rust.configure
 	
 	sed -i -e 's|default=dmd_default,|default=False,|' toolkit/moz.configure  # 152
 	sed -i -e 's|alsa_enabled or midir_linux_support|False|' toolkit/moz.configure  # 326
