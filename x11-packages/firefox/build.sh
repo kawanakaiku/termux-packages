@@ -9,8 +9,6 @@ TERMUX_PKG_DEPENDS="at-spi2-atk, libcairo, dbus, dbus-glib, libffi, fontconfig, 
 #TERMUX_PKG_BUILD_IN_SRC=true
 
 termux_step_pre_configure() {
-	#unset RUSTFLAGS
-	
 	sed -i -e 's|"Android",|"Android","_NO_TERMUX_Android",|' python/mozbuild/mozbuild/configure/constants.py
 	#sed -i 's/\(target = help_host_target | real_target\)/\1\ntarget.os = "Linux"/' build/moz.configure/init.configure
 	#xargs -n 1 sed -i -e 's|"Android"|"_NO_TERMUX_Android"|g' build/moz.configure/toolchain.configure
@@ -20,6 +18,7 @@ termux_step_pre_configure() {
 }
 
 termux_step_configure() {
+	unset RUSTFLAGS
 	export PKG_CONFIG=$( which pkg-config )
 	python3 $TERMUX_PKG_SRCDIR/configure.py \
 		--host=x86_64-pc-linux-gnu \
