@@ -43,11 +43,7 @@ termux_step_pre_configure() {
 	
 	export PKG_CONFIG=$TERMUX_STANDALONE_TOOLCHAIN/bin/pkg-config
 	
-	(
-		unset sudo
-		sudo apt-get update
-		sudo apt-get install -y --no-install-recommends cbindgen
-	)
+	cargo install cbindgen
 }
 
 termux_step_configure() {
