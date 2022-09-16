@@ -12,8 +12,8 @@ termux_step_pre_configure() {
 	sed -i -e 's|"Android",|"Android","_NO_TERMUX_Android",|' python/mozbuild/mozbuild/configure/constants.py
 	#sed -i 's/\(target = help_host_target | real_target\)/\1\ntarget.os = "Linux"/' build/moz.configure/init.configure
 	#xargs -n 1 sed -i -e 's|"Android"|"_NO_TERMUX_Android"|g' build/moz.configure/toolchain.configure
-	#xargs -n 1 sed -i -e 's|"Android"|"_NO_TERMUX_Android"|g' $( grep -rl --include '*.configure' -e '"Android"' "$TERMUX_PKG_SRCDIR" )
-	xargs -n 1 sed -i -e 's|\([^_]\)target.os == "Android"|\1False|g' $( grep -rl --include '*.configure' -e '"Android"' "$TERMUX_PKG_SRCDIR" )
+	sed -i -e 's|"Android"|"_NO_TERMUX_Android"|g' $( grep -rl --include '*.configure' -e '"Android"' "$TERMUX_PKG_SRCDIR" )
+	#sed -i -e 's|\([^_]\)target.os == "Android"|\1False|g' -e 's|\([^_]\)target.os != "Android"|\1True|g' $( grep -rl --include '*.configure' -e '"Android"' "$TERMUX_PKG_SRCDIR" )
 	#sed -i -e '/=arm_option_defaults\./d' build/moz.configure/arm.configure
 }
 
