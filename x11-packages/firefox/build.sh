@@ -16,7 +16,7 @@ _termux_step_post_get_source() {
 termux_step_pre_configure() {
 	unset RUSTFLAGS
 	
-	find "$TERMUX_PKG_SRCDIR" -name '*.configure' | \
+	find "$TERMUX_PKG_SRCDIR" -type f -name '*.configure' | \
 		xargs -n 1 sed -i \
 		-e 's|\([^_]\)target\.os|\1"Linux"|g'
 }
