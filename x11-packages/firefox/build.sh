@@ -16,9 +16,8 @@ _termux_step_post_get_source() {
 termux_step_pre_configure() {
 	unset RUSTFLAGS
 	
-	find "$TERMUX_PKG_SRCDIR" -type f -name '*.configure' | \
-		xargs -n 1 sed -i \
-		-e 's|"Android"|"_NO_TERMUX_Android"|g'
+	sed -i '1s|^|target.os="Linux"\n|' build/moz.configure/init.configure
+	#xargs -n 1 sed -i -e 's|"Android"|"_NO_TERMUX_Android"|g' $( grep -rl --include '*.configure' -e '"Android"' "$TERMUX_PKG_SRCDIR" )
 	#sed -i -e '/=arm_option_defaults\./d' build/moz.configure/arm.configure
 }
 
