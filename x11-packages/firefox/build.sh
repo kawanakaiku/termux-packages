@@ -27,6 +27,8 @@ termux_step_pre_configure() {
 	sed -i -e 's|default=webspeech,|default=False,|' toolkit/moz.configure  # 1096
 	sed -i -e 's|return milestone\.is_nightly|return False|' toolkit/moz.configure  # 1113 1677
 	sed -i -e 's|default=geckodriver_default,|default=False,|' toolkit/moz.configure  # 1259
+	sed -i -e 's|default=geckodriver_default,|default=False,|' toolkit/moz.configure  # 1259
+	sed -i -e 's|milestone\.is_esr|True|' toolkit/moz.configure  # 1626 1662
 	sed -i -e 's|if debug:|if False:|' toolkit/moz.configure  # 1810 1831
 	sed -i -e 's|if milestone\.is_nightly:|if False:|' toolkit/moz.configure  # 2538 2552
 	sed -i -e 's|default=target_is_android,|default=False,|' toolkit/moz.configure  # 2683
@@ -38,9 +40,6 @@ termux_step_pre_configure() {
 termux_step_configure() {
 	unset RUSTFLAGS
 	export PKG_CONFIG=$TERMUX_STANDALONE_TOOLCHAIN/bin/pkg-config
-	export \
-		MOZ_REQUIRE_SIGNING=False \
-		MOZ_LINKER=True
 		
 	python3 $TERMUX_PKG_SRCDIR/configure.py \
 		--host=x86_64-pc-linux-gnu \
