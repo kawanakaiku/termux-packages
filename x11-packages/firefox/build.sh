@@ -40,7 +40,7 @@ termux_step_pre_configure() {
 }
 
 termux_step_configure() {
-	unset RUSTFLAGS
+	#unset RUSTFLAGS
 	export PKG_CONFIG=$TERMUX_STANDALONE_TOOLCHAIN/bin/pkg-config
 		
 	python3 $TERMUX_PKG_SRCDIR/configure.py \
