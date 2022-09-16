@@ -35,6 +35,8 @@ termux_step_pre_configure() {
 	sed -i -e 's|default=crashreporter_default,|default=False,|' toolkit/moz.configure  # 2844
 	sed -i -e 's|default=moz_debug,|default=False,|' toolkit/moz.configure  # 2978
 	sed -i -e 's|default=sandbox_default,|default=False,|' toolkit/moz.configure  # 3026
+	
+	termux_setup_rust
 }
 
 termux_step_configure() {
