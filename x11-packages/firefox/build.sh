@@ -47,6 +47,5 @@ termux_step_configure() {
 		--prefix=$TERMUX_PREFIX \
 		 \
 		--enable-audio-backends=aaudio,opensl \
-		--enable-minify=properties,js \
-		--with-wasm-sandboxed-libraries=
+		--enable-minify=properties,js
 }
