@@ -18,6 +18,8 @@ termux_step_pre_configure() {
 	
 	sed -i -e 's|canonical_os = "Android"|canonical_os = "GNU"|' build/moz.configure/init.configure
 	
+	sed -i -e "s|target_sysroot = sysroot(target)|target_sysroot = '$TERMUX_PREFIX'|" build/moz.configure/toolchain.configure
+	
 	sed -i -e 's|die(|log.error("preventing to die: ",|' toolkit/moz.configure build/moz.configure/rust.configure
 	
 	sed -i -e 's|default=dmd_default,|default=False,|' toolkit/moz.configure  # 152
