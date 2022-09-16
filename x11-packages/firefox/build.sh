@@ -18,9 +18,10 @@ termux_step_pre_configure() {
 	
 	sed -i -e 's|canonical_os = "Android"|canonical_os = "GNU"|' build/moz.configure/init.configure
 	
-	sed -i -e 's|die(|print("preventing to die:",|' toolkit/moz.configure
+	sed -i -e 's|die(|log.error("preventing to die: ",|' toolkit/moz.configure
 	#sed -i -e 's|default=audio_backends_default,|default=("aaudio","opensl",),|' toolkit/moz.configure
 	sed -i -e 's|default=crashreporter_default,|default=False,|' toolkit/moz.configure
+	sed -i -e 's|default=sandbox_default,|default=False,|' toolkit/moz.configure
 }
 
 termux_step_configure() {
