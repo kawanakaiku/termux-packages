@@ -9,12 +9,13 @@ TERMUX_PKG_DEPENDS="at-spi2-atk, libcairo, dbus, dbus-glib, libffi, fontconfig, 
 #TERMUX_PKG_BUILD_IN_SRC=true
 
 termux_step_pre_configure() {
-	sed -i -e 's|"Android",|"Android","_NO_TERMUX_",|' python/mozbuild/mozbuild/configure/constants.py
+	#sed -i -e 's|"Android",|"Android","_NO_TERMUX_",|' python/mozbuild/mozbuild/configure/constants.py
 	#sed -i 's/\(target = help_host_target | real_target\)/\1\ntarget.os = "Linux"/' build/moz.configure/init.configure
 	#xargs -n 1 sed -i -e 's|"Android"|"_NO_TERMUX_Android"|g' build/moz.configure/toolchain.configure
-	sed -i -e 's|"Android"|"_NO_TERMUX_"|g' $( grep -rl --include '*.configure' -e '"Android"' "$TERMUX_PKG_SRCDIR" )
+	#sed -i -e 's|"Android"|"_NO_TERMUX_"|g' $( grep -rl --include '*.configure' -e '"Android"' "$TERMUX_PKG_SRCDIR" )
 	#sed -i -e 's|\([^_]\)target.os == "Android"|\1False|g' -e 's|\([^_]\)target.os != "Android"|\1True|g' $( grep -rl --include '*.configure' -e '"Android"' "$TERMUX_PKG_SRCDIR" )
 	#sed -i -e '/=arm_option_defaults\./d' build/moz.configure/arm.configure
+	sed -i -e 's|canonical_os = "Android"|canonical_os = "GNU"|' build/moz.configure/init.configure
 }
 
 termux_step_configure() {
