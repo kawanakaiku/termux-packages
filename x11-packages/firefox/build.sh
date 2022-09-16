@@ -20,6 +20,7 @@ termux_step_pre_configure() {
 		xargs -n 1 sed -i \
 		-e '/@depends(target\.os)/d' \
 		-e 's|\([^_]\)target\.os|\1"Linux"|g'
+	sed -i -e '/=arm_option_defaults\./d' build/moz.configure/arm.configure
 }
 
 termux_step_configure() {
