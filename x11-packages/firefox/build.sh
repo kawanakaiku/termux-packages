@@ -21,7 +21,7 @@ termux_step_pre_configure() {
 	sed -i -e 's|die(|log.error("preventing to die: ",|' toolkit/moz.configure
 	
 	sed -i -e 's|default=dmd_default,|default=False,|' toolkit/moz.configure  # 152
-	sed -i -e 's|when=enable_alsa_or_midir_linux_support|when=False|' toolkit/moz.configure  # 329
+	sed -i -e 's|alsa_enabled or midir_linux_support|False|' toolkit/moz.configure  # 326
 	sed -i -e 's|is_android and not debug and not is_nightly|True|' toolkit/moz.configure  # 863
 	sed -i -e 's|default=mozilla_official,|default=False,|' toolkit/moz.configure  # 959
 	sed -i -e 's|reporting and is_nightly|False|' toolkit/moz.configure  # 971
