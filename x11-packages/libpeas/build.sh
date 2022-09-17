@@ -26,5 +26,5 @@ _termux_step_post_make_install() {
 }
 
 termux_step_post_make_install() {
-    rm $TERMUX_PREFIX/bin/g-ir-scanner
+    rm -r /usr
 }
