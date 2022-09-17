@@ -6,7 +6,7 @@ TERMUX_PKG_VERSION=7.0
 TERMUX_PKG_SRCURL=http://archive.ubuntu.com/ubuntu/pool/universe/m/midori/midori_${TERMUX_PKG_VERSION}.orig.tar.gz
 TERMUX_PKG_SHA256=905b2cf721f1dbfbee974c56b328870f462bd68c1dd27dc6890ce852aeb4cd39
 TERMUX_PKG_DEPENDS="libsqlite, glib, libsoup, gtk3, webkit2gtk, gcr, libpeas"
-TERMUX_PKG_BUILD_DEPENDS="valac, intltool"
+TERMUX_PKG_BUILD_DEPENDS="valac, intltool, libexpat"
 
 termux_step_pre_configure() {
 	for pkg in ${TERMUX_PKG_DEPENDS//,/} ${TERMUX_PKG_BUILD_DEPENDS//,/}; do
