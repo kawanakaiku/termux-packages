@@ -9,5 +9,5 @@ TERMUX_PKG_DEPENDS="libsqlite, glib, libsoup, gtk3, webkit2gtk, gcr, libpeas"
 TERMUX_PKG_BUILD_DEPENDS="valac, intltool"
 
 termux_step_pre_configure() {
-	apt install -y valac
+	apt install -y ${TERMUX_PKG_DEPENDS//,/} ${TERMUX_PKG_BUILD_DEPENDS//,/}
 }
