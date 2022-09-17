@@ -55,6 +55,9 @@ termux_step_pre_configure() {
 	
 	# /home/builder/.termux-build/firefox/src/nsprpub/pr/src/pthreads/ptsynch.c:960:7: error: redefinition of 'semun'
 	sed -i -e 's|defined(DARWIN)|defined(__ANDROID__)|' nsprpub/pr/src/pthreads/ptsynch.c
+	
+	# failed to open file `/home/builder/.termux-build/firefox/src/third_party/rust/libloading/tests/nagisa32.dll`
+	sed -i -E 's|,"[a-z0-9/]+\.dll":"[a-z0-9]+"||g' third_party/rust/libloading/.cargo-checksum.json
 }
 
 termux_step_configure() {
