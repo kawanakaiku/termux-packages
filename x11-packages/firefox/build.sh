@@ -80,9 +80,13 @@ termux_step_pre_configure() {
 	sed -i -e 's|ATK_RELATION_LINKS_TO|ATK_RELATION_FLOWS_TO|' accessible/base/RelationTypeMap.h
 	
 	(
-		TARGET='"Android"'
+		to='"Android"'
 		for str in 'CONFIG\["OS_TARGET"\]' "CONFIG\['OS_TARGET'\]"; do
-			sed -i -e "s|$str|$TARGET|g" $( grep -rl -e "$str" "$TERMUX_PKG_SRCDIR" )
+			sed -i -e "s|$str|$to|g" $( grep -rl -e "$str" "$TERMUX_PKG_SRCDIR" )
+		done
+		to='"'$NDK'"'
+		for str in "CONFIG\['ANDROID_NDK'\]"; do
+			sed -i -e "s|$str|$to|g" $( grep -rl -e "$str" "$TERMUX_PKG_SRCDIR" )
 		done
 	)
 }
