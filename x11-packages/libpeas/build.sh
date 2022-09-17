@@ -7,6 +7,7 @@ TERMUX_PKG_VERSION=1.32.0
 TERMUX_PKG_SRCURL=http://archive.ubuntu.com/ubuntu/pool/main/libp/libpeas/libpeas_${TERMUX_PKG_VERSION}.orig.tar.xz
 TERMUX_PKG_SHA256=d625520fa02e8977029b246ae439bc218968965f1e82d612208b713f1dcc3d0e
 TERMUX_PKG_DEPENDS="gobject-introspection, glib, gtk3"
+TERMUX_PKG_BUILD_DEPENDS="binutils"
 
 _termux_step_pre_configure() {
 	# OSError: [Errno 8] Exec format error: '/data/data/com.termux/files/usr/bin/g-ir-scanner'
@@ -21,11 +22,6 @@ termux_step_pre_configure() {
 	wget -nv https://github.com/kawanakaiku/test-ci/releases/download/src/gir-1.0.zip
 	mkdir -p /usr/share/gir-1.0
 	unzip -q gir-1.0.zip -d /usr/share/gir-1.0
-	
-	# FileNotFoundError: [Errno 2] No such file or directory: 'ldd'
-	export LD=ld
-	
-	env
 }
 
 _termux_step_post_make_install() {
