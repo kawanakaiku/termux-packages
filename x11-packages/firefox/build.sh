@@ -67,7 +67,7 @@ termux_step_pre_configure() {
 	
 	#error[E0432]: unresolved imports `backend::MidiInputPort`, `backend::MidiInput`, `backend::MidiInputConnection`, `backend::MidiOutputPort`, `backend::MidiOutput`, `backend::MidiOutputConnection`
 	echo > third_party/rust/midir/src/common.rs
-	sed -i -e "s|2cab2e987428522ca601544b516b64b858859730fbd1be0e53c828e82025319d|$( sha256sum third_party/rust/midir/src/common.rs )|" third_party/rust/midir/.cargo-checksum.json
+	sed -i -e "s|2cab2e987428522ca601544b516b64b858859730fbd1be0e53c828e82025319d|$( sha256sum third_party/rust/midir/src/common.rs | awk '{print $1}' )|" third_party/rust/midir/.cargo-checksum.json
 }
 
 termux_step_configure() {
