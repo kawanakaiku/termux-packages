@@ -8,6 +8,9 @@ TERMUX_PKG_SHA256=d625520fa02e8977029b246ae439bc218968965f1e82d612208b713f1dcc3d
 TERMUX_PKG_DEPENDS="gobject-introspection, glib, gtk3"
 
 termux_step_pre_configure() {
-  # OSError: [Errno 8] Exec format error: '/data/data/com.termux/files/usr/bin/g-ir-scanner'
-  rm /data/data/com.termux/files/usr/bin/*
+	# OSError: [Errno 8] Exec format error: '/data/data/com.termux/files/usr/bin/g-ir-scanner'
+	cat <<-SH >$TERMUX_PREFIX/bin/g-ir-scanner
+	#!$TERMUX_PREFIX/bin/sh
+	exit 0
+	SH
 }
