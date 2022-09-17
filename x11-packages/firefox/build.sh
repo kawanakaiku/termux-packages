@@ -72,10 +72,7 @@ termux_step_configure() {
 	echo env start
 	env | sort
 	echo env end
-	
-	export CC="$(which $CC) $TARGET_CFLAGS"
-	export CXX="$(which $CXX) $TARGET_CFLAGS"
-	export LD="$(which $LD) $LDFLAGS"
+
 	PATH="(
 		bindir=/tmp/bin
 		for var in CC CXX LD; do
