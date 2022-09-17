@@ -64,15 +64,15 @@ termux_step_pre_configure() {
 	
 	# failed to open file `/home/builder/.termux-build/firefox/src/third_party/rust/libloading/tests/nagisa32.dll`
 	sed -i -E 's|,"[a-z0-9/]+\.dll":"[a-z0-9]+"||g' third_party/rust/libloading/.cargo-checksum.json
+	
+	# mozbuild.configure.options.InvalidOptionError: * takes 1 value
+	sed -i -e "s|rustc_target = find_candidate(candidates)|rustc_target = '$CARGO_TARGET_NAME'|" build/moz.configure/rust.configure
+	sed -i -e '/RUSTFLAGS/d' build/moz.configure/rust.configure
 }
 
 termux_step_configure() {
 	#export MOZBUILD_STATE_PATH=$TERMUX_PKG_BUILDDIR/.mozbuild
 	#yes 1 | $TERMUX_PKG_SRCDIR/mach bootstrap
-	
-	# mozbuild.configure.options.InvalidOptionError: * takes 1 value
-	sed -i -e "s|rustc_target = find_candidate(candidates)|rustc_target = '$CARGO_TARGET_NAME'|" build/moz.configure/rust.configure
-	sed -i -e '/RUSTFLAGS/d' build/moz.configure/rust.configure
 	
 	echo env start
 	env | sort
