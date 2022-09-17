@@ -64,6 +64,9 @@ termux_step_pre_configure() {
 	# mozbuild.configure.options.InvalidOptionError: * takes 1 value
 	sed -i -e "s|rustc_target = find_candidate(candidates)|rustc_target = '$CARGO_TARGET_NAME'|" build/moz.configure/rust.configure
 	sed -i -e '/RUSTFLAGS/d' build/moz.configure/rust.configure
+	
+	#error[E0432]: unresolved imports `backend::MidiInputPort`, `backend::MidiInput`, `backend::MidiInputConnection`, `backend::MidiOutputPort`, `backend::MidiOutput`, `backend::MidiOutputConnection`
+	echo > third_party/rust/midir/src/common.rs
 }
 
 termux_step_configure() {
