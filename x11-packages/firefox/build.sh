@@ -38,9 +38,6 @@ termux_step_pre_configure() {
 	
 	termux_setup_rust
 	
-	# mozbuild.configure.options.InvalidOptionError: * takes 1 value
-	sed -i -e "s|rustc_target = find_candidate(candidates)|rustc_target = '$CARGO_TARGET_NAME'|" build/moz.configure/rust.configure
-	sed -i -e '/RUSTFLAGS/d' build/moz.configure/rust.configure
 	#unset RUSTFLAGS
 	cargo install --target x86_64-unknown-linux-gnu cbindgen
 	
@@ -72,6 +69,10 @@ termux_step_pre_configure() {
 termux_step_configure() {
 	#export MOZBUILD_STATE_PATH=$TERMUX_PKG_BUILDDIR/.mozbuild
 	#yes 1 | $TERMUX_PKG_SRCDIR/mach bootstrap
+	
+	# mozbuild.configure.options.InvalidOptionError: * takes 1 value
+	sed -i -e "s|rustc_target = find_candidate(candidates)|rustc_target = '$CARGO_TARGET_NAME'|" build/moz.configure/rust.configure
+	sed -i -e '/RUSTFLAGS/d' build/moz.configure/rust.configure
 	
 	echo env start
 	env | sort
