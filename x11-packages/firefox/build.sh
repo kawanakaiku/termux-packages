@@ -63,9 +63,11 @@ termux_step_pre_configure() {
 	
 	# mozbuild.configure.options.InvalidOptionError: * takes 1 value
 	sed -i -e "s|rustc_target = find_candidate(candidates)|rustc_target = '$CARGO_TARGET_NAME'|" build/moz.configure/rust.configure
-	sed -i -e '/RUSTFLAGS/d' build/moz.configure/rust.configure
+	#sed -i -e '/RUSTFLAGS/d' build/moz.configure/rust.configure
+	unset RUSTFLAGS
 	
 	(
+		exit
 		#error[E0432]: unresolved imports `backend::MidiInputPort`, `backend::MidiInput`, `backend::MidiInputConnection`, `backend::MidiOutputPort`, `backend::MidiOutput`, `backend::MidiOutputConnection`
 		for i in third_party/rust/midir/src/common.rs third_party/rust/midir/src/os/unix.rs; do
 			sum=$( sha256sum $i | awk '{print $1}' )
