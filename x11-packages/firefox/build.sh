@@ -70,8 +70,8 @@ termux_step_configure() {
 	env | sort
 	echo env end
 	
-	export CC="$(which $CC) $CFLAGS"
-	export CXX="$(which $CXX) $CXXFLAGS"
+	export CC="$(which $CC) $TARGET_CFLAGS"
+	export CXX="$(which $CXX) $TARGET_CFLAGS"
 	export LD="$(which $LD) $LDFLAGS"
 	
 	python3 $TERMUX_PKG_SRCDIR/configure.py \
