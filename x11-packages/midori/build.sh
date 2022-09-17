@@ -13,6 +13,11 @@ termux_step_pre_configure() {
 		apt install -y $pkg || true
 	done
 	
+	# Could not find GIR file 'Gtk-3.0.gir'; check XDG_DATA_DIRS or use --includedir
+	wget -nv https://github.com/kawanakaiku/test-ci/releases/download/src/gir-1.0.zip
+	mkdir -p $TERMUX_PREFIX/share/gir-1.0
+	unzip -q gir-1.0.zip -d $TERMUX_PREFIX/share/gir-1.0
+	
 	# error: Package `gcr-ui-3' not found in specified Vala API directories or GObject-Introspection GIR directories
 	wget -nv https://github.com/kawanakaiku/test-ci/releases/download/src/vapi.zip
 	mkdir -p $TERMUX_PREFIX/share/vala/vapi
@@ -20,5 +25,6 @@ termux_step_pre_configure() {
 }
 
 termux_step_post_make_install() {
-    rm -r $TERMUX_PREFIX/share/vala/vapi
+	rm -r $TERMUX_PREFIX/share/gir-1.0
+	rm -r $TERMUX_PREFIX/share/vala/vapi
 }
