@@ -63,11 +63,9 @@ termux_step_pre_configure() {
 	
 	# mozbuild.configure.options.InvalidOptionError: * takes 1 value
 	sed -i -e "s|rustc_target = find_candidate(candidates)|rustc_target = '$CARGO_TARGET_NAME'|" build/moz.configure/rust.configure
-	#sed -i -e '/RUSTFLAGS/d' build/moz.configure/rust.configure
-	unset RUSTFLAGS
+	sed -i -e '/RUSTFLAGS/d' build/moz.configure/rust.configure
 	
 	(
-		exit
 		#error[E0432]: unresolved imports `backend::MidiInputPort`, `backend::MidiInput`, `backend::MidiInputConnection`, `backend::MidiOutputPort`, `backend::MidiOutput`, `backend::MidiOutputConnection`
 		for i in third_party/rust/midir/src/common.rs third_party/rust/midir/src/os/unix.rs; do
 			sum=$( sha256sum $i | awk '{print $1}' )
@@ -77,6 +75,9 @@ termux_step_pre_configure() {
 		# error[E0432]: unresolved imports `midir::MidiInput`, `midir::MidiInputConnection`, `midir::MidiInputPort`, `midir::MidiOutput`, `midir::MidiOutputConnection`, `midir::MidiOutputPort`
 		echo > dom/midi/midir_impl/src/lib.rs
 	)
+	
+	# /home/builder/.termux-build/firefox/src/accessible/base/RelationTypeMap.h:89:36: error: use of undeclared identifier 'ATK_RELATION_LINKS_TO'; did you mean 'ATK_RELATION_FLOWS_TO'?
+	sed -i -e 's|ATK_RELATION_LINKS_TO|ATK_RELATION_FLOWS_TO|' accessible/base/RelationTypeMap.h
 }
 
 termux_step_configure() {
