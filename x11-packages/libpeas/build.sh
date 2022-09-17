@@ -22,6 +22,9 @@ termux_step_pre_configure() {
 	wget -nv https://github.com/kawanakaiku/test-ci/releases/download/src/gir-1.0.zip
 	mkdir -p /usr/share/gir-1.0
 	unzip -q gir-1.0.zip -d /usr/share/gir-1.0
+	
+	# Could not find GIR file 'GIRepository-2.0.gir'; check XDG_DATA_DIRS or use --includedir
+	export XDG_DATA_DIRS=/usr/share/gir-1.0
 }
 
 _termux_step_post_make_install() {
