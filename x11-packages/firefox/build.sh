@@ -55,6 +55,10 @@ termux_step_pre_configure() {
 	export HOST_CXX=g++
 	export HOST_LD=ld
 	
+	# fatal error: 'glib-object.h' file not found
+	TARGET_CFLAGS+=" -I/data/data/com.termux/files/usr/include/glib-2.0 -I/data/data/com.termux/files/usr/lib/glib-2.0/include -I/data/data/com.termux/files/usr/include"
+	LDFLAGS+=" -L/data/data/com.termux/files/usr/lib -lglib-2.0"
+	
 	# File listed in FINAL_TARGET_FILES does not exist: /home/builder/.termux-build/firefox/src/toolkit/mozapps/update/tests/data/complete.exe
 	sed -i -e '/\.exe",$/d' toolkit/mozapps/update/tests/moz.build
 	
