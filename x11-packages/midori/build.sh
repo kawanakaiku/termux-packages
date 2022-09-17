@@ -18,3 +18,7 @@ termux_step_pre_configure() {
 	mkdir -p $TERMUX_PREFIX/share/vala/vapi
 	unzip -n -q gir-1.0.zip -d $TERMUX_PREFIX/share/vala/vapi
 }
+
+termux_step_post_make_install() {
+    rm -r $TERMUX_PREFIX/share/vala/vapi
+}
