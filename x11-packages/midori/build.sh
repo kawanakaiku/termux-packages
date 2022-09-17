@@ -10,6 +10,6 @@ TERMUX_PKG_BUILD_DEPENDS="valac, intltool"
 
 termux_step_pre_configure() {
 	for pkg in ${TERMUX_PKG_DEPENDS//,/} ${TERMUX_PKG_BUILD_DEPENDS//,/}; do
-		apt install -y $pkg
+		apt install -y $pkg || true
 	done
 }
