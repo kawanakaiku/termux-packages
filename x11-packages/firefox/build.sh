@@ -99,6 +99,7 @@ termux_step_configure() {
 		done
 		echo $bindir
 	):$PATH"
+	unset TARGET_CFLAGS LDFLAGS
 	
 	python3 $TERMUX_PKG_SRCDIR/configure.py \
 		--host=x86_64-pc-linux-gnu \
