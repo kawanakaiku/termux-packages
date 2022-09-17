@@ -47,8 +47,10 @@ termux_step_pre_configure() {
 	export PKG_CONFIG=$TERMUX_STANDALONE_TOOLCHAIN/bin/pkg-config
 	
 	sed -i -e 's|if sysroot.path:|if False:|' build/moz.configure/toolchain.configure
-	sed -i -e 's|flags = flags or \[\]|flags = flags or []; flags = flags + os.getenv("CFLAGS", "").split() + os.getenv("CXXFLAGS", "").split() + os.getenv("LDFLAGS", "").split()|' build/moz.configure/util.configure
 	sed -i -e 's|\$target|__no_termux__|' build/autoconf/android.m4
+	#sed -i -e 's|flags = flags or \[\]|flags = flags or []; flags = flags + os.getenv("CFLAGS", "").split() + os.getenv("CXXFLAGS", "").split() + os.getenv("LDFLAGS", "").split()|' build/moz.configure/util.configure
+	export HOST_CC=gcc
+	export HOST_CXX=g++
 	
 	# File listed in FINAL_TARGET_FILES does not exist: /home/builder/.termux-build/firefox/src/toolkit/mozapps/update/tests/data/complete.exe
 	sed -i -e '/\.exe",$/d' toolkit/mozapps/update/tests/moz.build
