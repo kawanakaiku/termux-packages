@@ -7,3 +7,7 @@ TERMUX_PKG_SRCURL=http://archive.ubuntu.com/ubuntu/pool/universe/m/midori/midori
 TERMUX_PKG_SHA256=905b2cf721f1dbfbee974c56b328870f462bd68c1dd27dc6890ce852aeb4cd39
 TERMUX_PKG_DEPENDS="libsqlite, glib, libsoup, gtk3, webkit2gtk, gcr, libpeas"
 TERMUX_PKG_BUILD_DEPENDS="valac, intltool"
+
+termux_step_pre_configure() {
+	apt install -y valac
+}
