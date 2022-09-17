@@ -12,4 +12,9 @@ termux_step_pre_configure() {
 	for pkg in ${TERMUX_PKG_DEPENDS//,/} ${TERMUX_PKG_BUILD_DEPENDS//,/}; do
 		apt install -y $pkg || true
 	done
+	
+	# error: Package `gcr-ui-3' not found in specified Vala API directories or GObject-Introspection GIR directories
+	wget -nv https://github.com/kawanakaiku/test-ci/releases/download/src/vapi.zip
+	mkdir -p $TERMUX_PREFIX/share/vala/vapi
+	unzip -n -q gir-1.0.zip -d $TERMUX_PREFIX/share/vala/vapi
 }
