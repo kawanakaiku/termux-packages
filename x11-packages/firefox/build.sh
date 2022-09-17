@@ -66,6 +66,14 @@ termux_step_configure() {
 	#export MOZBUILD_STATE_PATH=$TERMUX_PKG_BUILDDIR/.mozbuild
 	#yes 1 | $TERMUX_PKG_SRCDIR/mach bootstrap
 	
+	echo env start
+	env | sort
+	echo env end
+	
+	export CC="$(which $CC) $CFLAGS"
+	export CXX="$(which $CXX) $CXXFLAGS"
+	export LD="$(which $LD) $LDFLAGS"
+	
 	python3 $TERMUX_PKG_SRCDIR/configure.py \
 		--host=x86_64-pc-linux-gnu \
 		--target=$TERMUX_HOST_PLATFORM \
