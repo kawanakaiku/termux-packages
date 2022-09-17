@@ -24,6 +24,8 @@ termux_step_pre_configure() {
 	
 	# FileNotFoundError: [Errno 2] No such file or directory: 'ldd'
 	export LD=ld
+	
+	env
 }
 
 _termux_step_post_make_install() {
