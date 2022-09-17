@@ -73,7 +73,7 @@ termux_step_configure() {
 	env | sort
 	echo env end
 
-	PATH="(
+	PATH="$(
 		bindir=/tmp/bin
 		for var in CC CXX LD; do
 			EXE=( eval "echo \$$var" )
