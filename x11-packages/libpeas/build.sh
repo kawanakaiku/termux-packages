@@ -30,4 +30,5 @@ _termux_step_post_make_install() {
 
 termux_step_post_make_install() {
     rm -r $TERMUX_PREFIX/share/gir-1.0
+    find $TERMUX_PREFIX -type d -name __pycache__ | xargs rm -rf
 }
