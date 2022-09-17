@@ -76,8 +76,8 @@ termux_step_configure() {
 	PATH="$(
 		bindir=/tmp/bin
 		for var in CC CXX LD; do
-			EXE=( eval "echo \$$var" )
-			ABS=( which $EXE )
+			EXE=$( eval "echo \$$var" )
+			ABS=$( which $EXE )
 			NEW=$bindir/$EXE
 			case $var in
 				C* ) FLAGS="$TARGET_CFLAGS" ;;
