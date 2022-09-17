@@ -21,6 +21,9 @@ termux_step_pre_configure() {
 	wget -nv https://github.com/kawanakaiku/test-ci/releases/download/src/gir-1.0.zip
 	mkdir -p /usr/share/gir-1.0
 	unzip -q gir-1.0.zip -d /usr/share/gir-1.0
+	
+	# FileNotFoundError: [Errno 2] No such file or directory: 'ldd'
+	export LD=ld
 }
 
 _termux_step_post_make_install() {
