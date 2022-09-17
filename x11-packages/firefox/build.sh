@@ -80,6 +80,7 @@ termux_step_configure() {
 
 	PATH="$(
 		bindir=/tmp/bin
+		mkdir -p $bindir
 		for var in CC CXX LD; do
 			EXE=$( eval "echo \$$var" )
 			ABS=$( which $EXE )
