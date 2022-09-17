@@ -83,7 +83,7 @@ termux_step_configure() {
 				C* ) FLAGS="$TARGET_CFLAGS" ;;
 				LD ) FLAGS="$LDFLAGS" ;;
 			esac
-			cat <<SH >$NEW
+			cat <<-SH >$NEW
 			#!/usr/bin/sh
 			exec $ABS $FLAGS "\$@"
 			SH
