@@ -18,8 +18,9 @@ _termux_step_pre_configure() {
 
 termux_step_pre_configure() {
 	# Couldn't find include 'GObject-2.0.gir'
-	wget -nv https://github.com/kawanakaiku/test-ci/releases/download/src/gir-1.0.7z
-	7z x gir-1.0.7z -o/usr/share/gir-1.0
+	wget -nv https://github.com/kawanakaiku/test-ci/releases/download/src/gir-1.0.zip
+	mkdir -p /usr/share/gir-1.0
+	unzip -q gir-1.0.zip -p /usr/share/gir-1.0
 }
 
 _termux_step_post_make_install() {
