@@ -18,9 +18,14 @@ _termux_step_pre_configure() {
 
 termux_step_pre_configure() {
 	# Couldn't find include 'GObject-2.0.gir'
-	command sudo apt-get install -y --no-install-recommends libgirepository1.0-dev
+	wget -nv -O libgirepository1.0-dev.deb http://archive.ubuntu.com/ubuntu/pool/main/g/gobject-introspection/libgirepository1.0-dev_1.72.0-1_amd64.deb
+	dpkg -x libgirepository1.0-dev.deb /
 }
 
 _termux_step_post_make_install() {
+    rm $TERMUX_PREFIX/bin/g-ir-scanner
+}
+
+termux_step_post_make_install() {
     rm $TERMUX_PREFIX/bin/g-ir-scanner
 }
