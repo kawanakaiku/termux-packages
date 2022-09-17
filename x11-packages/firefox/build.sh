@@ -52,6 +52,9 @@ termux_step_pre_configure() {
 	
 	# File listed in FINAL_TARGET_FILES does not exist: /home/builder/.termux-build/firefox/src/toolkit/mozapps/update/tests/data/complete.exe
 	sed -i -e '/\.exe",$/d' toolkit/mozapps/update/tests/moz.build
+	
+	# /home/builder/.termux-build/firefox/src/nsprpub/pr/src/pthreads/ptsynch.c:960:7: error: redefinition of 'semun'
+	sed -i -e 's|defined(DARWIN)|defined(__ANDROID__)|' nsprpub/pr/src/pthreads/ptsynch.c
 }
 
 termux_step_configure() {
