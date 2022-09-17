@@ -72,6 +72,8 @@ termux_step_pre_configure() {
 			echo > $i
 			sed -i -e "s|$sum|$( sha256sum $i | awk '{print $1}' )|" third_party/rust/midir/.cargo-checksum.json
 		done
+		# error[E0432]: unresolved imports `midir::MidiInput`, `midir::MidiInputConnection`, `midir::MidiInputPort`, `midir::MidiOutput`, `midir::MidiOutputConnection`, `midir::MidiOutputPort`
+		echo > dom/midi/midir_impl/src/lib.rs
 	)
 }
 
