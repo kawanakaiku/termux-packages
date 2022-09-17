@@ -52,10 +52,6 @@ termux_step_pre_configure() {
 	export HOST_CXX=g++
 	export HOST_LD=ld
 	
-	# fatal error: 'glib-object.h' file not found
-	TARGET_CFLAGS+=" -I/data/data/com.termux/files/usr/include/glib-2.0 -I/data/data/com.termux/files/usr/lib/glib-2.0/include -I/data/data/com.termux/files/usr/include"
-	LDFLAGS+=" -L/data/data/com.termux/files/usr/lib -lglib-2.0"
-	
 	# File listed in FINAL_TARGET_FILES does not exist: /home/builder/.termux-build/firefox/src/toolkit/mozapps/update/tests/data/complete.exe
 	sed -i -e '/\.exe",$/d' toolkit/mozapps/update/tests/moz.build
 	
@@ -73,6 +69,12 @@ termux_step_pre_configure() {
 termux_step_configure() {
 	#export MOZBUILD_STATE_PATH=$TERMUX_PKG_BUILDDIR/.mozbuild
 	#yes 1 | $TERMUX_PKG_SRCDIR/mach bootstrap
+	
+	# fatal error: 'glib-object.h' file not found
+	# ( for i in libandroid-sysv-semaphore at-spi2-atk libcairo dbus dbus-glib libffi fontconfig freetype gdk-pixbuf glib gtk3 harfbuzz pango libice libsm libx11 libxcb libxcomposite libxcursor libxdamage libxext libxfixes libxi libxrandr libxrender libxtst; do apt-file show $i; done ) | grep '\.pc$' | awk '{print $2}' | xargs -n1 basename | sed 's|\.pc$||' | xargs pkg-config --cflags
+	# ( for i in libandroid-sysv-semaphore at-spi2-atk libcairo dbus dbus-glib libffi fontconfig freetype gdk-pixbuf glib gtk3 harfbuzz pango libice libsm libx11 libxcb libxcomposite libxcursor libxdamage libxext libxfixes libxi libxrandr libxrender libxtst; do apt-file show $i; done ) | grep '\.pc$' | awk '{print $2}' | xargs -n1 basename | sed 's|\.pc$||' | xargs pkg-config --libs
+	TARGET_CFLAGS+=" -pthread -I/data/data/com.termux/files/usr/include/at-spi2-atk/2.0 -I/data/data/com.termux/files/usr/include/at-spi-2.0 -I/data/data/com.termux/files/usr/include/cairo -I/data/data/com.termux/files/usr/include/dbus-1.0 -I/data/data/com.termux/files/usr/lib/dbus-1.0/include -I/data/data/com.termux/files/usr/include -I/data/data/com.termux/files/usr/include/gail-3.0 -I/data/data/com.termux/files/usr/include/gtk-3.0 -I/data/data/com.termux/files/usr/include/gtk-3.0/unix-print -I/data/data/com.termux/files/usr/include/gtk-3.0 -I/data/data/com.termux/files/usr/include/gio-unix-2.0 -I/data/data/com.termux/files/usr/include -I/data/data/com.termux/files/usr/include/cairo -I/data/data/com.termux/files/usr/include -I/data/data/com.termux/files/usr/include/atk-1.0 -I/data/data/com.termux/files/usr/include/cairo -I/data/data/com.termux/files/usr/include/gdk-pixbuf-2.0 -I/data/data/com.termux/files/usr/include -I/data/data/com.termux/files/usr/include/harfbuzz -I/data/data/com.termux/files/usr/include -I/data/data/com.termux/files/usr/include/harfbuzz -I/data/data/com.termux/files/usr/include/pango-1.0 -I/data/data/com.termux/files/usr/include -I/data/data/com.termux/files/usr/include/fribidi -I/data/data/com.termux/files/usr/include/cairo -I/data/data/com.termux/files/usr/include/pixman-1 -I/data/data/com.termux/files/usr/include -I/data/data/com.termux/files/usr/include/harfbuzz -I/data/data/com.termux/files/usr/include -I/data/data/com.termux/files/usr/include/glib-2.0 -I/data/data/com.termux/files/usr/lib/glib-2.0/include -I/data/data/com.termux/files/usr/include -I/data/data/com.termux/files/usr/include/libxml2 -I/data/data/com.termux/files/usr/include/freetype2 -I/data/data/com.termux/files/usr/include/libpng16 -I/data/data/com.termux/files/usr/include "
+	LDFLAGS+=" -L/data/data/com.termux/files/usr/lib -latk-bridge-2.0 -latspi -lz -lpng16 -lz -ldbus-glib-1 -ldbus-1 -lffi -Wl,--export-dynamic -lgmodule-2.0 -pthread -lgthread-2.0 -pthread -lgailutil-3 -lgdk-3 -lgtk-3 -lgdk-3 -latk-1.0 -lcairo-gobject -lgdk_pixbuf-2.0 -lgio-2.0 -lharfbuzz-gobject -lharfbuzz-icu -lharfbuzz-subset -lpangocairo-1.0 -lcairo -lpangoxft-1.0 -lpangoft2-1.0 -lpango-1.0 -lgobject-2.0 -lglib-2.0 -lharfbuzz -lfontconfig -lfreetype -lXft -lICE -lSM -lX11-xcb -lxcb-composite -lxcb-damage -lxcb-dpms -lxcb-dri2 -lxcb-dri3 -lxcb-glx -lxcb-present -lxcb-randr -lxcb-record -lxcb-render -lxcb-res -lxcb-screensaver -lxcb-shape -lxcb-shm -lxcb-sync -lxcb-xf86dri -lxcb-xfixes -lxcb-xinerama -lxcb-xinput -lxcb-xkb -lxcb-xtest -lxcb-xv -lxcb-xvmc -lxcb -lXcomposite -lXcursor -lXdamage -lXext -lXfixes -lXi -lXrandr -lXrender -lX11 -lXtst "
 	
 	echo env start
 	env | sort
