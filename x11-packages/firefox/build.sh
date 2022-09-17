@@ -78,6 +78,13 @@ termux_step_pre_configure() {
 	
 	# /home/builder/.termux-build/firefox/src/accessible/base/RelationTypeMap.h:89:36: error: use of undeclared identifier 'ATK_RELATION_LINKS_TO'; did you mean 'ATK_RELATION_FLOWS_TO'?
 	sed -i -e 's|ATK_RELATION_LINKS_TO|ATK_RELATION_FLOWS_TO|' accessible/base/RelationTypeMap.h
+	
+	(
+		TARGET='"Android"'
+		for str in 'CONFIG\["OS_TARGET"\]' "CONFIG\['OS_TARGET'\]"; do
+			sed -i -e "s|$str|$TARGET|g" $( grep -rl -e "$str" "$TERMUX_PKG_SRCDIR" )
+		done
+	)
 }
 
 termux_step_configure() {
