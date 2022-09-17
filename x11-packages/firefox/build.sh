@@ -37,6 +37,8 @@ termux_step_pre_configure() {
 	sed -i -e 's|default=sandbox_default,|default=False,|' toolkit/moz.configure  # 3026
 	
 	termux_setup_rust
+	
+	# mozbuild.configure.options.InvalidOptionError: * takes 1 value
 	sed -i -e "s|rustc_target = find_candidate(candidates)|rustc_target = '$CARGO_TARGET_NAME'|" build/moz.configure/rust.configure
 	sed -i -e '/RUSTFLAGS/d' build/moz.configure/rust.configure
 	#unset RUSTFLAGS
@@ -51,6 +53,7 @@ termux_step_pre_configure() {
 	#sed -i -e 's|flags = flags or \[\]|flags = flags or []; flags = flags + os.getenv("CFLAGS", "").split() + os.getenv("CXXFLAGS", "").split() + os.getenv("LDFLAGS", "").split()|' build/moz.configure/util.configure
 	export HOST_CC=gcc
 	export HOST_CXX=g++
+	export HOST_LD=ld
 	
 	# File listed in FINAL_TARGET_FILES does not exist: /home/builder/.termux-build/firefox/src/toolkit/mozapps/update/tests/data/complete.exe
 	sed -i -e '/\.exe",$/d' toolkit/mozapps/update/tests/moz.build
@@ -73,6 +76,24 @@ termux_step_configure() {
 	export CC="$(which $CC) $TARGET_CFLAGS"
 	export CXX="$(which $CXX) $TARGET_CFLAGS"
 	export LD="$(which $LD) $LDFLAGS"
+	PATH="(
+		bindir=/tmp/bin
+		for var in CC CXX LD; do
+			EXE=( eval "echo \$$var" )
+			ABS=( which $EXE )
+			NEW=$bindir/$EXE
+			case $var in
+				C* ) FLAGS="$TARGET_CFLAGS" ;;
+				LD ) FLAGS="$LDFLAGS" ;;
+			esac
+			cat <<SH >$NEW
+			#!/usr/bin/sh
+			exec $ABS $FLAGS "\$@"
+			SH
+			chmod +x $NEW
+		done
+		echo $bindir
+	):$PATH"
 	
 	python3 $TERMUX_PKG_SRCDIR/configure.py \
 		--host=x86_64-pc-linux-gnu \
