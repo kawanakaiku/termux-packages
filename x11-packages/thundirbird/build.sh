@@ -8,6 +8,7 @@ TERMUX_PKG_SHA256=bf819fd8770fd725ecc219e2d8bfc775b74c0581a24cefe67c8d04020d11b3
 
 termux_step_pre_configure() {
   unset RUSTFLAGS
+  termux_setup_nodejs
 }
 
 termux_step_configure() {
