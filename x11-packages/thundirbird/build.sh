@@ -6,6 +6,10 @@ TERMUX_PKG_VERSION=102.3.0+build1
 TERMUX_PKG_SRCURL=http://archive.ubuntu.com/ubuntu/pool/main/t/thunderbird/thunderbird_${TERMUX_PKG_VERSION}.orig.tar.xz
 TERMUX_PKG_SHA256=bf819fd8770fd725ecc219e2d8bfc775b74c0581a24cefe67c8d04020d11b328
 
+termux_step_pre_configure() {
+  unset RUSTFLAGS
+}
+
 termux_step_configure() {
   python3 $TERMUX_PKG_SRCDIR/configure.py \
     --host=x86_64-pc-linux-gnu \
