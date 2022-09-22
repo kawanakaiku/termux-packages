@@ -59,7 +59,9 @@ termux_step_make_install() {
 	chmod +x ${sh}
 	
 	# no need
+	rm -rf ${TERMUX_PREFIX}/share/code-server/lib/coder-cloud-agent
 	rm -rf ${TERMUX_PREFIX}/share/code-server/lib/vscode/node_modules/@parcel/watcher/prebuilds
+	find ${TERMUX_PREFIX}/share/code-server -name '.*' | xargs rm -rf
 }
 
 termux_step_post_make_install() {
