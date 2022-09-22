@@ -6,33 +6,37 @@ TERMUX_PKG_VERSION=4.7.0
 TERMUX_PKG_SRCURL=https://github.com/coder/code-server.git
 TERMUX_PKG_DEPENDS="nodejs, libsecret, ripgrep"
 
+termux_step_pre_configure() {
+  termux_setup_nodejs
+}
+
 termux_step_make_install() {
   # node-pre-gyp not found
   npm install --global --force --no-save node-pre-gyp
   
-	export FORCE_NODE_VERSION=18
-	npm install --force --no-save \
-		--prefix ${TERMUX_PREFIX}/share/code-server \
-		--unsafe-perm \
-		--legacy-peer-deps --omit=dev \
-		$TERMUX_PKG_SRCDIR
-		
-	npm cache clean --force
-	
-	# install folder
-	mv ${TERMUX_PREFIX}/share/code-server{,.bak}
-	mv ${TERMUX_PREFIX}/share/code-server.bak/node_modules/code-server ${TERMUX_PREFIX}/share
-	rm -r ${TERMUX_PREFIX}/share/code-server.bak
-	
-	# @vscode/ripgrep@1.14.2 postinstall
-	# Error: Unknown platform: android
-	local dir=${TERMUX_PREFIX}/share/code-server/lib/vscode/node_modules/@vscode/ripgrep/bin
-	mkdir -p ${dir}
-	ln -sf ${TERMUX_PREFIX}/bin/rg ${dir}
-	
-	# terminal not working
-	# https://github.com/coder/code-server/issues/5496
-	sed -i -e 's|switch(process.platform)|switch("linux")|' ${TERMUX_PREFIX}/share/code-server/lib/vscode/out/vs/platform/terminal/node/ptyHostMain.js
+  export FORCE_NODE_VERSION=18
+  npm install --force --no-save \
+    --prefix ${TERMUX_PREFIX}/share/code-server \
+    --unsafe-perm \
+    --legacy-peer-deps --omit=dev \
+    $TERMUX_PKG_SRCDIR
+
+  npm cache clean --force
+
+  # install folder
+  mv ${TERMUX_PREFIX}/share/code-server{,.bak}
+  mv ${TERMUX_PREFIX}/share/code-server.bak/node_modules/code-server ${TERMUX_PREFIX}/share
+  rm -r ${TERMUX_PREFIX}/share/code-server.bak
+
+  # @vscode/ripgrep@1.14.2 postinstall
+  # Error: Unknown platform: android
+  local dir=${TERMUX_PREFIX}/share/code-server/lib/vscode/node_modules/@vscode/ripgrep/bin
+  mkdir -p ${dir}
+  ln -sf ${TERMUX_PREFIX}/bin/rg ${dir}
+
+  # terminal not working
+  # https://github.com/coder/code-server/issues/5496
+  sed -i -e 's|switch(process.platform)|switch("linux")|' ${TERMUX_PREFIX}/share/code-server/lib/vscode/out/vs/platform/terminal/node/ptyHostMain.js
 
   # starter script
   local sh=${TERMUX_PREFIX}/bin/code-server
