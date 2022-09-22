@@ -1,0 +1,81 @@
+TERMUX_PKG_HOMEPAGE=https://coder.com/
+TERMUX_PKG_DESCRIPTION="VS Code in the browser"
+TERMUX_PKG_LICENSE="MIT"
+TERMUX_PKG_MAINTAINER="kawanakaiku"
+TERMUX_PKG_VERSION=4.7.0
+TERMUX_PKG_SRCURL=https://github.com/coder/code-server.git
+TERMUX_PKG_DEPENDS="nodejs, libsecret, ripgrep"
+
+termux_step_make_install() {
+  # node-pre-gyp not found
+  npm install --global --force --no-save node-pre-gyp
+  
+	export FORCE_NODE_VERSION=18
+	npm install --force --no-save \
+		--prefix ${TERMUX_PREFIX}/share/code-server \
+		--unsafe-perm \
+		--legacy-peer-deps --omit=dev \
+		$TERMUX_PKG_SRCDIR
+		
+	npm cache clean --force
+	
+	# install folder
+	mv ${TERMUX_PREFIX}/share/code-server{,.bak}
+	mv ${TERMUX_PREFIX}/share/code-server.bak/node_modules/code-server ${TERMUX_PREFIX}/share
+	rm -r ${TERMUX_PREFIX}/share/code-server.bak
+	
+	# @vscode/ripgrep@1.14.2 postinstall
+	# Error: Unknown platform: android
+	local dir=${TERMUX_PREFIX}/share/code-server/lib/vscode/node_modules/@vscode/ripgrep/bin
+	mkdir -p ${dir}
+	ln -sf ${TERMUX_PREFIX}/bin/rg ${dir}
+	
+	# terminal not working
+	# https://github.com/coder/code-server/issues/5496
+	sed -i -e 's|switch(process.platform)|switch("linux")|' ${TERMUX_PREFIX}/share/code-server/lib/vscode/out/vs/platform/terminal/node/ptyHostMain.js
+
+  # starter script
+  local sh=${TERMUX_PREFIX}/bin/code-server
+	cat <<-SH > ${sh}
+	#!${TERMUX_PREFIX}/bin/sh
+	exec ${TERMUX_PREFIX}/share/code-server/out/node/entry.js --auth none --disable-telemetry --disable-update-check "\$@"
+	SH
+	chmod +x ${sh}
+}
+
+termux_step_post_make_install() {
+	rm -rf ${TERMUX_PREFIX}/bin/node-pre-gyp
+	rm -rf ${TERMUX_PREFIX}/lib/node_modules
+	
+	(
+		# no hard links
+		IFS=$'\n'
+		abs_to_rel() {
+			python - <<-PYTHON
+				file_from = "$1".split("/")[1:]
+				file_to = "$2".split("/")[1:]
+				i = 0
+				while i < min(len(file_from), len(file_to)) and file_from[i] == file_to[i]:
+				  i += 1
+				print( "../" * ( len(file_from)  - 1 - i ) + "/".join(file_to[i:]) )
+			PYTHON
+		}
+		cd /
+		for HARDLINK in $(find $TERMUX_PREFIX -type f -links +1 | grep -v '^$')
+		do
+			for FILE in $(find $TERMUX_PREFIX -samefile "$HARDLINK" | grep -v '^$')
+			do
+				if [ "$HARDLINK" != "$FILE" ]
+				then
+					rm "$FILE"
+					# instead symlink
+					echo "running abs_to_rel $FILE $HARDLINK"
+					REL="$( abs_to_rel "$FILE" "$HARDLINK")"
+					echo "REL=$REL"
+					echo "symlinking $REL $FILE"
+					ln -s "$REL" "$FILE"
+				fi
+			done
+		done
+	)
+}
