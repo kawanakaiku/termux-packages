@@ -16,7 +16,7 @@ termux_step_pre_configure() {
 
 termux_step_make_install() {
 	# node-pre-gyp not found
-	npm install --global --force --no-save node-pre-gyp
+	npm install --global --force node-pre-gyp
 	
 	# always fallback to build
 	node -e "console.log(require.resolve('node-pre-gyp'))"
