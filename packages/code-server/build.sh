@@ -64,6 +64,7 @@ termux_step_make_install() {
 	find ${TERMUX_PREFIX}/share/code-server -name '.*' | xargs rm -rf
 	find ${TERMUX_PREFIX}/share/code-server -type f -name '*.map' | xargs rm -f
 	find ${TERMUX_PREFIX}/share/code-server -type d -name 'src' | xargs rm -rf
+	find ${TERMUX_PREFIX}/share/code-server -type d -name 'include' | xargs rm -rf
 }
 
 termux_step_post_make_install() {
