@@ -19,8 +19,9 @@ termux_step_make_install() {
 	npm install --global --force --no-save node-pre-gyp
 	
 	# always fallback to build
-	find /home -name 'node-pre-gyp'
+	node -e "console.log(require.resolve('node-pre-gyp'))"
 	exit 1
+	sed -i -e 's|err.statusCode !== undefined|false|' node-pre-gyp/lib/install.js
 	
 	npm install --force --no-save \
 		--prefix ${TERMUX_PREFIX}/share/code-server \
