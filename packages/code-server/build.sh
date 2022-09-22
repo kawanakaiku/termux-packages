@@ -18,6 +18,10 @@ termux_step_make_install() {
 	# node-pre-gyp not found
 	npm install --global --force --no-save node-pre-gyp
 	
+	# always fallback to build
+	find /home -name 'node-pre-gyp'
+	exit 1
+	
 	npm install --force --no-save \
 		--prefix ${TERMUX_PREFIX}/share/code-server \
 		--unsafe-perm \
@@ -48,6 +52,9 @@ termux_step_make_install() {
 	exec ${TERMUX_PREFIX}/share/code-server/out/node/entry.js --auth none --disable-telemetry --disable-update-check "\$@"
 	SH
 	chmod +x ${sh}
+	
+	# no need
+	rm -rf ${TERMUX_PREFIX}/share/code-server/lib/vscode/node_modules/@parcel/watcher/prebuilds
 }
 
 termux_step_post_make_install() {
