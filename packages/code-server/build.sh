@@ -15,11 +15,6 @@ termux_step_pre_configure() {
 }
 
 termux_step_make_install() {
-	npm install --force --no-save \
-		--prefix ${TERMUX_COMMON_CACHEDIR} \
-		node-pre-gyp node-gyp node-gyp-build prebuild-install
-		
-	export NODE_PATH=${TERMUX_COMMON_CACHEDIR}/node_modules
 	export \
 		npm_config_build_from_source=true \
 		npm_config_platform=android \
