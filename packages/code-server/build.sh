@@ -15,13 +15,22 @@ termux_step_pre_configure() {
 }
 
 termux_step_make_install() {
-	# node-pre-gyp not found
-	npm install --global --force node-pre-gyp
-	
-	# always fallback to build
-	node -e "console.log(require.resolve('node-pre-gyp'))"
-	exit 1
-	sed -i -e 's|err.statusCode !== undefined|false|' node-pre-gyp/lib/install.js
+	npm install --force --no-save \
+		--prefix ${TERMUX_COMMON_CACHEDIR} \
+		node-pre-gyp node-gyp node-gyp-build prebuild-install
+		
+	export NODE_PATH=${TERMUX_COMMON_CACHEDIR}/node_modules
+	export \
+		npm_config_build_from_source=true \
+		npm_config_platform=android \
+		npm_config_arch=$(
+			case $TERMUX_ARCH in
+				arm) echo arm;;
+				aarch64) echo arm64;;
+				i686) echo ia32;;
+				x86_64) echo x64;;
+			esac
+		)
 	
 	npm install --force --no-save \
 		--prefix ${TERMUX_PREFIX}/share/code-server \
