@@ -18,7 +18,6 @@ termux_step_make_install() {
 	# node-pre-gyp not found
 	npm install --global --force --no-save node-pre-gyp
 	
-	export FORCE_NODE_VERSION=18
 	npm install --force --no-save \
 		--prefix ${TERMUX_PREFIX}/share/code-server \
 		--unsafe-perm \
