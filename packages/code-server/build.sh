@@ -26,6 +26,9 @@ termux_step_make_install() {
 				x86_64) echo x64;;
 			esac
 		)
+		
+	# cannot locate symbol "_ZN2v82V812ToLocalEmptyEv" referenced by "/data/data/com.termux/files/usr/share/code-server/lib/vscode/node_modules/spdlog/build/Release/spdlog.node"
+	export CXXFLAGS+=" -DUSING_V8_SHARED=0"
 	
 	npm install --force --no-save \
 		--prefix ${TERMUX_PREFIX}/share/code-server \
