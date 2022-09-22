@@ -17,7 +17,7 @@ termux_step_pre_configure() {
 termux_step_make_install() {
 	export \
 		npm_config_build_from_source=true \
-		npm_config_platform=android \
+		npm_config_platform=linux \
 		npm_config_arch=$(
 			case $TERMUX_ARCH in
 				arm) echo arm;;
@@ -44,7 +44,7 @@ termux_step_make_install() {
 	# Error: Unknown platform: android
 	local dir=${TERMUX_PREFIX}/share/code-server/lib/vscode/node_modules/@vscode/ripgrep/bin
 	mkdir -p ${dir}
-	ln -sf ${TERMUX_PREFIX}/bin/rg ${dir}
+	#ln -sf ${TERMUX_PREFIX}/bin/rg ${dir}
 
 	# terminal not working
 	# https://github.com/coder/code-server/issues/5496
