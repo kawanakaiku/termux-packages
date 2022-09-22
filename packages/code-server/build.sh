@@ -34,6 +34,7 @@ termux_step_make_install() {
 		--prefix ${TERMUX_PREFIX}/share/code-server \
 		--unsafe-perm \
 		--legacy-peer-deps --omit=dev \
+		--verbose \
 		${TERMUX_PKG_NAME}@${TERMUX_PKG_VERSION}
 
 	npm cache clean --force
