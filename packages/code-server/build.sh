@@ -10,9 +10,9 @@ TERMUX_PKG_BUILD_IN_SRC=true
 termux_step_pre_configure() {
 	termux_setup_nodejs
 	
-	local yarndir=$TERMUX_COMMON_CACHEDIR/yarn
-	npm install --prefix $yarndir yarn
-	PATH="$yarndir/node_modules/.bin:$PATH"
+	local node_dir=$TERMUX_COMMON_CACHEDIR/node_dir
+	npm install --prefix $node_dir yarn typescript
+	PATH="$node_dir/node_modules/.bin:$PATH"
 
 	export \
 		npm_config_build_from_source=true \
