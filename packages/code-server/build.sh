@@ -9,6 +9,9 @@ TERMUX_PKG_BUILD_IN_SRC=true
 
 termux_step_pre_configure() {
 	termux_setup_nodejs
+	
+	npm install --prefix $TERMUX_COMMON_CACHEDIR/yarn
+	PATH="$TERMUX_COMMON_CACHEDIR/yarn/node_modules/.bin:$PATH"
 
 	export \
 		npm_config_build_from_source=true \
