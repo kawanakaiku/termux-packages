@@ -11,8 +11,7 @@ termux_step_pre_configure() {
 	termux_setup_nodejs
 	
 	local yarndir=$TERMUX_COMMON_CACHEDIR/yarn
-	mkdir -p $yarndir
-	npm install --prefix $yarndir
+	npm install --prefix $yarndir yarn
 	PATH="$yarndir/node_modules/.bin:$PATH"
 
 	export \
