@@ -5,16 +5,11 @@ TERMUX_PKG_MAINTAINER="kawanakaiku"
 TERMUX_PKG_VERSION=4.7.0
 TERMUX_PKG_SRCURL=https://github.com/coder/code-server.git
 TERMUX_PKG_DEPENDS="nodejs, libsecret, ripgrep"
-
-termux_step_get_source() {
-	mkdir -p "$TERMUX_PKG_SRCDIR"
-}
+TERMUX_PKG_BUILD_IN_SRC=true
 
 termux_step_pre_configure() {
 	termux_setup_nodejs
-}
 
-termux_step_make_install() {
 	export \
 		npm_config_build_from_source=true \
 		npm_config_platform=android \
@@ -26,23 +21,21 @@ termux_step_make_install() {
 				x86_64) echo x64;;
 			esac
 		)
-		
+}
+
+termux_step_make() {
 	# cannot locate symbol "_ZN2v82V812ToLocalEmptyEv" referenced by "/data/data/com.termux/files/usr/share/code-server/lib/vscode/node_modules/spdlog/build/Release/spdlog.node"
 	#export CXXFLAGS+=" -DUSING_V8_SHARED=0"
 	
-	npm install --force --no-save \
-		--prefix ${TERMUX_PREFIX}/share/code-server \
-		--unsafe-perm \
-		--legacy-peer-deps --omit=dev \
-		--verbose \
-		${TERMUX_PKG_NAME}@${TERMUX_PKG_VERSION}
+	yarn add typescript
+	yarn build
+	yarn build:vscode
+	yarn release
+	yarn postinstall
+}
 
-	npm cache clean --force
-
-	# install folder
-	mv ${TERMUX_PREFIX}/share/code-server{,.bak}
-	mv ${TERMUX_PREFIX}/share/code-server.bak/node_modules/code-server ${TERMUX_PREFIX}/share
-	rm -r ${TERMUX_PREFIX}/share/code-server.bak
+termux_step_make_install() {
+	mv release $TERMUX_PREFIX/share/code-server
 
 	# @vscode/ripgrep@1.14.2 postinstall
 	# Error: Unknown platform: android
@@ -61,54 +54,4 @@ termux_step_make_install() {
 	exec ${TERMUX_PREFIX}/share/code-server/out/node/entry.js --auth none --disable-telemetry --disable-update-check "\$@"
 	SH
 	chmod +x ${sh}
-	
-	# no need
-	rm -rf ${TERMUX_PREFIX}/share/code-server/lib/coder-cloud-agent
-	rm -rf ${TERMUX_PREFIX}/share/code-server/lib/vscode/node_modules/@parcel/watcher/prebuilds
-	find ${TERMUX_PREFIX}/share/code-server -name '.*' | xargs rm -rf
-	#find ${TERMUX_PREFIX}/share/code-server -type f -name '*.map' | xargs rm -f
-	#find ${TERMUX_PREFIX}/share/code-server -type d -name 'src' | xargs rm -rf
-	#find ${TERMUX_PREFIX}/share/code-server -type d -name 'include' | xargs rm -rf
-}
-
-termux_step_post_make_install() {
-	rm -rf ${TERMUX_PREFIX}/bin/node-pre-gyp
-	rm -rf ${TERMUX_PREFIX}/lib/node_modules
-	
-	(
-		# no hard links
-		IFS=$'\n'
-		abs_to_rel() {
-			python - <<-PYTHON
-				file_from = "$1".split("/")[1:]
-				file_to = "$2".split("/")[1:]
-				i = 0
-				while i < min(len(file_from), len(file_to)) and file_from[i] == file_to[i]:
-				 i += 1
-				print( "../" * ( len(file_from) - 1 - i ) + "/".join(file_to[i:]) )
-			PYTHON
-		}
-		cd /
-		for HARDLINK in $(find $TERMUX_PREFIX -type f -links +1 | grep -v '^$')
-		do
-			for FILE in $(find $TERMUX_PREFIX -samefile "$HARDLINK" | grep -v '^$')
-			do
-				if [ "$HARDLINK" != "$FILE" ]
-				then
-					rm "$FILE"
-					# instead symlink
-					echo "running abs_to_rel $FILE $HARDLINK"
-					REL="$( abs_to_rel "$FILE" "$HARDLINK")"
-					echo "REL=$REL"
-					echo "symlinking $REL $FILE"
-					ln -s "$REL" "$FILE"
-				fi
-			done
-		done
-	)
-}
-
-termux_step_install_license() {
-	install -Dm600 $TERMUX_PREFIX/share/code-server/LICENSE \
-		$TERMUX_PREFIX/share/doc/$TERMUX_PKG_NAME/LICENSE
 }
