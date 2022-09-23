@@ -31,7 +31,7 @@ termux_step_make() {
 	# cannot locate symbol "_ZN2v82V812ToLocalEmptyEv" referenced by "/data/data/com.termux/files/usr/share/code-server/lib/vscode/node_modules/spdlog/build/Release/spdlog.node"
 	#export CXXFLAGS+=" -DUSING_V8_SHARED=0"
 	
-	yarn add typescript
+	yarn install --production
 	yarn build
 	yarn build:vscode
 	yarn release
