@@ -14,10 +14,9 @@ termux_step_pre_configure() {
 	npm install --prefix $node_dir yarn typescript
 	PATH="$node_dir/node_modules/.bin:$PATH"
 
-	export \
-		npm_config_build_from_source=true \
-		npm_config_platform=android \
-		npm_config_arch=$(
+	export npm_config_build_from_source=true
+	export npm_config_platform=android
+	export npm_config_arch=$(
 			case $TERMUX_ARCH in
 				arm) echo arm;;
 				aarch64) echo arm64;;
@@ -25,6 +24,7 @@ termux_step_pre_configure() {
 				x86_64) echo x64;;
 			esac
 		)
+	export PYTHON=/usr/bin/python3
 }
 
 termux_step_make() {
