@@ -11,7 +11,7 @@ termux_step_pre_configure() {
 	termux_setup_nodejs
 	
 	local node_dir=$TERMUX_COMMON_CACHEDIR/node_dir
-	npm install --prefix $node_dir yarn typescript
+	npm install --prefix $node_dir yarn
 	PATH="$node_dir/node_modules/.bin:$PATH"
 
 	export npm_config_build_from_source=true
