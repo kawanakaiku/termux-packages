@@ -24,6 +24,7 @@ termux_step_pre_configure() {
 				x86_64) echo x64;;
 			esac
 		)
+	export NODE_ENV=production
 	export PYTHON=/usr/bin/python3
 }
 
@@ -31,7 +32,7 @@ termux_step_make() {
 	# cannot locate symbol "_ZN2v82V812ToLocalEmptyEv" referenced by "/data/data/com.termux/files/usr/share/code-server/lib/vscode/node_modules/spdlog/build/Release/spdlog.node"
 	#export CXXFLAGS+=" -DUSING_V8_SHARED=0"
 	
-	yarn install --production
+	yarn install
 	yarn build
 	yarn build:vscode
 	yarn release
