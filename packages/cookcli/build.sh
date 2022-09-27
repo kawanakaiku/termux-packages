@@ -4,7 +4,7 @@ TERMUX_PKG_LICENSE="MIT"
 TERMUX_PKG_LICENSE_FILE="LICENSE"
 TERMUX_PKG_MAINTAINER="@buttaface"
 TERMUX_PKG_VERSION=0.1.6
-TERMUX_PKG_REVISION=1
+TERMUX_PKG_REVISION=2
 TERMUX_PKG_SRCURL=https://github.com/CookLang/CookCLI/archive/v$TERMUX_PKG_VERSION.tar.gz
 TERMUX_PKG_SHA256=0ad919c950dad9375adaceb79a1cfc407a3ac776a8190de2a82fef30a02a5504
 TERMUX_PKG_DEPENDS="swift"
@@ -16,7 +16,7 @@ TERMUX_PKG_AUTO_UPDATE=true
 termux_step_make() {
 	termux_setup_swift
 
-	# This will check out the package dependencies, so they can be patched.
+	# This will check out the package dependencies, so one can be patched.
 	$SWIFT_BINDIR/swift package update
 
 	patch -p1 < $TERMUX_PKG_BUILDER_DIR/cook-dependencies.diff

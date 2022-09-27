@@ -2,10 +2,11 @@ TERMUX_PKG_HOMEPAGE=https://github.com/kpet/clvk
 TERMUX_PKG_DESCRIPTION="Experimental implementation of OpenCL on Vulkan"
 TERMUX_PKG_LICENSE="Apache-2.0"
 TERMUX_PKG_MAINTAINER="@termux"
-_COMMIT=ea071c91dfa6620f6b2fa7fce92744130191027d
-_COMMIT_DATE=20220920
-_COMMIT_TIME=201501
-TERMUX_PKG_VERSION="0.0.20220920.201501gea071c91"
+_COMMIT=69edc5b3dc0c56f3d67afd8fd0edf1f1292cb310
+_COMMIT_DATE=20220924
+_COMMIT_TIME=093643
+TERMUX_PKG_VERSION="0.0.20220924.093643g69edc5b3"
+TERMUX_PKG_REVISION=1
 TERMUX_PKG_SRCURL=https://github.com/kpet/clvk.git
 TERMUX_PKG_GIT_BRANCH=main
 TERMUX_PKG_BUILD_DEPENDS="vulkan-headers, vulkan-loader-android"
@@ -92,8 +93,7 @@ termux_pkg_auto_update() {
 
 termux_step_post_get_source() {
 	git fetch --unshallow
-	git reset --hard $_COMMIT
-	git submodule deinit --force --all
+	git checkout $_COMMIT
 	git submodule update --init --recursive
 	./external/clspv/utils/fetch_sources.py --deps llvm
 }
