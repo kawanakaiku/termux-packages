@@ -5,7 +5,7 @@ TERMUX_PKG_MAINTAINER="@termux"
 TERMUX_PKG_VERSION=5.3.1
 TERMUX_PKG_SRCURL=https://github.com/bazelbuild/bazel/releases/download/${TERMUX_PKG_VERSION}/bazel-${TERMUX_PKG_VERSION}-dist.zip
 TERMUX_PKG_SHA256=18486e7152ca26b26585e9b2a6f49f332b116310d3b7e5b70583f1f1f24bb8ae
-TERMUX_PKG_BUILD_DEPENDS=openjdk-17
+TERMUX_PKG_BUILD_DEPENDS=openjdk-11
 TERMUX_PKG_BUILD_IN_SRC=true
 
 termux_step_get_source() {
