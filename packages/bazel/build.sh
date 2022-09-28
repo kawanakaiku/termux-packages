@@ -11,7 +11,7 @@ termux_step_get_source() {
   local file="$TERMUX_PKG_CACHEDIR/$(basename "$TERMUX_PKG_SRCURL")"
   termux_download "$TERMUX_PKG_SRCURL" "$file" "$TERMUX_PKG_SHA256"
   mkdir "$TERMUX_PKG_SRCDIR"
-  unzip "$file" -d "$TERMUX_PKG_SRCDIR"
+  unzip -q "$file" -d "$TERMUX_PKG_SRCDIR"
 }
 
 termux_step_make() {
