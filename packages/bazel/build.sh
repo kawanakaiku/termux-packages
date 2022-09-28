@@ -8,7 +8,7 @@ TERMUX_PKG_SHA256=18486e7152ca26b26585e9b2a6f49f332b116310d3b7e5b70583f1f1f24bb8
 TERMUX_PKG_BUILD_IN_SRC=true
 
 termux_step_get_source() {
-  local file="$TERMUX_PKG_CACHEDIR/$(basename "${PKG_SRCURL[$i]}")"
+  local file="$TERMUX_PKG_CACHEDIR/$(basename "$TERMUX_PKG_SRCURL")"
   termux_download "$TERMUX_PKG_SRCURL" "$file" "$TERMUX_PKG_SHA256"
   mkdir "$TERMUX_PKG_SRCDIR"
   unzip "$file" -d "$TERMUX_PKG_SRCDIR"
