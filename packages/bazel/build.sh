@@ -16,6 +16,9 @@ termux_step_get_source() {
 }
 
 termux_step_make() {
+  if $TERMUX_ON_DEVICE_BUILD; then
+    unset JAVA_HOME
+  fi
   env EXTRA_BAZEL_ARGS="--tool_java_runtime_version=local_jdk" bash ./compile.sh
 }
 
