@@ -8,6 +8,10 @@ TERMUX_PKG_DEPENDS="python, python-numpy, libprotobuf, libopenblas"
 TERMUX_PKG_BUILD_IN_SRC=true
 TERMUX_PKG_HOSTBUILD=true
 
+termux_step_get_source() {
+	termux_setup_cmake
+}
+
 termux_step_host_build() {
 	cmake "$TERMUX_PKG_SRCDIR/third_party/sleef"
 	make -j "$TERMUX_MAKE_PROCESSES"
@@ -25,7 +29,6 @@ termux_step_pre_configure() {
 	popd
 	. ${_CROSSENV_PREFIX}/bin/activate
 	
-	termux_setup_cmake
 	termux_setup_protobuf
 	
 	build-pip install pyyaml
