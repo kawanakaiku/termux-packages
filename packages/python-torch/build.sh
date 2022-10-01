@@ -1,6 +1,6 @@
 TERMUX_PKG_HOMEPAGE=https://pytorch.org/
 TERMUX_PKG_DESCRIPTION="Tensors and Dynamic neural networks in Python"
-TERMUX_PKG_LICENSE="BSD-3-Clause"
+TERMUX_PKG_LICENSE="BSD 3-Clause"
 TERMUX_PKG_MAINTAINER="@termux"
 TERMUX_PKG_VERSION=1.12.1
 TERMUX_PKG_SRCURL=https://github.com/pytorch/pytorch.git
