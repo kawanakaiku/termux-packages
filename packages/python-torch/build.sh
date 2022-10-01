@@ -74,6 +74,10 @@ termux_step_make_install() {
 	USE_FFTW=0
 	USE_OPENMP=0
 	USE_TBB=0
+	USE_FAKELOWP=0
+	USE_NUMA=0
+	USE_NCCL=0
+	USE_METAL=0
 	USE_SYSTEM_TBB=0
 	USE_ROCKSDB=0
 	USE_SYSTEM_SLEEF=0
@@ -86,9 +90,7 @@ termux_step_make_install() {
 	PROTOBUF_PROTOC_EXECUTABLE=$(command -v protoc)
 	CAFFE2_CUSTOM_PROTOC_EXECUTABLE=$(command -v protoc)
 	OPENMP_FLAG=-fopenmp -static-openmp
-	INTERN_BUILD_MOBILE=1
 	BUILD_CAFFE2=1
-	BUILD_CAFFE2_MOBILE=1
 	UNIX=1
 	USE_FBGEMM=0
         "
