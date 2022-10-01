@@ -31,7 +31,7 @@ termux_step_pre_configure() {
 	
 	termux_setup_protobuf
 	
-	build-pip install pyyaml
+	build-pip install -U pyyaml numpy
 
 	find . -name CMakeLists.txt -o -name '*.cmake' | \
 		xargs -n 1 sed -i \
