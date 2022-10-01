@@ -40,6 +40,10 @@ termux_step_pre_configure() {
 	
 	sed -i "s|np.get_include()|'${TERMUX_PREFIX}/lib/python${_PYTHON_VERSION}/site-packages/numpy/core/include'|" tools/setup_helpers/numpy_.py	
 	sed -i 's/**build_options,/**build_options | {i: j for i, j in [i.strip().split("=", 1) for i in os.getenv("termux_cmake_args").split(os.linesep) if "=" in i]},/' tools/setup_helpers/cmake.py
+	
+	TERMUX_PKG_EXTRA_CONFIGURE_ARGS="
+	PYTHON_EXECUTABLE=$(command -v python3)
+	"
 }
 
 _termux_step_configure() {
