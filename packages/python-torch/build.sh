@@ -55,6 +55,7 @@ termux_step_make_install() {
 	export MAX_JOBS=${TERMUX_MAKE_PROCESSES}
         export termux_cmake_args="
 	CMAKE_FIND_ROOT_PATH=${TERMUX_PREFIX}
+	CMAKE_CROSSCOMPILING=1
         ANDROID=0
 	USE_VULKAN=0
 	USE_CUDA=0
