@@ -40,7 +40,6 @@ termux_step_pre_configure() {
 	
 	sed -i "s|np.get_include()|'${TERMUX_PREFIX}/lib/python${_PYTHON_VERSION}/site-packages/numpy/core/include'|" tools/setup_helpers/numpy_.py	
 	sed -i 's/**build_options,/**build_options | {i: j for i, j in [i.strip().split("=", 1) for i in os.getenv("termux_cmake_args").split(os.linesep) if "=" in i]},/' tools/setup_helpers/cmake.py
-	sed -i 's|NOT COMPILER_WORKS|FALSE|' cmake/MiscCheck.cmake
 }
 
 termux_step_configure() {
@@ -66,7 +65,6 @@ termux_step_make_install() {
 	CMAKE_FIND_ROOT_PATH=${TERMUX_PREFIX}
 	CMAKE_SKIP_INSTALL_RPATH=ON
 	CMAKE_USE_SYSTEM_LIBRARIES=True
-	CMAKE_CROSSCOMPILING=1
 	CMAKE_LINKER=$TERMUX_STANDALONE_TOOLCHAIN/bin/$LD $LDFLAGS
         ANDROID=0
 	USE_VULKAN=0
