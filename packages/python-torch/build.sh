@@ -8,7 +8,7 @@ TERMUX_PKG_DEPENDS="python, python-numpy, libprotobuf, libopenblas"
 TERMUX_PKG_BUILD_IN_SRC=true
 TERMUX_PKG_HOSTBUILD=true
 
-termux_step_get_source() {
+termux_step_post_get_source() {
 	termux_setup_cmake
 }
 
