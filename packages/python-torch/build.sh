@@ -42,11 +42,11 @@ termux_step_pre_configure() {
 	sed -i 's/**build_options,/**build_options | {i: j for i, j in [i.strip().split("=", 1) for i in os.getenv("termux_cmake_args").split(os.linesep) if "=" in i]},/' tools/setup_helpers/cmake.py
 }
 
-termux_step_configure() {
+_termux_step_configure() {
 	:
 }
 
-termux_step_make() {
+_termux_step_make() {
 	:
 }
 
