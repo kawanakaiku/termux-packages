@@ -64,6 +64,7 @@ termux_step_make_install() {
 	USE_NUMPY=1
 	USE_BLAS=1
 	BLAS=OpenBLAS
+	OpenBLAS_INCLUDE_DIR=${TERMUX_PREFIX}/include/openblas
 	USE_ZMQ=0
 	USE_FFMPEG=0
 	USE_LMDB=0
