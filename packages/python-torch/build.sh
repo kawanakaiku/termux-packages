@@ -18,6 +18,7 @@ termux_step_pre_configure() {
 	popd
 	. ${_CROSSENV_PREFIX}/bin/activate
 	
+	termux_setup_cmake
 	termux_setup_protobuf
 	
 	build-pip install pyyaml
