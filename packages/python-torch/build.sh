@@ -40,6 +40,7 @@ termux_step_pre_configure() {
 	
 	sed -i "s|np.get_include()|'${TERMUX_PREFIX}/lib/python${_PYTHON_VERSION}/site-packages/numpy/core/include'|" tools/setup_helpers/numpy_.py	
 	sed -i 's/**build_options,/**build_options | {i: j for i, j in [i.strip().split("=", 1) for i in os.getenv("termux_cmake_args").split(os.linesep) if "=" in i]},/' tools/setup_helpers/cmake.py
+	sed -i 's|NOT COMPILER_WORKS|FALSE|' cmake/MiscCheck.cmake
 }
 
 termux_step_configure() {
@@ -113,8 +114,3 @@ termux_step_make_install() {
 	
 	cross-pip -v install $TERMUX_PKG_SRCDIR || for log in build/CMakeFiles/*.log; do echo "log file: $log"; cat $log; done
 }
-
-termux_step_post_make_install() {
-	rm $TERMUX_PREFIX/lib/librt.so $TERMUX_PREFIX/lib/libpthread.so
-}
-
