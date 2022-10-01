@@ -111,7 +111,7 @@ termux_step_make_install() {
 	CFLAGS+=" --target=$CCTERMUX_HOST_PLATFORM"
 	LDFLAGS+=" --target=$CCTERMUX_HOST_PLATFORM"
 	
-	cross-pip -v install $TERMUX_PKG_SRCDIR || for log in build/CMakeFiles/CMakeOutput.log; do echo "log file: $log"; cat $log; done
+	cross-pip -v install $TERMUX_PKG_SRCDIR || for log in build/CMakeFiles/*.log; do echo "log file: $log"; cat $log; done
 }
 
 termux_step_post_make_install() {
