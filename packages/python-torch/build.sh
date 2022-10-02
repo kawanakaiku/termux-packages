@@ -33,7 +33,7 @@ termux_step_pre_configure() {
 	
 	build-pip install -U pyyaml numpy typing_extensions
 
-	find . -name CMakeLists.txt -o -name '*.cmake' | \
+	find "$TERMUX_PKG_SRCDIR" -name CMakeLists.txt -o -name '*.cmake' | \
 		xargs -n 1 sed -i \
 		-e 's/\([^A-Za-z0-9_]ANDROID\)\([^A-Za-z0-9_]\)/\1_NO_TERMUX\2/g' \
 		-e 's/\([^A-Za-z0-9_]ANDROID\)$/\1_NO_TERMUX/g'
