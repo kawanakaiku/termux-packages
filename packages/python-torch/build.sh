@@ -60,7 +60,7 @@ termux_step_pre_configure() {
 	"
 
 	LDFLAGS+=" -llog"
-	CXXFLAGS+=" -I${TERMUX_STANDALONE_TOOLCHAIN}/sysroot/usr/include/${TERMUX_ARCH}-linux-android$( if test $TERMUX_ARCH = arm; then echo eabi; fi )"
+	#CXXFLAGS+=" -I${TERMUX_STANDALONE_TOOLCHAIN}/sysroot/usr/include/${TERMUX_ARCH}-linux-android$( if test $TERMUX_ARCH = arm; then echo eabi; fi )"
 	
 	ln -s "$TERMUX_PKG_BUILDDIR" build
 }
