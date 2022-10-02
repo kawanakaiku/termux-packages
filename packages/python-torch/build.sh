@@ -38,11 +38,6 @@ termux_step_pre_configure() {
 		-e 's/\([^A-Za-z0-9_]ANDROID\)\([^A-Za-z0-9_]\)/\1_NO_TERMUX\2/g' \
 		-e 's/\([^A-Za-z0-9_]ANDROID\)$/\1_NO_TERMUX/g'
 	
-	sed -i "s|np.get_include()|'${TERMUX_PREFIX}/lib/python${_PYTHON_VERSION}/site-packages/numpy/core/include'|" tools/setup_helpers/numpy_.py	
-	sed -i 's/**build_options,/**build_options | {i: j for i, j in [i.strip().split("=", 1) for i in os.getenv("termux_cmake_args").split(os.linesep) if "=" in i]},/' tools/setup_helpers/cmake.py
-	
-	mkdir build
-	
 	TERMUX_PKG_EXTRA_CONFIGURE_ARGS="
 	-DBUILD_PYTHON=True
 	-DBUILD_TEST=False
@@ -65,6 +60,7 @@ termux_step_pre_configure() {
 	"
 
 	LDFLAGS+=" -llog"
+	CXXFLAGS+=" -I${TERMUX_STANDALONE_TOOLCHAIN}/sysroot/usr/include/${TERMUX_ARCH}-linux-android$( test $TERMUX_ARCH = arm && echo eabi )"
 	
 	ln -s "$TERMUX_PKG_BUILDDIR" build
 }
