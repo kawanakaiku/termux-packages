@@ -6,7 +6,7 @@ TERMUX_PKG_VERSION=1.12.1
 TERMUX_PKG_SRCURL=https://github.com/pytorch/pytorch.git
 TERMUX_PKG_DEPENDS="python, python-numpy, libprotobuf, libopenblas"
 #TERMUX_PKG_BUILD_IN_SRC=true
-TERMUX_PKG_HOSTBUILD=true
+#TERMUX_PKG_HOSTBUILD=true
 
 termux_step_post_get_source() {
 	termux_setup_cmake
@@ -29,7 +29,7 @@ termux_step_pre_configure() {
 	popd
 	. ${_CROSSENV_PREFIX}/bin/activate
 	
-	termux_setup_protobuf
+	#termux_setup_protobuf
 	
 	build-pip install -U pyyaml numpy typing_extensions
 
@@ -53,11 +53,6 @@ termux_step_pre_configure() {
 	
 	-DANDROID_NO_TERMUX=OFF
 	-DOpenBLAS_INCLUDE_DIR=${TERMUX_PREFIX}/include/openblas
-	-DNATIVE_BUILD_DIR=${TERMUX_PKG_HOSTBUILD_DIR}
-	-DUSE_SYSTEM_SLEEF=1
-	-DPROTOBUF_PROTOC_EXECUTABLE=$(command -v protoc)
-	-DCAFFE2_CUSTOM_PROTOC_EXECUTABLE=$(command -v protoc)
-	-DINTERN_DISABLE_ONNX=1
 	"
 
 	LDFLAGS+=" -llog"
