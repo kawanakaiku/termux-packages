@@ -66,5 +66,5 @@ termux_step_pre_configure() {
 }
 
 termux_step_make_install() {
-	cross-pip -v install "$TERMUX_PKG_SRCDIR"
+	cross-pip -v install --prefix $TERMUX_PREFIX "$TERMUX_PKG_SRCDIR"
 }
