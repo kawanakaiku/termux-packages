@@ -69,11 +69,7 @@ termux_step_pre_configure() {
 	ln -s "$TERMUX_PKG_BUILDDIR" build
 }
 
-_termux_step_configure() {
-	:
-}
-
-_termux_step_make() {
+termux_step_make() {
 	:
 }
 
