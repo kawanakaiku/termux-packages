@@ -62,6 +62,8 @@ termux_step_pre_configure() {
 	-DPROTOBUF_PROTOC_EXECUTABLE=$(command -v protoc)
 	-DCAFFE2_CUSTOM_PROTOC_EXECUTABLE=$(command -v protoc)
 	"
+
+	LDFLAGS+=" -llog"
 	
 	ln -s "$TERMUX_PKG_BUILDDIR" build
 }
