@@ -61,6 +61,7 @@ termux_step_pre_configure() {
 	-DNATIVE_BUILD_DIR=${TERMUX_PKG_HOSTBUILD_DIR}
 	-DPROTOBUF_PROTOC_EXECUTABLE=$(command -v protoc)
 	-DCAFFE2_CUSTOM_PROTOC_EXECUTABLE=$(command -v protoc)
+	-DONNX_ML=0
 	"
 
 	LDFLAGS+=" -llog"
