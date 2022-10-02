@@ -65,10 +65,6 @@ termux_step_pre_configure() {
 	ln -s "$TERMUX_PKG_BUILDDIR" build
 }
 
-termux_step_make() {
-	:
-}
-
 termux_step_make_install() {
 	cross-pip -v install "$TERMUX_PKG_SRCDIR"
 }
