@@ -53,6 +53,7 @@ termux_step_pre_configure() {
 	
 	-DANDROID_NO_TERMUX=OFF
 	-DOpenBLAS_INCLUDE_DIR=${TERMUX_PREFIX}/include/openblas
+	-DNATIVE_BUILD_DIR=${TERMUX_PKG_HOSTBUILD_DIR}
 	"
 
 	LDFLAGS+=" -llog"
