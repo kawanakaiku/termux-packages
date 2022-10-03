@@ -1,0 +1,21 @@
+diff -uNr pytorch/torch/csrc/utils/python_arg_parser.h pytorch.mod/torch/csrc/utils/python_arg_parser.h
+--- pytorch/torch/csrc/utils/python_arg_parser.h	2022-10-03 19:00:05.000000000 +0900
++++ pytorch.mod/torch/csrc/utils/python_arg_parser.h	2022-10-03 20:58:35.888508269 +0900
+@@ -421,7 +421,7 @@
+         res[idx] = THPUtils_unpackIndex(obj);
+       }
+     } catch (const std::exception &e) {
+-      throw TypeError("%s(): argument '%s' must be %s, but found element of type %s at pos %ld",
++      throw TypeError("%s(): argument '%s' must be %s, but found element of type %s at pos %d",
+           signature.name.c_str(), signature.params[i].name.c_str(),
+           signature.params[i].type_name().c_str(), Py_TYPE(obj)->tp_name, idx + 1);
+     }
+@@ -448,7 +448,7 @@
+     try {
+       res[idx] = THPUtils_unpackDouble(obj);
+     } catch (const std::exception &e) {
+-      throw TypeError("%s(): argument '%s' must be %s, but found element of type %s at pos %ld",
++      throw TypeError("%s(): argument '%s' must be %s, but found element of type %s at pos %d",
+           signature.name.c_str(), signature.params[i].name.c_str(),
+           signature.params[i].type_name().c_str(), Py_TYPE(obj)->tp_name, idx + 1);
+     }
