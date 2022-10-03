@@ -63,13 +63,17 @@ termux_step_pre_configure() {
 
 	LDFLAGS+=" -llog"
 	#CXXFLAGS+=" -I${TERMUX_STANDALONE_TOOLCHAIN}/sysroot/usr/include/${TERMUX_ARCH}-linux-android$( if test $TERMUX_ARCH = arm; then echo eabi; fi )"
+	
+	# /home/builder/.termux-build/_cache/android-r25b-api-24-v0/sysroot/usr/include/linux/types.h:21:10: fatal error: 'asm/types.h' file not found
+	ln -s ${TERMUX_STANDALONE_TOOLCHAIN}/sysroot/usr/include/${TERMUX_ARCH}-linux-android$( if test $TERMUX_ARCH = arm; then echo eabi; fi )/asm
 
 	# /home/builder/.termux-build/python-torch/src/third_party/fbgemm/third_party/asmjit/src/asmjit/core/../core/operand.h:910:79: error: use of bitwise '&' with boolean operands [-Werror,-Wbitwise-instead-of-logical]
-	CXXFLAGS+=" -Wbitwise-instead-of-logical"
+	#CXXFLAGS+=" -Wbitwise-instead-of-logical"
 	
 	ln -s "$TERMUX_PKG_BUILDDIR" build
 }
 
 termux_step_make_install() {
 	cross-pip -v install --prefix $TERMUX_PREFIX "$TERMUX_PKG_SRCDIR"
+	ln -s ${PREFIX}/lib/python3.10/site-packages/torch/lib/*.so ${PREFIX}/lib
 }
