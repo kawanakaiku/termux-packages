@@ -15,6 +15,8 @@ termux_step_post_get_source() {
 termux_step_host_build() {
 	cmake "$TERMUX_PKG_SRCDIR/third_party/sleef"
 	make -j "$TERMUX_MAKE_PROCESSES" mkrename mkrename_gnuabi mkmasked_gnuabi mkalias mkdisp
+echo finding:
+find $TERMUX_PREFIX
 }
 
 termux_step_pre_configure() {
