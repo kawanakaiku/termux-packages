@@ -63,7 +63,7 @@ termux_step_pre_configure() {
 	#CXXFLAGS+=" -I${TERMUX_STANDALONE_TOOLCHAIN}/sysroot/usr/include/${TERMUX_ARCH}-linux-android$( if test $TERMUX_ARCH = arm; then echo eabi; fi )"
 
 	# /home/builder/.termux-build/python-torch/src/third_party/fbgemm/third_party/asmjit/src/asmjit/core/../core/operand.h:910:79: error: use of bitwise '&' with boolean operands [-Werror,-Wbitwise-instead-of-logical]
-	CXXFLAGS+=" -Wno-bitwise-instead-of-logical"
+	CXXFLAGS+=" -Wbitwise-instead-of-logical"
 	
 	ln -s "$TERMUX_PKG_BUILDDIR" build
 }
