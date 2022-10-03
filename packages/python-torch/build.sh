@@ -59,7 +59,8 @@ termux_step_pre_configure() {
 	-DBUILD_CUSTOM_PROTOBUF=OFF
 	-DPROTOBUF_PROTOC_EXECUTABLE=$(command -v protoc)	
 	-DCAFFE2_CUSTOM_PROTOC_EXECUTABLE=$(command -v protoc)
-	-DDISABLE_AVX2=True
+	-DCXX_AVX512_FOUND=False
+	-DCXX_AVX2_FOUND=False
 	"
 
 	LDFLAGS+=" -llog -lpython${_PYTHON_VERSION}"
