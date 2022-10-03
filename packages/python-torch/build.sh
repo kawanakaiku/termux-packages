@@ -61,7 +61,7 @@ termux_step_pre_configure() {
 	-DCAFFE2_CUSTOM_PROTOC_EXECUTABLE=$(command -v protoc)
 	"
 
-	LDFLAGS+=" -llog"
+	LDFLAGS+=" -llog -lpython${_PYTHON_VERSION}"
 	#CXXFLAGS+=" -I${TERMUX_STANDALONE_TOOLCHAIN}/sysroot/usr/include/${TERMUX_ARCH}-linux-android$( if test $TERMUX_ARCH = arm; then echo eabi; fi )"
 	
 	# /home/builder/.termux-build/_cache/android-r25b-api-24-v0/sysroot/usr/include/linux/types.h:21:10: fatal error: 'asm/types.h' file not found
