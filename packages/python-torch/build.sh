@@ -32,6 +32,7 @@ termux_step_pre_configure() {
 	termux_setup_protobuf
 	
 	build-pip install -U pyyaml numpy typing_extensions
+	cross-pip install -U typing_extensions
 
 	find "$TERMUX_PKG_SRCDIR" -name CMakeLists.txt -o -name '*.cmake' | \
 		xargs -n 1 sed -i \
@@ -76,7 +77,7 @@ termux_step_pre_configure() {
 }
 
 termux_step_make_install() {
-	cross-pip -v install "$TERMUX_PKG_SRCDIR"
-	mv ${_CROSSENV_PREFIX}/cross/lib/python${_PYTHON_VERSION}/site-packages/{torch-*-info,torch,torchgen,caffe2} ${PREFIX}/lib/python3.10/site-packages
+	cross-pip -v install --prefix $TERMUX_PREFIX "$TERMUX_PKG_SRCDIR"
+	#mv ${_CROSSENV_PREFIX}/cross/lib/python${_PYTHON_VERSION}/site-packages/{torch-*-info,torch,torchgen,caffe2} ${PREFIX}/lib/python3.10/site-packages
 	ln -s ${PREFIX}/lib/python3.10/site-packages/torch/lib/*.so ${PREFIX}/lib
 }
