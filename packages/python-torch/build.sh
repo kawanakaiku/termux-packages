@@ -75,6 +75,9 @@ termux_step_pre_configure() {
 	# /home/builder/.termux-build/python-torch/src/third_party/fbgemm/third_party/asmjit/src/asmjit/core/../core/operand.h:910:79: error: use of bitwise '&' with boolean operands [-Werror,-Wbitwise-instead-of-logical]
 	#CXXFLAGS+=" -Wbitwise-instead-of-logical"
 	
+	# ImportError: dlopen failed: cannot locate symbol "_ZNK3c1011DynamicType8fallbackEv" referenced by "/data/data/com.termux/files/usr/lib/python3.10/site-packages/torch/lib/libtorch_python.so"...
+	CXXFLAGS=" -DC10_MOBILE"
+	
 	ln -s "$TERMUX_PKG_BUILDDIR" build
 }
 
