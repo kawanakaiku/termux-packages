@@ -76,7 +76,7 @@ termux_step_pre_configure() {
 	#CXXFLAGS+=" -Wbitwise-instead-of-logical"
 	
 	# ImportError: dlopen failed: cannot locate symbol "_ZNK3c1011DynamicType8fallbackEv" referenced by "/data/data/com.termux/files/usr/lib/python3.10/site-packages/torch/lib/libtorch_python.so"...
-	CXXFLAGS=" -DC10_MOBILE"
+	CXXFLAGS+=" -DC10_MOBILE"
 	
 	ln -s "$TERMUX_PKG_BUILDDIR" build
 }
