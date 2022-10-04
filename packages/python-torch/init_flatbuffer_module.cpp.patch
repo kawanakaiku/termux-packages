@@ -1,6 +1,5 @@
-diff -uNr pytorch/torch/csrc/init_flatbuffer_module.cpp pytorch.mod/torch/csrc/init_flatbuffer_module.cpp
---- pytorch/torch/csrc/init_flatbuffer_module.cpp	2022-10-05 07:30:30.753827688 +0900
-+++ pytorch.mod/torch/csrc/init_flatbuffer_module.cpp	2022-10-05 07:30:11.778105163 +0900
+--- pytorch/torch/csrc/init_flatbuffer_module.cpp 	2022-10-05 07:44:47.150672291 +0900
++++ pytorch.mod/torch/csrc/init_flatbuffer_module.cpp	2022-10-05 07:45:56.210672265 +0900
 @@ -27,7 +27,7 @@
    std::shared_ptr<char> bytes_copy(
        static_cast<char*>(_aligned_malloc(size, FLATBUFFERS_MAX_ALIGNMENT)),
