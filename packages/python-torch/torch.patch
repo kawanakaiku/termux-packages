@@ -6,7 +6,7 @@ diff -uNr pytorch-v1.12.1/torch/csrc/init_flatbuffer_module.cpp pytorch-v1.12.1.
        static_cast<char*>(_aligned_malloc(size, FLATBUFFERS_MAX_ALIGNMENT)),
        _aligned_free);
 -#elif defined(__APPLE__)
-+#elif defined(__APPLE__) || defined(__ANDROID__)
++#elif defined(__APPLE__) && !defined(__ANDROID__)
    void* p;
    ::posix_memalign(&p, FLATBUFFERS_MAX_ALIGNMENT, size);
    TORCH_INTERNAL_ASSERT(p, "Could not allocate memory for flatbuffer");
