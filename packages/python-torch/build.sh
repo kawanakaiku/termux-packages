@@ -15,8 +15,6 @@ termux_step_post_get_source() {
 termux_step_host_build() {
 	cmake "$TERMUX_PKG_SRCDIR/third_party/sleef"
 	make -j "$TERMUX_MAKE_PROCESSES" mkrename mkrename_gnuabi mkmasked_gnuabi mkalias mkdisp
-echo finding:
-find $TERMUX_PREFIX
 }
 
 termux_step_pre_configure() {
@@ -73,8 +71,6 @@ termux_step_pre_configure() {
 
 	# /home/builder/.termux-build/python-torch/src/third_party/fbgemm/third_party/asmjit/src/asmjit/core/../core/operand.h:910:79: error: use of bitwise '&' with boolean operands [-Werror,-Wbitwise-instead-of-logical]
 	#CXXFLAGS+=" -Wbitwise-instead-of-logical"
-
-CXXFLAGS="-std=c11 $CXXFLAGS"
 	
 	ln -s "$TERMUX_PKG_BUILDDIR" build
 }
