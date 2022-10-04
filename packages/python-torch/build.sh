@@ -73,6 +73,8 @@ termux_step_pre_configure() {
 
 	# /home/builder/.termux-build/python-torch/src/third_party/fbgemm/third_party/asmjit/src/asmjit/core/../core/operand.h:910:79: error: use of bitwise '&' with boolean operands [-Werror,-Wbitwise-instead-of-logical]
 	#CXXFLAGS+=" -Wbitwise-instead-of-logical"
+
+CXXFLAGS="-std=c11 $CXXFLAGS"
 	
 	ln -s "$TERMUX_PKG_BUILDDIR" build
 }
