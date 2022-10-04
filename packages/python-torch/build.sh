@@ -4,7 +4,7 @@ TERMUX_PKG_LICENSE="BSD 3-Clause"
 TERMUX_PKG_MAINTAINER="@termux"
 TERMUX_PKG_VERSION=1.12.1
 TERMUX_PKG_SRCURL=https://github.com/pytorch/pytorch.git
-TERMUX_PKG_DEPENDS="python, python-numpy, libprotobuf, libopenblas"
+TERMUX_PKG_DEPENDS="python, python-numpy, libprotobuf, libopenblas, libzmq, ffmpeg, opencv"
 #TERMUX_PKG_BUILD_IN_SRC=true
 TERMUX_PKG_HOSTBUILD=true
 
@@ -52,6 +52,9 @@ termux_step_pre_configure() {
 	-DPYTHON_LIBRARY=${TERMUX_PREFIX}/lib//libpython${_PYTHON_VERSION}.so
 	-DTORCH_BUILD_VERSION=${TERMUX_PKG_VERSION}
 	-DUSE_NUMPY=True
+	-DUSE_OPENCV=True
+	-DUSE_FFMPEG=True
+	-DUSE_ZMQ=True
 	
 	-DANDROID_NO_TERMUX=OFF
 	-DOpenBLAS_INCLUDE_DIR=${TERMUX_PREFIX}/include/openblas
@@ -76,6 +79,7 @@ termux_step_pre_configure() {
 }
 
 termux_step_make_install() {
-	cross-pip -v install --prefix $TERMUX_PREFIX "$TERMUX_PKG_SRCDIR"
+	cross-pip -v install "$TERMUX_PKG_SRCDIR"
+	mv ${_CROSSENV_PREFIX}/cross/lib/python${_PYTHON_VERSION}/site-packages/{torch-*-info,torch,torchgen,caffe2} ${PREFIX}/lib/python3.10/site-packages
 	ln -s ${PREFIX}/lib/python3.10/site-packages/torch/lib/*.so ${PREFIX}/lib
 }
