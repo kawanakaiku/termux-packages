@@ -82,7 +82,7 @@ termux_step_make_install() {
 	ln -s ${PREFIX}/lib/python3.10/site-packages/torch/lib/*.so ${PREFIX}/lib
 }
 
-termux_step_create_subpkg_debscripts() {
+termux_step_create_debscripts() {
 	echo "#!$TERMUX_PREFIX/bin/sh" > postinst
 	echo "pip3 install typing_extensions" >> postinst
 }
