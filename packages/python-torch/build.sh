@@ -4,7 +4,7 @@ TERMUX_PKG_LICENSE="BSD 3-Clause"
 TERMUX_PKG_MAINTAINER="@termux"
 TERMUX_PKG_VERSION=1.12.1
 TERMUX_PKG_SRCURL=https://github.com/pytorch/pytorch.git
-TERMUX_PKG_DEPENDS="python, python-numpy, libopenblas, libprotobuf, libzmq, ffmpeg, opencv"
+TERMUX_PKG_DEPENDS="python, python-numpy, libopenblas, libprotobuf, libzmq, ffmpeg, opencv, openmpi"
 #TERMUX_PKG_BUILD_IN_SRC=true
 TERMUX_PKG_HOSTBUILD=true
 
