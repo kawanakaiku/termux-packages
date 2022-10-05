@@ -7,6 +7,7 @@ TERMUX_PKG_SRCURL=https://github.com/pytorch/pytorch.git
 TERMUX_PKG_DEPENDS="python, python-numpy, libopenblas, libprotobuf, libzmq, ffmpeg, opencv, openmpi"
 #TERMUX_PKG_BUILD_IN_SRC=true
 TERMUX_PKG_HOSTBUILD=true
+TERMUX_PKG_RM_AFTER_INSTALL="lib/pkgconfig/sleef.pc"
 
 termux_step_post_get_source() {
 	termux_setup_cmake
