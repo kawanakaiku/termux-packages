@@ -6,6 +6,7 @@ TERMUX_PKG_VERSION=1.12.1
 TERMUX_PKG_SRCURL=https://github.com/pytorch/pytorch.git
 TERMUX_PKG_DEPENDS="python, python-numpy, libopenblas, libprotobuf, libzmq, ffmpeg, opencv"
 TERMUX_PKG_HOSTBUILD=true
+
 TERMUX_PKG_RM_AFTER_INSTALL="lib/pkgconfig/sleef.pc"
 
 termux_step_post_get_source() {
@@ -38,6 +39,8 @@ termux_step_pre_configure() {
 		xargs -n 1 sed -i \
 		-e 's/\([^A-Za-z0-9_]ANDROID\)\([^A-Za-z0-9_]\)/\1_NO_TERMUX\2/g' \
 		-e 's/\([^A-Za-z0-9_]ANDROID\)$/\1_NO_TERMUX/g'
+
+	LDFLAGS+=" -llog -lpython${_PYTHON_VERSION}"
 	
 	TERMUX_PKG_EXTRA_CONFIGURE_ARGS="
 	-DBUILD_PYTHON=ON
@@ -64,12 +67,15 @@ termux_step_pre_configure() {
 	-DCXX_AVX2_FOUND=OFF
 	"
 	
+	# to build x86_64 version anyway
 	# /home/builder/.termux-build/python-torch/src/third_party/fbgemm/third_party/asmjit/src/asmjit/core/../core/operand.h:910:79: error: use of bitwise '&' with boolean operands [-Werror,-Wbitwise-instead-of-logical]
 	TERMUX_PKG_EXTRA_CONFIGURE_ARGS+="
 	-DCAFFE2_COMPILER_SUPPORTS_AVX512_EXTENSIONS=OFF
 	"
-
-	LDFLAGS+=" -llog -lpython${_PYTHON_VERSION}"
+	# /home/builder/.termux-build/python-torch/src/torch/csrc/jit/codegen/onednn/graph_helper.h:3:10: fatal error: 'oneapi/dnnl/dnnl_graph.hpp' file not found
+	TERMUX_PKG_EXTRA_CONFIGURE_ARGS+="
+	-BUILD_ONEDNN_GRAPH=OFF
+	"
 	
 	# /home/builder/.termux-build/_cache/android-r25b-api-24-v0/sysroot/usr/include/linux/types.h:21:10: fatal error: 'asm/types.h' file not found
 	ln -s ${TERMUX_STANDALONE_TOOLCHAIN}/sysroot/usr/include/${TERMUX_ARCH}-linux-android$( if test $TERMUX_ARCH = arm; then echo eabi; fi )/asm
