@@ -4,10 +4,15 @@ TERMUX_PKG_LICENSE="BSD 3-Clause"
 TERMUX_PKG_MAINTAINER="@termux"
 TERMUX_PKG_VERSION=1.12.1
 TERMUX_PKG_SRCURL=https://github.com/pytorch/pytorch.git
-TERMUX_PKG_DEPENDS="python, python-numpy, libopenblas, libprotobuf, libzmq, ffmpeg, opencv, openmpi"
+TERMUX_PKG_DEPENDS="python, python-numpy, libopenblas, libprotobuf, libzmq, ffmpeg, opencv"
 #TERMUX_PKG_BUILD_IN_SRC=true
 TERMUX_PKG_HOSTBUILD=true
+
+# /home/builder/.termux-build/python-torch/src/third_party/fbgemm/third_party/asmjit/src/asmjit/core/../core/operand.h:910:79: error: use of bitwise '&' with boolean operands [-Werror,-Wbitwise-instead-of-logical]
+TERMUX_PKG_BLACKLISTED_ARCHES="x86_64"
+
 TERMUX_PKG_RM_AFTER_INSTALL="lib/pkgconfig/sleef.pc"
+
 
 termux_step_post_get_source() {
 	termux_setup_cmake
@@ -63,11 +68,6 @@ termux_step_pre_configure() {
 	-DCAFFE2_CUSTOM_PROTOC_EXECUTABLE=$(command -v protoc)
 	-DCXX_AVX512_FOUND=False
 	-DCXX_AVX2_FOUND=False
-	"
-
-	# /home/builder/.termux-build/python-torch/src/third_party/fbgemm/third_party/asmjit/src/asmjit/core/../core/operand.h:910:79: error: use of bitwise '&' with boolean operands [-Werror,-Wbitwise-instead-of-logical]
-	TERMUX_PKG_EXTRA_CONFIGURE_ARGS+="
-	-USE_FBGEMM=False
 	"
 
 	LDFLAGS+=" -llog -lpython${_PYTHON_VERSION}"
