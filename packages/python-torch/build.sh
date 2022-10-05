@@ -5,14 +5,8 @@ TERMUX_PKG_MAINTAINER="@termux"
 TERMUX_PKG_VERSION=1.12.1
 TERMUX_PKG_SRCURL=https://github.com/pytorch/pytorch.git
 TERMUX_PKG_DEPENDS="python, python-numpy, libopenblas, libprotobuf, libzmq, ffmpeg, opencv"
-#TERMUX_PKG_BUILD_IN_SRC=true
 TERMUX_PKG_HOSTBUILD=true
-
-# /home/builder/.termux-build/python-torch/src/third_party/fbgemm/third_party/asmjit/src/asmjit/core/../core/operand.h:910:79: error: use of bitwise '&' with boolean operands [-Werror,-Wbitwise-instead-of-logical]
-TERMUX_PKG_BLACKLISTED_ARCHES="x86_64"
-
 TERMUX_PKG_RM_AFTER_INSTALL="lib/pkgconfig/sleef.pc"
-
 
 termux_step_post_get_source() {
 	termux_setup_cmake
@@ -46,8 +40,8 @@ termux_step_pre_configure() {
 		-e 's/\([^A-Za-z0-9_]ANDROID\)$/\1_NO_TERMUX/g'
 	
 	TERMUX_PKG_EXTRA_CONFIGURE_ARGS="
-	-DBUILD_PYTHON=True
-	-DBUILD_TEST=False
+	-DBUILD_PYTHON=ON
+	-DBUILD_TEST=OFF
 	-DCMAKE_BUILD_TYPE=Release
 	-DCMAKE_INSTALL_PREFIX=${TERMUX_PKG_SRCDIR}/torch
 	-DCMAKE_PREFIX_PATH=${TERMUX_PREFIX}/lib/python${_PYTHON_VERSION}/site-packages
@@ -56,18 +50,23 @@ termux_step_pre_configure() {
 	-DPYTHON_INCLUDE_DIR=${TERMUX_PREFIX}/include/python${_PYTHON_VERSION}
 	-DPYTHON_LIBRARY=${TERMUX_PREFIX}/lib//libpython${_PYTHON_VERSION}.so
 	-DTORCH_BUILD_VERSION=${TERMUX_PKG_VERSION}
-	-DUSE_NUMPY=True
-	-DUSE_OPENCV=True
-	-DUSE_FFMPEG=True
-	-DUSE_ZMQ=True
+	-DUSE_NUMPY=ON
+	-DUSE_OPENCV=ON
+	-DUSE_FFMPEG=ON
+	-DUSE_ZMQ=ON
 	-DANDROID_NO_TERMUX=OFF
 	-DOpenBLAS_INCLUDE_DIR=${TERMUX_PREFIX}/include/openblas
 	-DNATIVE_BUILD_DIR=${TERMUX_PKG_HOSTBUILD_DIR}
 	-DBUILD_CUSTOM_PROTOBUF=OFF
 	-DPROTOBUF_PROTOC_EXECUTABLE=$(command -v protoc)	
 	-DCAFFE2_CUSTOM_PROTOC_EXECUTABLE=$(command -v protoc)
-	-DCXX_AVX512_FOUND=False
-	-DCXX_AVX2_FOUND=False
+	-DCXX_AVX512_FOUND=OFF
+	-DCXX_AVX2_FOUND=OFF
+	"
+	
+	# /home/builder/.termux-build/python-torch/src/third_party/fbgemm/third_party/asmjit/src/asmjit/core/../core/operand.h:910:79: error: use of bitwise '&' with boolean operands [-Werror,-Wbitwise-instead-of-logical]
+	TERMUX_PKG_EXTRA_CONFIGURE_ARGS+="
+	-DCAFFE2_COMPILER_SUPPORTS_AVX512_EXTENSIONS=OFF
 	"
 
 	LDFLAGS+=" -llog -lpython${_PYTHON_VERSION}"
