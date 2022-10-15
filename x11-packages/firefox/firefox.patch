@@ -1,31 +1,3 @@
-diff -uNr firefox-105.0.3/browser/app/profile/firefox.js firefox-105.0.3.mod/browser/app/profile/firefox.js
---- firefox-105.0.3/browser/app/profile/firefox.js	2022-10-08 00:40:07.000000000 +0900
-+++ firefox-105.0.3.mod/browser/app/profile/firefox.js	2022-10-16 01:40:01.711797988 +0900
-@@ -1800,7 +1800,7 @@
- 
- // Telemetry settings.
- // Determines if Telemetry pings can be archived locally.
--pref("toolkit.telemetry.archive.enabled", true);
-+pref("toolkit.telemetry.archive.enabled", false);
- // Enables sending the shutdown ping when Firefox shuts down.
- pref("toolkit.telemetry.shutdownPingSender.enabled", true);
- // Enables sending the shutdown ping using the pingsender from the first session.
-@@ -2109,7 +2109,7 @@
- pref("browser.migrate.showBookmarksToolbarAfterMigration", true);
- 
- pref("extensions.pocket.api", "api.getpocket.com");
--pref("extensions.pocket.enabled", true);
-+pref("extensions.pocket.enabled", false);
- pref("extensions.pocket.oAuthConsumerKey", "40249-e88c401e1b1f2242d9e441c4");
- pref("extensions.pocket.site", "getpocket.com");
- pref("extensions.pocket.onSaveRecs", true);
-@@ -2718,3 +2718,6 @@
- // If the user has seen the Firefox View feature tour this value reflects the tour
- // message id, the id of the last screen they saw, and whether they completed the tour
- pref("browser.firefox-view.feature-tour", "{\"message\":\"FIREFOX_VIEW_FEATURE_TOUR\",\"screen\":\"\",\"complete\":true}");
-+
-+pref("datareporting.healthreport.service.enabled", false);
-+pref("toolkit.telemetry.enabled", false);
 diff -uNr firefox-105.0.3/browser/installer/package-manifest.in firefox-105.0.3.mod/browser/installer/package-manifest.in
 --- firefox-105.0.3/browser/installer/package-manifest.in	2022-10-08 00:25:40.000000000 +0900
 +++ firefox-105.0.3.mod/browser/installer/package-manifest.in	2022-10-15 22:40:20.473582334 +0900
@@ -91,27 +63,6 @@ diff -uNr firefox-105.0.3/build/moz.configure/pkg.configure firefox-105.0.3.mod/
          return namespace(
              PKG_CONFIG_PATH="",
              PKG_CONFIG_SYSROOT_DIR=sysroot_path,
-diff -uNr firefox-105.0.3/build/moz.configure/rust.configure firefox-105.0.3.mod/build/moz.configure/rust.configure
---- firefox-105.0.3/build/moz.configure/rust.configure	2022-10-07 22:37:47.000000000 +0900
-+++ firefox-105.0.3.mod/build/moz.configure/rust.configure	2022-10-15 20:41:38.791916336 +0900
-@@ -399,7 +399,7 @@
-     rustc_target = find_candidate(candidates)
- 
-     if rustc_target is None:
--        die("Don't know how to translate {} for rustc".format(host_or_target.alias))
-+        rustc_target = "%TERMUX_CARGO_TARGET_NAME%"
- 
-     return rustc_target
- 
-@@ -584,8 +584,6 @@
- 
- # ==============================================================
- 
--option(env="RUSTFLAGS", nargs=1, help="Rust compiler flags")
--set_config("RUSTFLAGS", depends("RUSTFLAGS")(lambda flags: flags))
- 
- 
- # Rust compiler flags
 diff -uNr firefox-105.0.3/build/moz.configure/toolchain.configure firefox-105.0.3.mod/build/moz.configure/toolchain.configure
 --- firefox-105.0.3/build/moz.configure/toolchain.configure	2022-10-08 00:40:07.000000000 +0900
 +++ firefox-105.0.3.mod/build/moz.configure/toolchain.configure	2022-10-15 17:25:19.398719772 +0900
@@ -212,86 +163,6 @@ diff -uNr firefox-105.0.3/ipc/chromium/src/base/lock_impl_posix.cc firefox-105.0
  #  define PRIORITY_INHERITANCE_LOCKS_POSSIBLE() 0
  #else
  #  define PRIORITY_INHERITANCE_LOCKS_POSSIBLE() 1
-diff -uNr firefox-105.0.3/ipc/chromium/src/base/shared_memory_posix.cc firefox-105.0.3.mod/ipc/chromium/src/base/shared_memory_posix.cc
---- firefox-105.0.3/ipc/chromium/src/base/shared_memory_posix.cc	2022-10-08 00:25:40.000000000 +0900
-+++ firefox-105.0.3.mod/ipc/chromium/src/base/shared_memory_posix.cc	2022-10-16 01:32:09.441085153 +0900
-@@ -40,6 +40,65 @@
- #include "mozilla/UniquePtrExtensions.h"
- #include "prenv.h"
- 
-+static int shm_unlink(const char *name) {
-+    size_t namelen;
-+    char *fname;
-+
-+    /* Construct the filename.  */
-+    while (name[0] == '/') ++name;
-+
-+    if (name[0] == '\0') {
-+        /* The name "/" is not supported.  */
-+        errno = EINVAL;
-+        return -1;
-+    }
-+
-+    namelen = strlen(name);
-+    fname = (char *) alloca(sizeof("@TERMUX_PREFIX@/tmp/") - 1 + namelen + 1);
-+    memcpy(fname, "@TERMUX_PREFIX@/tmp/", sizeof("@TERMUX_PREFIX@/tmp/") - 1);
-+    memcpy(fname + sizeof("@TERMUX_PREFIX@/tmp/") - 1, name, namelen + 1);
-+
-+    return unlink(fname);
-+}
-+
-+static int shm_open(const char *name, int oflag, mode_t mode) {
-+    size_t namelen;
-+    char *fname;
-+    int fd;
-+
-+    /* Construct the filename.  */
-+    while (name[0] == '/') ++name;
-+
-+    if (name[0] == '\0') {
-+        /* The name "/" is not supported.  */
-+        errno = EINVAL;
-+        return -1;
-+    }
-+
-+    namelen = strlen(name);
-+    fname = (char *) alloca(sizeof("@TERMUX_PREFIX@/tmp/") - 1 + namelen + 1);
-+    memcpy(fname, "@TERMUX_PREFIX@/tmp/", sizeof("@TERMUX_PREFIX@/tmp/") - 1);
-+    memcpy(fname + sizeof("@TERMUX_PREFIX@/tmp/") - 1, name, namelen + 1);
-+
-+    fd = open(fname, oflag, mode);
-+    if (fd != -1) {
-+        /* We got a descriptor.  Now set the FD_CLOEXEC bit.  */
-+        int flags = fcntl(fd, F_GETFD, 0);
-+        flags |= FD_CLOEXEC;
-+        flags = fcntl(fd, F_SETFD, flags);
-+
-+        if (flags == -1) {
-+            /* Something went wrong.  We cannot return the descriptor.  */
-+            int save_errno = errno;
-+            close(fd);
-+            fd = -1;
-+            errno = save_errno;
-+        }
-+    }
-+
-+    return fd;
-+}
-+
- namespace base {
- 
- void SharedMemory::MappingDeleter::operator()(void* ptr) {
-@@ -195,6 +254,10 @@
- #    elif defined(__FreeBSD__)
- #      define USE_MEMFD_CREATE 1
- 
-+#if defined(USE_MEMFD_CREATE) && defined(__TERMUX__)
-+#undef USE_MEMFD_CREATE
-+#endif
-+
- // FreeBSD's Capsicum framework allows irrevocably restricting the
- // operations permitted on a file descriptor.
- 
 diff -uNr firefox-105.0.3/memory/build/malloc_decls.h firefox-105.0.3.mod/memory/build/malloc_decls.h
 --- firefox-105.0.3/memory/build/malloc_decls.h	2022-10-07 22:37:53.000000000 +0900
 +++ firefox-105.0.3.mod/memory/build/malloc_decls.h	2022-10-15 09:48:55.157535800 +0900
