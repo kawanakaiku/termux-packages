@@ -50,6 +50,7 @@ PACKAGES+=" pandoc"
 PACKAGES+=" python3-docutils"
 PACKAGES+=" python3-recommonmark"
 PACKAGES+=" python3-sphinx"
+PACKAGES+=" python3-sphinxcontrib.qthelp"
 PACKAGES+=" scdoc"
 PACKAGES+=" texinfo"
 PACKAGES+=" xmlto"
@@ -215,6 +216,9 @@ PACKAGES+=" sqlite3"
 # Needed by packages in game repository
 PACKAGES+=" cvs"
 PACKAGES+=" python3-yaml"
+
+# Needed by gobject-introspection (termux_setup_gir).
+PACKAGES+=" bash-static"
 
 # Needed by apt.
 PACKAGES+=" triehash"
