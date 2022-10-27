@@ -12,6 +12,7 @@ TARGET=$TERMUX_HOST_PLATFORM
 "
 
 termux_step_pre_configure() {
+(unset sudo; sudo apt update; sudo apt install libtinfo5)
 termux_download \
 https://sourceforge.net/projects/fbc/files/FreeBASIC-1.09.0/Binaries-Linux/FreeBASIC-1.09.0-linux-x86_64.tar.xz \
 ${TERMUX_PKG_TMPDIR}/FreeBASIC-linux-x86_64.tar.xz \
