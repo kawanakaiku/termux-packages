@@ -18,6 +18,6 @@ ${TERMUX_PKG_TMPDIR}/FreeBASIC-linux-x86_64.tar.xz \
 c8143b1207541ddcdf8d5d87f36a85a8bf6fdf85b3e6aee56323a0ecdacbc1e5
 _HOST_FBC=${TERMUX_PKG_TMPDIR}/host-fbc
 mkdir $_HOST_FBC
-tar xf FreeBASIC-linux-x86_64.tar.xz -C $_HOST_FBC --strip-components 1
+tar xf ${TERMUX_PKG_TMPDIR}/FreeBASIC-linux-x86_64.tar.xz -C $_HOST_FBC --strip-components 1
 PATH="$_HOST_FBC/bin:$PATH"
 }
