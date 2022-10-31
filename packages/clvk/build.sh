@@ -2,11 +2,10 @@ TERMUX_PKG_HOMEPAGE=https://github.com/kpet/clvk
 TERMUX_PKG_DESCRIPTION="Experimental implementation of OpenCL on Vulkan"
 TERMUX_PKG_LICENSE="Apache-2.0"
 TERMUX_PKG_MAINTAINER="@termux"
-_COMMIT=69edc5b3dc0c56f3d67afd8fd0edf1f1292cb310
-_COMMIT_DATE=20220924
-_COMMIT_TIME=093643
-TERMUX_PKG_VERSION="0.0.20220924.093643g69edc5b3"
-TERMUX_PKG_REVISION=1
+_COMMIT=c09218e05e08f60faa62c110f9e9998c90be0cd2
+_COMMIT_DATE=20221026
+_COMMIT_TIME=172341
+TERMUX_PKG_VERSION="0.0.20221026.172341gc09218e0"
 TERMUX_PKG_SRCURL=https://github.com/kpet/clvk.git
 TERMUX_PKG_GIT_BRANCH=main
 TERMUX_PKG_BUILD_DEPENDS="vulkan-headers, vulkan-loader-android"
@@ -46,11 +45,12 @@ TERMUX_PKG_EXTRA_CONFIGURE_ARGS+=" -DCLVK_CLSPV_ONLINE_COMPILER=ON"
 # clvk currently does not have proper versioning nor releases
 # Use dates and commits as versioning for now
 termux_pkg_auto_update() {
-	local latest_commit latest_commit_date_tz latest_commit_date latest_commit_time latest_version
-	latest_commit=$(curl -s https://api.github.com/repos/kpet/clvk/commits | jq .[].sha | head -1 | sed -e 's|\"||g')
+	local latest_commit_date_tz latest_commit_date latest_commit_time latest_version
+	local latest_commit=$(curl -s https://api.github.com/repos/kpet/clvk/commits | jq .[].sha | head -1 | sed -e 's|\"||g')
 
 	if [ -z "$latest_commit" ]; then
-		termux_error_exit "ERROR: Unable to get latest commit from upstream"
+		echo "WARN: Unable to get latest commit from upstream. Try again later." >&2
+		return 0
 	fi
 
 	if [ "$latest_commit" = "$_COMMIT" ]; then

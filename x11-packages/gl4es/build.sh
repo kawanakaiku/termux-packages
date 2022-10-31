@@ -2,10 +2,10 @@ TERMUX_PKG_HOMEPAGE=https://ptitseb.github.io/gl4es/
 TERMUX_PKG_DESCRIPTION="OpenGL driver for GLES devices"
 TERMUX_PKG_LICENSE="MIT"
 TERMUX_PKG_MAINTAINER="@termux"
-_COMMIT=57a68cba9c0c71f8ab18410932ccd2f96b198f3b
-_COMMIT_DATE=20220928
-_COMMIT_TIME=114551
-TERMUX_PKG_VERSION="1.1.4.20220928.114551g57a68cba"
+_COMMIT=43cebcb94efede09c1bd0dadb0c49a7b3cec3de5
+_COMMIT_DATE=20221001
+_COMMIT_TIME=101805
+TERMUX_PKG_VERSION="1.1.4.20221001.101805g43cebcb9"
 TERMUX_PKG_SRCURL=https://github.com/ptitSeb/gl4es.git
 TERMUX_PKG_GIT_BRANCH=master
 TERMUX_PKG_DEPENDS="libx11"
@@ -17,11 +17,12 @@ TERMUX_PKG_EXTRA_CONFIGURE_ARGS="
 
 # this should only be used until release new version
 termux_pkg_auto_update() {
-	local latest_commit latest_commit_date_tz latest_commit_date latest_commit_time latest_version
-	latest_commit=$(curl -s https://api.github.com/repos/ptitSeb/gl4es/commits | jq .[].sha | head -1 | sed -e 's|\"||g')
+	local latest_commit_date_tz latest_commit_date latest_commit_time latest_version
+	local latest_commit=$(curl -s https://api.github.com/repos/ptitSeb/gl4es/commits | jq .[].sha | head -1 | sed -e 's|\"||g')
 
 	if [ -z "$latest_commit" ]; then
-		termux_error_exit "ERROR: Unable to get latest commit from upstream"
+		echo "WARN: Unable to get latest commit from upstream. Try again later." >&2
+		return 0
 	fi
 
 	if [ "$latest_commit" = "$_COMMIT" ]; then

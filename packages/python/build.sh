@@ -2,11 +2,10 @@ TERMUX_PKG_HOMEPAGE=https://python.org/
 TERMUX_PKG_DESCRIPTION="Python 3 programming language intended to enable clear programs"
 TERMUX_PKG_LICENSE="PythonPL"
 TERMUX_PKG_MAINTAINER="@termux"
-_MAJOR_VERSION=3.10
-TERMUX_PKG_VERSION=${_MAJOR_VERSION}.7
-TERMUX_PKG_REVISION=1
+_MAJOR_VERSION=3.11
+TERMUX_PKG_VERSION=${_MAJOR_VERSION}.0
 TERMUX_PKG_SRCURL=https://www.python.org/ftp/python/${TERMUX_PKG_VERSION}/Python-${TERMUX_PKG_VERSION}.tar.xz
-TERMUX_PKG_SHA256=6eed8415b7516fb2f260906db5d48dd4c06acc0cb24a7d6cc15296a604dcdc48
+TERMUX_PKG_SHA256=a57dc82d77358617ba65b9841cee1e3b441f386c3789ddc0676eca077f2951c3
 TERMUX_PKG_DEPENDS="gdbm, libandroid-posix-semaphore, libandroid-support, libbz2, libcrypt, libexpat, libffi, liblzma, libsqlite, ncurses, ncurses-ui-libs, openssl, readline, zlib"
 TERMUX_PKG_RECOMMENDS="clang, make, pkg-config"
 TERMUX_PKG_SUGGESTS="python-tkinter"
@@ -64,6 +63,8 @@ termux_step_pre_configure() {
 		#    Fatal: you must define __ANDROID_API__
 		# if __ANDROID_API__ is not defined.
 		CPPFLAGS+=" -D__ANDROID_API__=$(getprop ro.build.version.sdk)"
+	else
+		TERMUX_PKG_EXTRA_CONFIGURE_ARGS+=" --with-build-python=python$_MAJOR_VERSION"
 	fi
 }
 
@@ -99,6 +100,7 @@ termux_step_create_debscripts() {
 	    rm -Rf ${TERMUX_PREFIX}/lib/python${_MAJOR_VERSION}/site-packages/pip-*.dist-info
 	fi
 
+	cd ${TERMUX_PREFIX}
 	${TERMUX_PREFIX}/bin/python3 -m ensurepip --upgrade --default-pip
 
 	exit 0

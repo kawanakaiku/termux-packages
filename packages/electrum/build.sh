@@ -3,6 +3,7 @@ TERMUX_PKG_DESCRIPTION="Electrum is a lightweight Bitcoin wallet"
 TERMUX_PKG_LICENSE="MIT"
 TERMUX_PKG_MAINTAINER="@termux"
 TERMUX_PKG_VERSION=4.3.1
+TERMUX_PKG_REVISION=1
 TERMUX_PKG_SRCURL=https://download.electrum.org/$TERMUX_PKG_VERSION/Electrum-$TERMUX_PKG_VERSION.tar.gz
 TERMUX_PKG_SHA256=a4086c1ca20c081dcebad253ae018d4fd3ca7d3717720c548ffc75eae04ad88b
 TERMUX_PKG_DEPENDS="python, libsecp256k1"
@@ -14,12 +15,6 @@ TERMUX_PKG_CONFLICTS="asciinema (<< 1.4.0-1)"
 
 _PYTHON_VERSION=$(. $TERMUX_SCRIPTDIR/packages/python/build.sh; echo $_MAJOR_VERSION)
 
-TERMUX_PKG_RM_AFTER_INSTALL="
-lib/python${_PYTHON_VERSION}/site-packages/__pycache__
-lib/python${_PYTHON_VERSION}/site-packages/easy-install.pth
-lib/python${_PYTHON_VERSION}/site-packages/site.py
-"
-
 termux_step_pre_configure() {
 	termux_setup_python_crossenv
 	pushd $TERMUX_PYTHON_CROSSENV_SRCDIR
@@ -29,6 +24,7 @@ termux_step_pre_configure() {
 		${_CROSSENV_PREFIX}
 	popd
 	. ${_CROSSENV_PREFIX}/bin/activate
+	build-pip install wheel
 }
 
 termux_step_make_install() {

@@ -4,21 +4,16 @@ TERMUX_PKG_DESCRIPTION="Provides cryptographic recipes and primitives to Python 
 TERMUX_PKG_LICENSE="custom"
 TERMUX_PKG_LICENSE_FILE="LICENSE, LICENSE.APACHE, LICENSE.BSD, LICENSE.PSF"
 TERMUX_PKG_MAINTAINER="@termux"
-TERMUX_PKG_VERSION=38.0.1
+TERMUX_PKG_VERSION="38.0.2"
+TERMUX_PKG_REVISION=1
 TERMUX_PKG_SRCURL=https://github.com/pyca/cryptography/archive/refs/tags/${TERMUX_PKG_VERSION}.tar.gz
-TERMUX_PKG_SHA256=4d2e2b3192cd3767bdb68c22dd40c07a1deb209a05daee21df74fbf2df8bfbed
+TERMUX_PKG_SHA256=71159f4294b07625703ffdb34b8d88e84b6b9e5c4ebc079503eebdc63b2aac28
 TERMUX_PKG_AUTO_UPDATE=true
 TERMUX_PKG_DEPENDS="openssl, python"
 TERMUX_PKG_BUILD_IN_SRC=true
 TERMUX_PKG_UPDATE_TAG_TYPE="newest-tag"
 
 _PYTHON_VERSION=$(. $TERMUX_SCRIPTDIR/packages/python/build.sh; echo $_MAJOR_VERSION)
-
-TERMUX_PKG_RM_AFTER_INSTALL="
-lib/python${_PYTHON_VERSION}/site-packages/__pycache__
-lib/python${_PYTHON_VERSION}/site-packages/easy-install.pth
-lib/python${_PYTHON_VERSION}/site-packages/site.py
-"
 
 termux_step_post_get_source() {
 	echo "Applying openssl-libs.diff"
@@ -38,7 +33,7 @@ termux_step_pre_configure() {
 	popd
 	. ${_CROSSENV_PREFIX}/bin/activate
 
-	build-pip install cffi setuptools-rust
+	build-pip install wheel cffi setuptools-rust
 }
 
 termux_step_make_install() {

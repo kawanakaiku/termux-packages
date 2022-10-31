@@ -3,6 +3,7 @@ TERMUX_PKG_DESCRIPTION="Acceptable password hashing for your software and your s
 TERMUX_PKG_LICENSE="Apache-2.0"
 TERMUX_PKG_MAINTAINER="@termux"
 TERMUX_PKG_VERSION=4.0.0
+TERMUX_PKG_REVISION=1
 TERMUX_PKG_SRCURL=https://pypi.io/packages/source/b/bcrypt/bcrypt-${TERMUX_PKG_VERSION}.tar.gz
 TERMUX_PKG_SHA256=c59c170fc9225faad04dde1ba61d85b413946e8ce2e5f5f5ff30dfd67283f319
 TERMUX_PKG_DEPENDS="python"
@@ -10,12 +11,6 @@ TERMUX_PKG_BUILD_DEPENDS="openssl"
 TERMUX_PKG_BUILD_IN_SRC=true
 
 _PYTHON_VERSION=$(. $TERMUX_SCRIPTDIR/packages/python/build.sh; echo $_MAJOR_VERSION)
-
-TERMUX_PKG_RM_AFTER_INSTALL="
-lib/python${_PYTHON_VERSION}/site-packages/__pycache__
-lib/python${_PYTHON_VERSION}/site-packages/easy-install.pth
-lib/python${_PYTHON_VERSION}/site-packages/site.py
-"
 
 termux_step_pre_configure() {
 	termux_setup_rust
@@ -29,7 +24,7 @@ termux_step_pre_configure() {
 	popd
 	. ${_CROSSENV_PREFIX}/bin/activate
 
-	build-pip install setuptools-rust
+	build-pip install wheel setuptools-rust
 }
 
 termux_step_make_install() {
