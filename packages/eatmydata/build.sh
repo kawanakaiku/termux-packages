@@ -8,5 +8,7 @@ TERMUX_PKG_SRCURL=https://github.com/stewartsmith/libeatmydata/releases/download
 TERMUX_PKG_BUILD_IN_SRC=true
 
 termux_step_pre_configure() {
-	sed -i -e '/pthread_testcancel/d' libeatmydata/libeatmydata.c
+	sed -i -e '1i #include <stdatomic.h>\nstatic atomic_flag event_thread_cancel;' libeatmydata/libeatmydata.c
+	sed -i -e 's|if (pthread_testcancel)|if (!atomic_flag_test_and_set(\&event_thread_cancel))|' libeatmydata/libeatmydata.c
+	sed -i -e 's|pthread_testcancel();|pthread_exit(NULL);|' libeatmydata/libeatmydata.c
 }
