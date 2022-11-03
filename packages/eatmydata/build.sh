@@ -12,3 +12,12 @@ termux_step_pre_configure() {
 	sed -i -e 's|if (pthread_testcancel)|if (!atomic_flag_test_and_set(\&event_thread_cancel))|' libeatmydata/libeatmydata.c
 	sed -i -e 's|pthread_testcancel();|pthread_exit(NULL);|' libeatmydata/libeatmydata.c
 }
+
+termux_step_post_make_install() {
+	mkdir -p $TERMUX_PREFIX/etc/profile.d
+	cat <<-SH > $TERMUX_PREFIX/etc/profile.d/eatmydata.sh
+	#!$TERMUX_PREFIX/bin/sh
+	export LD_PRELOAD="$TERMUX_PREFIX/lib/libeatmydata.so\${LD_PRELOAD:+:\${LD_PRELOAD}}"
+	SH
+	chmod 644 $TERMUX_PREFIX/etc/profile.d/eatmydata.sh
+}
