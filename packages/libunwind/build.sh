@@ -4,6 +4,7 @@ TERMUX_PKG_LICENSE="GPL-2.0"
 TERMUX_PKG_MAINTAINER="@kawanakaiku"
 TERMUX_PKG_VERSION=1.6.2
 TERMUX_PKG_SHA256=4a6aec666991fb45d0889c44aede8ad6eb108071c3554fcdff671f9c94794976
+TERMUX_PKG_DEPENDS="zlib"
 TERMUX_PKG_BREAKS="libunwind-dev"
 TERMUX_PKG_REPLACES="libunwind-dev"
 TERMUX_PKG_SRCURL=https://github.com/libunwind/libunwind/releases/download/v$TERMUX_PKG_VERSION/libunwind-$TERMUX_PKG_VERSION.tar.gz
