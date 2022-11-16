@@ -6,6 +6,7 @@ TERMUX_PKG_VERSION=107.0
 TERMUX_PKG_SRCURL=https://ftp.mozilla.org/pub/firefox/releases/${TERMUX_PKG_VERSION}/source/firefox-${TERMUX_PKG_VERSION}.source.tar.xz
 TERMUX_PKG_SHA256=8a562e5a397b57e9bf383c2988308ab494c5d28844e792c658fedea27756584a
 TERMUX_PKG_DEPENDS="at-spi2-atk, fontconfig, freetype, gdk-pixbuf, glib, gtk3, libandroid-shmem, libandroid-sysv-semaphore, libc++, libcairo, libevent, libffi, libice, libicu, libjpeg-turbo, libnspr, libnss, libpixman, libsm, libvpx, libwebp, libx11, libxcb, libxcomposite, libxcursor, libxdamage, libxext, libxfixes, libxi, libxrandr, libxrender, libxtst, pango"
+TERMUX_DEBUG_BUILD=true
 
 termux_step_post_get_source() {
 	local f="media/ffvpx/config_unix_aarch64.h"
