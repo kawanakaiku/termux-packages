@@ -73,6 +73,8 @@ termux_step_post_get_source() {
 }
 
 termux_step_host_build() {
+	/usr/bin/sudo apt update
+	/usr/bin/sudo apt install -y libfreetype6-dev
 	$TERMUX_PKG_SRCDIR/configure --without-x
 	make -j $TERMUX_MAKE_PROCESSES __tooldeps__ nls/all
 }
@@ -138,7 +140,6 @@ termux_step_pre_configure() {
 
 	if test $TERMUX_ARCH = i686 -o $TERMUX_ARCH = x86_64
 	then
-		/usr/bin/sudo apt update
 		/usr/bin/sudo apt install -y gcc-mingw-w64-${TERMUX_ARCH//_/-}-posix
 		f=$TERMUX_ARCH-w64-mingw32-gcc
 		TERMUX_PKG_EXTRA_CONFIGURE_ARGS+=" --with-mingw=$f"
