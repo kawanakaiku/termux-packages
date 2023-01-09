@@ -73,8 +73,9 @@ termux_step_post_get_source() {
 }
 
 termux_step_host_build() {
+	/usr/bin/sudo dpkg --add-architecture i386
 	/usr/bin/sudo apt update
-	/usr/bin/sudo apt install -y libfreetype6-dev
+	/usr/bin/sudo apt install -y libfreetype6-dev:i386
 	$TERMUX_PKG_SRCDIR/configure --without-x
 	make -j $TERMUX_MAKE_PROCESSES __tooldeps__ nls/all
 }
