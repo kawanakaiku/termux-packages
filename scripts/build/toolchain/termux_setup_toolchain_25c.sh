@@ -80,8 +80,8 @@ termux_setup_toolchain_25c() {
 	LDFLAGS+=" -Wl,--as-needed"
 
 	# Basic hardening.
-	CFLAGS+=" -fstack-protector-strong"
-	LDFLAGS+=" -Wl,-z,relro,-z,now"
+	#CFLAGS+=" -fstack-protector-strong"
+	#LDFLAGS+=" -Wl,-z,relro,-z,now"
 
 	if [ "$TERMUX_DEBUG_BUILD" = "true" ]; then
 		CFLAGS+=" -g3 -O1"
