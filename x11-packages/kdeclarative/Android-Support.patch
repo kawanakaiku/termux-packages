@@ -1,0 +1,11 @@
+diff -uNr a/metainfo.yaml b/metainfo.yaml
+--- a/metainfo.yaml	2023-01-07 11:22:29.000000000 +0900
++++ b/metainfo.yaml	2023-02-06 18:05:07.461557597 +0900
+@@ -8,6 +8,7 @@
+     - name: Windows
+     - name: macOS
+       note: The supported remote URLs depend on the set of KIO workers installed at runtime.
++    - name: Android
+ portingAid: false
+ deprecated: false
+ release: true

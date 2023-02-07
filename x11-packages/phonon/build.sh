@@ -1,0 +1,9 @@
+TERMUX_PKG_HOMEPAGE=https://www.kde.org/
+TERMUX_PKG_DESCRIPTION="multimedia framework from KDE using Qt 5"
+TERMUX_PKG_LICENSE="LGPL-2.1"
+TERMUX_PKG_MAINTAINER="@termux"
+TERMUX_PKG_VERSION=4.11.1
+TERMUX_PKG_SRCURL=https://github.com/KDE/phonon/archive/refs/tags/v$TERMUX_PKG_VERSION.tar.gz
+TERMUX_PKG_SHA256=94e782d1499a7b264122cf09aa559d6245b869d4c33462d82dd1eb294c132e1b
+TERMUX_PKG_DEPENDS="ecm, qt5-qtbase, pulseaudio, libcanberra, libdbusmenu-qt"
+TERMUX_PKG_BUILD_DEPENDS="extra-cmake-modules"

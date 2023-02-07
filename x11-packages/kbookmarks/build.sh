@@ -1,0 +1,9 @@
+TERMUX_PKG_HOMEPAGE=https://www.kde.org/
+TERMUX_PKG_DESCRIPTION="Qt library with support for bookmarks and the XBEL format."
+TERMUX_PKG_LICENSE="LGPL-2.1"
+TERMUX_PKG_MAINTAINER="@termux"
+TERMUX_PKG_VERSION=5.102.0
+TERMUX_PKG_SRCURL=https://github.com/KDE/kbookmarks/archive/refs/tags/v$TERMUX_PKG_VERSION.tar.gz
+TERMUX_PKG_SHA256=80aceef26ab29ea7877f92c2c5ea37eefe844742069c7d94d0d16d3726597c52
+TERMUX_PKG_DEPENDS="ecm, qt5-qtbase, kconfig, kcoreaddons, kcodecs, kconfigwidgets, kxmlgui"
+TERMUX_PKG_BUILD_DEPENDS="extra-cmake-modules"

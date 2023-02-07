@@ -1,0 +1,9 @@
+TERMUX_PKG_HOMEPAGE=https://www.kde.org/
+TERMUX_PKG_DESCRIPTION="Qt library that implements the Open Collaboration Services API"
+TERMUX_PKG_LICENSE="LGPL-2.1"
+TERMUX_PKG_MAINTAINER="@termux"
+TERMUX_PKG_VERSION=5.102.0
+TERMUX_PKG_SRCURL=https://github.com/KDE/attica/archive/refs/tags/v$TERMUX_PKG_VERSION.tar.gz
+TERMUX_PKG_SHA256=cd4999454802d1bb3fbfec98f1c86de44c5a220c1cfc3fb561cfab789078fb8c
+TERMUX_PKG_DEPENDS="ecm, qt5-qtbase"
+TERMUX_PKG_BUILD_DEPENDS="extra-cmake-modules"

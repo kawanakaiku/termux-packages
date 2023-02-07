@@ -1,0 +1,10 @@
+TERMUX_PKG_HOMEPAGE=https://www.kde.org/
+TERMUX_PKG_DESCRIPTION="Support for emoticons and emoticons themes."
+TERMUX_PKG_LICENSE="LGPL-2.1"
+TERMUX_PKG_MAINTAINER="@termux"
+TERMUX_PKG_VERSION=5.102.0
+TERMUX_PKG_SRCURL=https://github.com/KDE/kemoticons/archive/refs/tags/v$TERMUX_PKG_VERSION.tar.gz
+TERMUX_PKG_SHA256=1156c81ebcd3d43181c74d6d865505118d9093deee61907ce80268c35ad14a55
+TERMUX_PKG_DEPENDS="ecm, qt5-qtbase, karchive, kconfig, kservice"
+TERMUX_PKG_BUILD_DEPENDS="extra-cmake-modules"
+TERMUX_PKG_EXTRA_CONFIGURE_ARGS="-DKF_IGNORE_PLATFORM_CHECK=true"

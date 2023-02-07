@@ -1,0 +1,23 @@
+diff -uNr a/CMakeLists.txt b/CMakeLists.txt
+--- a/CMakeLists.txt	2023-01-07 11:25:53.000000000 +0900
++++ b/CMakeLists.txt	2023-02-07 02:32:05.516494620 +0900
+@@ -140,7 +140,7 @@
+ if(TARGET OpenGL::EGL)
+     add_feature_info(EGL OpenGL_EGL_FOUND
+                      "A platform-agnostic mechanism for creating rendering surfaces for use with other graphics libraries, such as OpenGL|ES and OpenVG.")
+-    set(HAVE_EGL 1)
++    set(HAVE_EGL 0)
+ else()
+     set(HAVE_EGL 0)
+     message(STATUS "OpenGL::EGL is not available")
+diff -uNr a/src/scriptengines/qml/plasmoid/wallpaperinterface.h b/src/scriptengines/qml/plasmoid/wallpaperinterface.h
+--- a/src/scriptengines/qml/plasmoid/wallpaperinterface.h	2023-01-07 11:25:53.000000000 +0900
++++ b/src/scriptengines/qml/plasmoid/wallpaperinterface.h	2023-02-07 02:46:01.638872198 +0900
+@@ -9,6 +9,7 @@
+ 
+ #include <QQmlEngine>
+ #include <QQuickItem>
++#include <QColor>
+ 
+ #include <KPackage/Package>
+ #include <kdeclarative/kdeclarative_export.h>

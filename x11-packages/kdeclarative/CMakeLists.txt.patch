@@ -1,0 +1,11 @@
+diff -uNr a/CMakeLists.txt b/CMakeLists.txt
+--- a/CMakeLists.txt	2023-02-06 21:22:55.736911955 +0900
++++ b/CMakeLists.txt	2023-02-06 21:23:18.564967704 +0900
+@@ -82,7 +82,6 @@
+ endif()
+ set(HAVE_EPOXY 0)
+ if(epoxy_FOUND)
+-    set(HAVE_EPOXY 1)
+ endif()
+ add_subdirectory(src)
+ if (BUILD_TESTING)

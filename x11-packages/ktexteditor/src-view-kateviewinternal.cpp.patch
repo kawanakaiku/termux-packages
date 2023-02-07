@@ -1,0 +1,23 @@
+diff -uNr a/src/part/CMakeLists.txt b/src/part/CMakeLists.txt
+--- a/src/part/CMakeLists.txt	2023-01-07 11:25:24.000000000 +0900
++++ b/src/part/CMakeLists.txt	2023-02-07 08:37:58.786393922 +0900
+@@ -5,7 +5,7 @@
+ if(QT_MAJOR_VERSION STREQUAL "5")
+     configure_file(katepart.desktop.in ${CMAKE_CURRENT_BINARY_DIR}/katepart.desktop @ONLY)
+     # service => json and install
+-    kcoreaddons_desktop_to_json (katepart ${CMAKE_CURRENT_BINARY_DIR}/katepart.desktop SERVICE_TYPES kpart.desktop)
++    kcoreaddons_desktop_to_json (katepart ${CMAKE_CURRENT_BINARY_DIR}/katepart.desktop SERVICE_TYPES @TERMUX_PREFIX@/share/kservicetypes5/kpart.desktop)
+     install( FILES ${CMAKE_CURRENT_BINARY_DIR}/katepart.desktop  DESTINATION  ${KDE_INSTALL_KSERVICESDIR} )
+ else()
+     configure_file(katepart.json.in ${CMAKE_CURRENT_BINARY_DIR}/katepart.json @ONLY)
+diff -uNr a/src/view/kateviewinternal.cpp b/src/view/kateviewinternal.cpp
+--- a/src/view/kateviewinternal.cpp	2023-01-07 11:25:24.000000000 +0900
++++ b/src/view/kateviewinternal.cpp	2023-02-07 08:21:35.096792122 +0900
+@@ -21,6 +21,7 @@
+ #include "katebuffer.h"
+ #include "katecompletionwidget.h"
+ #include "kateconfig.h"
++#include "katedocument.h"
+ #include "kateglobal.h"
+ #include "katehighlight.h"
+ #include "katelayoutcache.h"

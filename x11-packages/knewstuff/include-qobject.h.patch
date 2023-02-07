@@ -1,0 +1,11 @@
+diff -uNr a/src/uploaddialog.cpp b/src/uploaddialog.cpp
+--- a/src/uploaddialog.cpp	2023-01-07 09:30:38.000000000 +0900
++++ b/src/uploaddialog.cpp	2023-02-07 12:50:36.405932150 +0900
+@@ -19,6 +19,7 @@
+ #include <QQuickItem>
+ #include <QQuickView>
+ #include <QVBoxLayout>
++#include <qcoreapplication.h>
+ 
+ using namespace KNS3;
+ 

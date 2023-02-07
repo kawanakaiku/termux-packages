@@ -1,0 +1,9 @@
+TERMUX_PKG_HOMEPAGE=https://www.kde.org/
+TERMUX_PKG_DESCRIPTION="non-binary asset management framework"
+TERMUX_PKG_LICENSE="LGPL-2.1"
+TERMUX_PKG_MAINTAINER="@termux"
+TERMUX_PKG_VERSION=5.102.0
+TERMUX_PKG_SRCURL=https://github.com/KDE/kglobalaccel/archive/refs/tags/v$TERMUX_PKG_VERSION.tar.gz
+TERMUX_PKG_SHA256=b5d7014fd347e7ac1160ba3ee419fb066855978dfb761961f2dbfb8f7f701582
+TERMUX_PKG_DEPENDS="ecm, qt5-qtbase, kconfig, kcoreaddons, kcrash, kdbusaddons, kwindowsystem"
+TERMUX_PKG_BUILD_DEPENDS="extra-cmake-modules"

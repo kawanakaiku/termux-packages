@@ -1,0 +1,9 @@
+TERMUX_PKG_HOMEPAGE=https://www.kde.org/
+TERMUX_PKG_DESCRIPTION="Support for unit conversion."
+TERMUX_PKG_LICENSE="LGPL-2.1"
+TERMUX_PKG_MAINTAINER="@termux"
+TERMUX_PKG_VERSION=5.102.0
+TERMUX_PKG_SRCURL=https://github.com/KDE/kunitconversion/archive/refs/tags/v$TERMUX_PKG_VERSION.tar.gz
+TERMUX_PKG_SHA256=144b382ba837e0e9a545b17494a5dc55ce002b8cffb44d3ec63c3361c0f658e4
+TERMUX_PKG_DEPENDS="qt5-qtbase, ki18n"
+TERMUX_PKG_BUILD_DEPENDS="extra-cmake-modules"

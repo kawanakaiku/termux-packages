@@ -1,0 +1,9 @@
+TERMUX_PKG_HOMEPAGE=https://www.kde.org/
+TERMUX_PKG_DESCRIPTION="Configuration system for KNotify."
+TERMUX_PKG_LICENSE="LGPL-2.1"
+TERMUX_PKG_MAINTAINER="@termux"
+TERMUX_PKG_VERSION=5.102.0
+TERMUX_PKG_SRCURL=https://github.com/KDE/knotifyconfig/archive/refs/tags/v$TERMUX_PKG_VERSION.tar.gz
+TERMUX_PKG_SHA256=4c0228b4c582e4c17aa04311140fc218d4eb7803f2f1b00f6b11089b40b9e08a
+TERMUX_PKG_DEPENDS="ecm, qt5-qtbase, kcompletion, ki18n, kio, sonnet"
+TERMUX_PKG_BUILD_DEPENDS="extra-cmake-modules"

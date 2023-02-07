@@ -1,0 +1,11 @@
+diff -uNr a/src/CMakeLists.txt b/src/CMakeLists.txt
+--- a/src/CMakeLists.txt	2023-01-07 09:32:19.000000000 +0900
++++ b/src/CMakeLists.txt	2023-02-07 09:23:29.778690435 +0900
+@@ -64,7 +64,6 @@
+         KF5::I18n
+         KF5::CoreAddons # KPluginFactory
+     PRIVATE
+-        Qt${QT_MAJOR_VERSION}::DBus
+         Qt${QT_MAJOR_VERSION}::Widgets
+         KF5::ThreadWeaver
+ )

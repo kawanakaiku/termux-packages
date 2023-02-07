@@ -1,0 +1,31 @@
+diff -uNr a/CMakeLists.txt b/CMakeLists.txt
+--- a/CMakeLists.txt	2023-01-19 20:17:01.000000000 +0900
++++ b/CMakeLists.txt	2023-02-07 20:36:02.792350412 +0900
+@@ -282,7 +282,6 @@
+ # All the required XCB components
+ find_package(XCB 1.10 REQUIRED COMPONENTS
+     COMPOSITE
+-    CURSOR
+     DAMAGE
+     GLX
+     ICCCM
+@@ -463,7 +462,6 @@
+ kde_clang_format(${ALL_CLANG_FORMAT_SOURCE_FILES})
+ kde_configure_git_pre_commit_hook(CHECKS CLANG_FORMAT)
+ 
+-feature_summary(WHAT ALL INCLUDE_QUIET_PACKAGES FATAL_ON_MISSING_REQUIRED_PACKAGES)
+ 
+ set(CMAKECONFIG_INSTALL_DIR "${KDE_INSTALL_CMAKEPACKAGEDIR}/KWinDBusInterface")
+ configure_package_config_file(KWinDBusInterfaceConfig.cmake.in
+diff -uNr a/src/wayland/CMakeLists.txt b/src/wayland/CMakeLists.txt
+--- a/src/wayland/CMakeLists.txt	2023-01-19 20:17:01.000000000 +0900
++++ b/src/wayland/CMakeLists.txt	2023-02-07 20:34:11.600012867 +0900
+@@ -289,6 +289,8 @@
+     target_sources(kwin PRIVATE utils/executable_path_proc.cpp)
+ elseif(CMAKE_SYSTEM_NAME MATCHES "FreeBSD")
+     target_sources(kwin PRIVATE utils/executable_path_sysctl.cpp)
++elseif(CMAKE_SYSTEM_NAME MATCHES "Android")
++    target_sources(kwin PRIVATE utils/executable_path_proc.cpp)
+ else()
+     message(FATAL_ERROR "Unsupported platform ${CMAKE_SYSTEM_NAME}")
+ endif()

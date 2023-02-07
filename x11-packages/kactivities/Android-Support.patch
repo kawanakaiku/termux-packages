@@ -1,0 +1,11 @@
+diff -uNr a/metainfo.yaml b/metainfo.yaml
+--- a/metainfo.yaml	2023-01-07 09:23:22.000000000 +0900
++++ b/metainfo.yaml	2023-02-06 22:20:16.709813472 +0900
+@@ -8,6 +8,7 @@
+     - name: Windows
+     - name: macOS
+       note: Needs QtDBus
++    - name: Android
+ portingAid: false
+ deprecated: false
+ release: true

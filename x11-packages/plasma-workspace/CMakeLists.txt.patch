@@ -1,0 +1,11 @@
+diff -uNr a/CMakeLists.txt b/CMakeLists.txt
+--- a/CMakeLists.txt	2023-01-19 20:22:24.000000000 +0900
++++ b/CMakeLists.txt	2023-02-07 19:43:24.397074903 +0900
+@@ -68,7 +68,6 @@
+ )
+ 
+ find_package(KUserFeedback)
+-find_package(KSysGuard CONFIG REQUIRED)
+ 
+ find_package(KF5Baloo)
+ set_package_properties(KF5Baloo PROPERTIES DESCRIPTION "File Searching"

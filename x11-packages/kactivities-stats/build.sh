@@ -1,0 +1,9 @@
+TERMUX_PKG_HOMEPAGE=https://www.kde.org/
+TERMUX_PKG_DESCRIPTION="usage data collected by the activities system"
+TERMUX_PKG_LICENSE="LGPL-2.1"
+TERMUX_PKG_MAINTAINER="@termux"
+TERMUX_PKG_VERSION=5.102.0
+TERMUX_PKG_SRCURL=https://github.com/KDE/kactivities-stats/archive/refs/tags/v$TERMUX_PKG_VERSION.tar.gz
+TERMUX_PKG_SHA256=58e36f08b146088fe7d6e0e1229478204240d2ae388d56c546334e36265a5f38
+TERMUX_PKG_DEPENDS="ecm, qt5-qtbase, kconfig, kactivities"
+TERMUX_PKG_BUILD_DEPENDS="extra-cmake-modules"

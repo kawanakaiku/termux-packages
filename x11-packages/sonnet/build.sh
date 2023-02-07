@@ -1,0 +1,9 @@
+TERMUX_PKG_HOMEPAGE=https://www.kde.org/
+TERMUX_PKG_DESCRIPTION="spell checking library for Qt"
+TERMUX_PKG_LICENSE="LGPL-2.1"
+TERMUX_PKG_MAINTAINER="@termux"
+TERMUX_PKG_VERSION=5.102.0
+TERMUX_PKG_SRCURL=https://github.com/KDE/sonnet/archive/refs/tags/v$TERMUX_PKG_VERSION.tar.gz
+TERMUX_PKG_SHA256=4bda6a57c109930992e72f9fc610670064d6af6ac0690e654cea89dd031d212e
+TERMUX_PKG_DEPENDS="ecm, qt5-qtbase, qt5-qtdeclarative, qt5-qttools"
+TERMUX_PKG_BUILD_DEPENDS="extra-cmake-modules"

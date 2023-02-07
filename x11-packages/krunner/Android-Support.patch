@@ -1,0 +1,11 @@
+diff -uNr a/metainfo.yaml b/metainfo.yaml
+--- a/metainfo.yaml	2023-01-07 09:32:19.000000000 +0900
++++ b/metainfo.yaml	2023-02-07 08:47:01.149993645 +0900
+@@ -10,6 +10,7 @@
+     - name: FreeBSD
+     - name: Windows
+     - name: macOS
++    - name: Android
+ portingAid: false
+ deprecated: false
+ release: true

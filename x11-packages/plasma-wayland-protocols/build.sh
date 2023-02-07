@@ -1,0 +1,9 @@
+TERMUX_PKG_HOMEPAGE=https://www.kde.org/
+TERMUX_PKG_DESCRIPTION="Wayland protocols for Plasma"
+TERMUX_PKG_LICENSE="LGPL-2.1"
+TERMUX_PKG_MAINTAINER="@termux"
+TERMUX_PKG_VERSION=1.10.0
+TERMUX_PKG_SRCURL=https://github.com/KDE/plasma-wayland-protocols/archive/refs/tags/v$TERMUX_PKG_VERSION.tar.gz
+TERMUX_PKG_SHA256=d2308b2f1e31377f141364dc9f0c70a75e63f0bccec2e7982afacd94999f477f
+TERMUX_PKG_DEPENDS="ecm"
+TERMUX_PKG_BUILD_DEPENDS="extra-cmake-modules"

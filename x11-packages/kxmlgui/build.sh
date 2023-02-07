@@ -1,0 +1,9 @@
+TERMUX_PKG_HOMEPAGE=https://www.kde.org/
+TERMUX_PKG_DESCRIPTION="User configurable main windows."
+TERMUX_PKG_LICENSE="LGPL-2.1"
+TERMUX_PKG_MAINTAINER="@termux"
+TERMUX_PKG_VERSION=5.102.0
+TERMUX_PKG_SRCURL=https://github.com/KDE/kxmlgui/archive/refs/tags/v$TERMUX_PKG_VERSION.tar.gz
+TERMUX_PKG_SHA256=ca5c33a8b3ea2e24904bce98fe50623d7aa4bdf3459806cc167a00f5979aa346
+TERMUX_PKG_DEPENDS="ecm, kconfig, kcoreaddons, kitemviews, kconfigwidgets, kiconthemes"
+TERMUX_PKG_BUILD_DEPENDS="extra-cmake-modules"

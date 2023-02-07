@@ -1,0 +1,23 @@
+diff -uNr a/cmake/modules/CMakeLists.txt b/cmake/modules/CMakeLists.txt
+--- a/cmake/modules/CMakeLists.txt	2023-01-07 11:22:53.000000000 +0900
++++ b/cmake/modules/CMakeLists.txt	2023-02-07 15:54:52.727550048 +0900
+@@ -38,7 +38,6 @@
+                FindGMP.cmake
+                FindGObject.cmake
+                FindGStreamer.cmake
+-               FindGettext.cmake
+                FindGphoto2.cmake
+                FindIOKit.cmake
+                KDE4Macros.cmake
+diff -uNr a/src/CMakeLists.txt b/src/CMakeLists.txt
+--- a/src/CMakeLists.txt	2023-02-07 15:52:28.518715444 +0900
++++ b/src/CMakeLists.txt	2023-02-07 15:52:46.742822713 +0900
+@@ -375,8 +375,6 @@
+ ########## Designer plugin
+ 
+ kf5designerplugin_add_plugin(kf5deprecatedwidgets
+-    kdedeprecated.widgets
+-    kdedeprecated.qrc
+     classpreviews.cpp
+ )
+ 

@@ -1,0 +1,9 @@
+TERMUX_PKG_HOMEPAGE=https://www.kde.org/
+TERMUX_PKG_DESCRIPTION="Extra APIs to write KConfig modules."
+TERMUX_PKG_LICENSE="LGPL-2.1"
+TERMUX_PKG_MAINTAINER="@termux"
+TERMUX_PKG_VERSION=5.102.0
+TERMUX_PKG_SRCURL=https://github.com/KDE/kcmutils/archive/refs/tags/v$TERMUX_PKG_VERSION.tar.gz
+TERMUX_PKG_SHA256=df0d0f13741f935386279dac8286706955c6702a6bf49f4e5faed661a11dd139
+TERMUX_PKG_DEPENDS="ecm, qt5-qtbase, karchive, kitemviews, kconfigwidgets, kservice, kxmlgui, kdeclarative, docbook-xml, docbook-xsl"
+TERMUX_PKG_BUILD_DEPENDS="extra-cmake-modules"

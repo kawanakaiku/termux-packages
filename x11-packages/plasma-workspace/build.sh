@@ -1,0 +1,9 @@
+TERMUX_PKG_HOMEPAGE=https://www.kde.org/
+TERMUX_PKG_DESCRIPTION="Wayland protocols for Plasma"
+TERMUX_PKG_LICENSE="LGPL-2.1"
+TERMUX_PKG_MAINTAINER="@termux"
+TERMUX_PKG_VERSION=5.26.90
+TERMUX_PKG_SRCURL=https://github.com/KDE/plasma-workspace/archive/refs/tags/v$TERMUX_PKG_VERSION.tar.gz
+TERMUX_PKG_SHA256=aa236ad9359d8ab502d2f34741ee891e7c15b9a1db3d7d48777ed09dfd510210
+TERMUX_PKG_DEPENDS="ecm, qt5-qtbase, qt5-qtsvg, qt5-qtdeclarative, qt5-qtmultimedia, qalc, sonnet, kauth, plasma-framework, ktexteditor, ksyntax-highlighting, kparts, kitemmodels, krunner, threadweaver, kwayland, prison, knotifyconfig, kpeople, kidletime"
+TERMUX_PKG_BUILD_DEPENDS="extra-cmake-modules"

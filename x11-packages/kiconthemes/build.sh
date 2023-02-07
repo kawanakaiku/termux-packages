@@ -1,0 +1,9 @@
+TERMUX_PKG_HOMEPAGE=https://www.kde.org/
+TERMUX_PKG_DESCRIPTION="Support for icon themes."
+TERMUX_PKG_LICENSE="LGPL-2.1"
+TERMUX_PKG_MAINTAINER="@termux"
+TERMUX_PKG_VERSION=5.102.0
+TERMUX_PKG_SRCURL=https://github.com/KDE/kiconthemes/archive/refs/tags/v$TERMUX_PKG_VERSION.tar.gz
+TERMUX_PKG_SHA256=6e8d0eaf37b0feee726b25b311f6d3a0773dcf07f361be7ec03243582e5d90bb
+TERMUX_PKG_DEPENDS="ecm, qt5-qtbase, qt5-qtsvg, karchive, ki18n, kcoreaddons, kconfigwidgets"
+TERMUX_PKG_BUILD_DEPENDS="extra-cmake-modules"

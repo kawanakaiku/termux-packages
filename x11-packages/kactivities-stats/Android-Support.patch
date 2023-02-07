@@ -1,0 +1,11 @@
+diff -uNr a/metainfo.yaml b/metainfo.yaml
+--- a/metainfo.yaml	2023-01-07 09:23:32.000000000 +0900
++++ b/metainfo.yaml	2023-02-07 11:33:48.446035133 +0900
+@@ -7,6 +7,7 @@
+       note: Needs QtDBus, QtSql, KActivities, Boost (optional, for autotests)
+     - name: FreeBSD
+       note: Needs QtDBus, QtSql, KActivities, Boost (optional, for autotests)
++    - name: Android
+ portingAid: false
+ deprecated: false
+ release: true
