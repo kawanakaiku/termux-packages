@@ -12,6 +12,7 @@ TERMUX_PKG_BUILD_IN_SRC=true
 
 termux_step_post_get_source() {
 	rm -rf internal/c/mingw{32,64}
+	set -x
 }
 
 termux_step_pre_configure() {
