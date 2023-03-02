@@ -12,7 +12,6 @@ TERMUX_PKG_BUILD_IN_SRC=true
 
 termux_step_post_get_source() {
 	rm -rf internal/c/mingw{32,64}
-	set -x
 }
 
 termux_step_pre_configure() {
@@ -35,7 +34,7 @@ termux_step_pre_configure() {
 
 termux_step_make() {
 	install -d $TERMUX_PREFIX/share/applications/
-	_pwd=$_QB64_DIR bash -e setup_lnx.sh
+	_pwd=$_QB64_DIR bash -ex setup_lnx.sh
 
 	rm internal/source/*
 	mv internal/temp/* internal/source/
