@@ -54,9 +54,10 @@ termux_step_pre_configure() {
 	export HOST_CC=$(command -v clang)
 	export HOST_CXX=$(command -v clang++)
 
-	CFLAGS+=" -I$TERMUX_PREFIX/ndk_compat"
 	CXXFLAGS+=" -U__ANDROID__"
 	LDFLAGS+=" -landroid-shmem -landroid-sysv-semaphore -llog"
+	
+	ln -s $TERMUX_PREFIX/ndk_compat/cpu-features.h $TERMUX_PKG_SRCDIR/third_party/aom
 }
 
 termux_step_configure() {
