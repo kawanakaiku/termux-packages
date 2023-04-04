@@ -93,7 +93,8 @@ termux_step_configure() {
 		--disable-synth-speechd \
 		--disable-elf-hack \
 		--disable-address-sanitizer-reporter \
-		--allow-addon-sideload
+		--allow-addon-sideload \
+		--enable-debug-symbols
 }
 
 termux_step_post_make_install() {
