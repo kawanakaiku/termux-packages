@@ -55,7 +55,7 @@ termux_step_pre_configure() {
 	export HOST_CXX=$(command -v clang++)
 
 	CXXFLAGS+=" -U__ANDROID__"
-	LDFLAGS+=" -landroid-shmem -landroid-sysv-semaphore -llog"
+	LDFLAGS+=" -landroid-shmem -landroid-sysv-semaphore -llog -lndk_compat"
 	
 	cp $TERMUX_PREFIX/include/ndk_compat/cpu-features.h $TERMUX_PKG_SRCDIR/media/libaom/
 }
