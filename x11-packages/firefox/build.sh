@@ -57,7 +57,7 @@ termux_step_pre_configure() {
 	CXXFLAGS+=" -U__ANDROID__"
 	LDFLAGS+=" -landroid-shmem -landroid-sysv-semaphore -llog"
 	
-	cp $TERMUX_PREFIX/ndk_compat/cpu-features.h $TERMUX_PKG_SRCDIR/media/libaom/
+	cp $TERMUX_PREFIX/include/ndk_compat/cpu-features.h $TERMUX_PKG_SRCDIR/media/libaom/
 }
 
 termux_step_configure() {
