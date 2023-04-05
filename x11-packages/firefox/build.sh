@@ -47,6 +47,8 @@ termux_step_post_get_source() {
 termux_step_pre_configure() {
 	termux_setup_rust
 	termux_setup_nodejs
+	termux_setup_no_integrated_as
+
 	cargo install cbindgen
 
 	sed -i -e "s|%TERMUX_CARGO_TARGET_NAME%|$CARGO_TARGET_NAME|" $TERMUX_PKG_SRCDIR/build/moz.configure/rust.configure
