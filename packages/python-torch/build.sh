@@ -3,9 +3,11 @@ TERMUX_PKG_DESCRIPTION="Tensors and Dynamic neural networks in Python"
 TERMUX_PKG_LICENSE="BSD 3-Clause"
 TERMUX_PKG_MAINTAINER="@termux"
 TERMUX_PKG_VERSION=2.0.0
-TERMUX_PKG_REVISION=1
+TERMUX_PKG_REVISION=2
 TERMUX_PKG_SRCURL=git+https://github.com/pytorch/pytorch
-TERMUX_PKG_DEPENDS="ffmpeg, libc++, libopenblas, libprotobuf, libzmq, opencv, python, python-numpy, python-pip"
+TERMUX_PKG_DEPENDS="ffmpeg, libc++, libopenblas, libprotobuf, libzmq, opencv, python, python-numpy, python-pip, vulkan-loader-android"
+TERMUX_PKG_BUILD_DEPENDS="vulkan-headers"
+# sudo apt install glslc
 TERMUX_PKG_HOSTBUILD=true
 TERMUX_PKG_PYTHON_COMMON_DEPS="wheel, pyyaml, typing_extensions"
 TERMUX_PKG_PYTHON_BUILD_DEPS="numpy"
@@ -30,6 +32,7 @@ TERMUX_PKG_EXTRA_CONFIGURE_ARGS="
 -DUSE_OPENCV=ON
 -DUSE_FFMPEG=ON
 -DUSE_ZMQ=ON
+-DUSE_VULKAN=ON
 -DUSE_CUDA=OFF
 -DUSE_FAKELOWP=OFF
 -DUSE_FBGEMM=OFF
@@ -75,6 +78,8 @@ termux_step_pre_configure() {
 	"
 
 	ln -sf "$TERMUX_PKG_BUILDDIR" build
+
+    export PYTHONPATH=$TERMUX_PKG_SRCDIR
 }
 
 termux_step_make_install() {
