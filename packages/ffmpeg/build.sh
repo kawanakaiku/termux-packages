@@ -28,7 +28,7 @@ termux_step_pre_configure() {
 		if [ ! "${v}" ] || [ "$(eval echo \$_FFMPEG_SOVER_av${f})" != "${v}" ]; then
 			termux_error_exit "SOVERSION guard check failed for libav${f}.so."
 		fi
-	done 
+	done
 	sed -i "s@version.o@version.o android_camera.o@" $TERMUX_PKG_SRCDIR/libavdevice/Makefile
 }
 
