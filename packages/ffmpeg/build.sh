@@ -110,7 +110,7 @@ termux_step_configure() {
 		--enable-shared \
 		--prefix="$TERMUX_PREFIX" \
 		--target-os=android \
-		--extra-libs="-landroid-glob" \
+		--extra-libs="-landroid-glob -lcamera2ndk" \
 		--disable-vulkan \
 		$_EXTRA_CONFIGURE_FLAGS \
 		--disable-libfdk-aac
