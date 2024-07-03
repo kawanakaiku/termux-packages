@@ -53,7 +53,7 @@ termux_step_configure() {
 	else
 		termux_error_exit "Unsupported arch: $TERMUX_ARCH"
 	fi
-	export LDFLAGS+=" --allow-shlib-undefined -Wl,-lcamera2ndk"
+	export LDFLAGS+=" -Wl,--allow-shlib-undefined -Wl,-lcamera2ndk"
 
 	$TERMUX_PKG_SRCDIR/configure \
 		--arch="${_ARCH}" \
