@@ -109,6 +109,7 @@ termux_step_configure() {
 		--enable-mediacodec \
 		--enable-opencl \
 		--enable-shared \
+  		--enable-indev=android_camera \
 		--prefix="$TERMUX_PREFIX" \
 		--target-os=android \
 		--extra-libs="-landroid-glob -lcamera2ndk" \
