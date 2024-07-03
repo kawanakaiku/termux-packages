@@ -30,7 +30,6 @@ termux_step_pre_configure() {
 			termux_error_exit "SOVERSION guard check failed for libav${f}.so."
 		fi
 	done
-	sed -i "s@version.o@version.o android_camera.o@" $TERMUX_PKG_SRCDIR/libavdevice/Makefile
 }
 
 termux_step_configure() {
@@ -53,7 +52,6 @@ termux_step_configure() {
 	else
 		termux_error_exit "Unsupported arch: $TERMUX_ARCH"
 	fi
-	export LDFLAGS+=" -Wl,--allow-shlib-undefined -Wl,-lcamera2ndk"
 
 	$TERMUX_PKG_SRCDIR/configure \
 		--arch="${_ARCH}" \
@@ -109,7 +107,7 @@ termux_step_configure() {
 		--enable-mediacodec \
 		--enable-opencl \
 		--enable-shared \
-  		--enable-indev=android_camera \
+		--enable-indev=android_camera \
 		--prefix="$TERMUX_PREFIX" \
 		--target-os=android \
 		--extra-libs="-landroid-glob -lcamera2ndk" \
