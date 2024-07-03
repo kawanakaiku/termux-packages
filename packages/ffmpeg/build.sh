@@ -12,7 +12,7 @@ TERMUX_PKG_BUILD_DEPENDS="opencl-headers"
 TERMUX_PKG_CONFLICTS="libav"
 TERMUX_PKG_BREAKS="ffmpeg-dev"
 TERMUX_PKG_REPLACES="ffmpeg-dev"
-TERMUX_PKG_API_LEVEL=30
+TERMUX_PKG_API_LEVEL=28
 
 termux_step_pre_configure() {
 	# Do not forget to bump revision of reverse dependencies and rebuild them
