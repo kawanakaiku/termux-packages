@@ -53,6 +53,8 @@ termux_step_configure() {
 		termux_error_exit "Unsupported arch: $TERMUX_ARCH"
 	fi
 
+ 	sed -Ei 's|(AVFormatContext \*avctx =)|av_log(avctx, AV_LOG_ERROR, __func__ " called\n"); \1|' $TERMUX_PKG_SRCDIR/libavdevice/android_camera.c
+
 	$TERMUX_PKG_SRCDIR/configure \
 		--arch="${_ARCH}" \
 		--as="$AS" \
