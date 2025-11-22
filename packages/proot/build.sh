@@ -20,6 +20,7 @@ export PROOT_UNBUNDLE_LOADER=$TERMUX_PREFIX/libexec/proot
 
 termux_step_pre_configure() {
 	CPPFLAGS+=" -DARG_MAX=131072"
+	rm -f $TERMUX_PREFIX/lib/libtalloc.so.*
 }
 
 termux_step_post_make_install() {
